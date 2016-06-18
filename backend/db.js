@@ -171,5 +171,5 @@ Friend.sync();
 exports.User = User;
 exports.Event = Event;
 exports.Friend = Friend;
-exports.Sequelize = Sequelize;
-exports.seq = sequelize;
+// exports.Sequelize = Sequelize;
+// exports.seq = sequelize;
