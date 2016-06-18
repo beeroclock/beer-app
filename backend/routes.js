@@ -3,6 +3,7 @@ var router = require('express').Router();
 var request = require('request');
 var parser = require('body-parser');
 var bcrypt = require('bcrypt-nodejs');
+var services = require('./services');
 
 // Database Requirements
 var mysql = require('mysql');
@@ -35,22 +36,7 @@ router.post('/signup', function(request, response) {
   var password = request.body.password;
   var email = request.body.email;
   if (username !== null || password !== null || email !== null) {
-    db.User.findOrCreate({
-      where: {
-        username: username,
-        password: password,
-        email: email
-      }
-    }).spread(function(result, created) {
-      if (created === true) {
-        console.log('Account added.')
-        util.createSession(request, response, result.dataValues.id);
-      } else {
-        var dirname = __dirname;
-        dirname = dirname.slice(0, -6);
-        response.status(409).sendFile(dirname + '/client/auth.html');
-      }
-    })
+    services.signup(username, password, email, request, response)
   } else {
     response.sendStatus(400);
   };
@@ -60,45 +46,22 @@ router.post('/signup', function(request, response) {
 router.post('/login', function(request, response) {
   var username = request.body.username;
   var password = request.body.password;
-
-  console.log('Attempted login username: ' + request.body.username);
-
-  db.User.find({
-    where: {
-      username: username,
-      password: password
-    }
-  }).then(function(result) {
-    if (result) {
-      console.log('User result.id being passed into session: ' + username);
-      util.createSession(request, response, result.id);
-    } else {
-      response.sendStatus(401);
-    };
-  });
+  services.login(username, password, request, result)
 });
 
 // User logout
 router.get('/logout', function(request, response) {
-  request.session.destroy(function() {
-    console.log("You\'re out, Bromeslice")
-    response.redirect('/login');
-  });
+  services.logout(request, response)
 });
 
 // Reroute to app
 router.get('/app', util.checkUser, function(request, response) {
-  var dirname = __dirname
-  dirname = dirname.slice(0, -6)
-  console.log("You're in, Broce Lee!")
-  response.status(202).sendFile(dirname + '/client/app.html');
+  console.log("+++ 77 routes.js Sending to App")
+  response.status(202).sendFile('/client/app.html');
 });
 
 // Get current user's friends
 router.get('/friends', util.checkUser, function(request, response) {
-
-
-
   db.Friend.findAll({
     where: {
       UserId: request.session.user
