@@ -15,5 +15,20 @@
   "bugs": {
     "url": "https://github.com/beeroclock/beer-app/issues"
   },
-  "homepage": "https://github.com/beeroclock/beer-app#readme"
+  "homepage": "https://github.com/beeroclock/beer-app#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.1",
+    "cors": "^2.7.1",
+    "express": "^4.14.0",
+    "express-session": "^1.13.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-jsbeautifier": "^0.2.12",
+    "mysql": "^2.11.1",
+    "node-uber": "^0.9.6",
+    "pg": "^5.1.0",
+    "request": "^2.72.0",
+    "sequelize": "^3.23.3",
+    "yelp": "^1.0.1"
+  }
 }
