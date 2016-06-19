@@ -91,7 +91,26 @@ module.exports = {
         }
       })
       .then(function (friendsList) {
-        callback(friendsList)
+        if(friendsList && friendsList.length > 0) {
+              var friendIds = friendsList.map(function(friendConn){
+                return {
+                  id: friendConn.id
+                }
+              });
+              db.User.findAll({
+                where: {
+                  $or: friendIds
+                }
+              }).then(function(friends){
+                var friends = friends.map(function(friend){
+                  return {id: friend.id, username: friend.username};
+                });
+                callback(friends);
+              });
+            } else {
+              callback(false);
+
+            }
       })
     }
   },

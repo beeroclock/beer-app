@@ -13,8 +13,15 @@ module.exports = controllers = {
       var username = request.body.username;
       var password = request.body.password;
       models.login.post(username, password, function(isUser){
-        if(isUser){
-          utils.createSession(request, response, isUser);
+        if (isUser) {
+          utils.createSession(request, response, isUser, function (token, name) {
+            console.log("+++ 18 controllers.js token: ", token)
+           response.status(200).send( {
+             'username': name,
+             'beeroclock': token,
+             'userId': isUser.dataValues.id
+           });
+          })
         }else{
           response.sendStatus(400);
         };
@@ -27,10 +34,16 @@ module.exports = controllers = {
       var password = request.body.password;
       var email = request.body.email;
       if (username !== null || password !== null || email !== null) {
-        models.signup.post(username, password, email, function(found){
-          if(found){
-            response.status(200).json({found})
-          }else{
+        models.signup.post(username, password, email, function(isUser){
+          if(isUser){
+          utils.createSession(request, response, isUser, function (token, name) {
+           response.status(200).send( {
+             'username': name,
+             'beeroclock': token,
+             'userId': isUser.dataValues.id
+           });
+          })
+        }else{
             response.sendStatus(400);
           };
         })
@@ -57,10 +70,14 @@ module.exports = controllers = {
   },
   friendsList:{
     get: function (request, response) {
-      var userId = request.session.user.id;
-      console.log("+++ 61 controllers.js userId: ", userId)
+      var userId = 1
+
       models.friendsList.get(userId, function (friendsList) {
-        response.status(200).json(friendsList)
+        if (friendsList) {
+          response.status(200).json(friendsList)
+        } else{
+          response.status(400).json(friendsList)
+        };
       })
     }
   },

@@ -1,5 +1,7 @@
 // Requirements
 var session = require('express-session');
+var jwt  = require('jwt-simple');
+
 var Yelp = require('yelp');
 var Uber = require('node-uber');
 
@@ -20,32 +22,45 @@ var yelp = new Yelp({
   token_secret: "szUxF_dCG6v3TZrofbdYaKGzpSc"
 });
 
-// Session Creation
-exports.createSession = function(request, response, newUser) {
-  return request.session.regenerate(function() {
-    request.session.user = newUser;
-    response.redirect('/app');
-  })
+// Auth
+var decodeToken = exports.decodeToken = function(request){
+  return jwt.decode(request.headers['beeroclock'], 'itsberroclocksomewhere');
 }
 
-// Login Checks
-var isLoggedIn = function(request) {
-  return request.session ? !!request.session.user : false;
+//Create session
+exports.createSession = function(request, response, isUser, callback) {
+  var token = jwt.encode({
+    "userId": isUser.id,
+    "username": isUser.name
+  },
+    'itsberroclocksomewhere');
+  callback(token, isUser.username);
 }
-var isLoggedOut = function(request) {
-  return !(request.session ? !!request.session.user : false);
+
+// Logic checks
+var isLoggedIn = function(token) {
+  var hash = jwt.decode(token, 'itsberroclocksomewhere');
+  return !!hash.userId;
 }
 
 // Reroute based on Auth status
 exports.checkUser = function(request, response, next) {
-  if (isLoggedOut(request)) {
-    console.log('Not logged in, redirecting to auth');
-    response.redirect('/login')
+  var token = request.headers['beeroclock'];
+  if (!token || (token === "undefined")){
+    response.status(401).send("No token detected")
   } else {
-    console.log('Logged in, redirecting to next');
-    next();
+    if (isLoggedIn(token)){
+      var hash = jwt.decode(token, 'itsberroclocksomewhere');
+      console.log("+++ 50 utilities.js hash: ", hash)
+      request.session.user = hash.userId;
+      console.log("+++ 52 utilities.js request.session.user: ", request.session.user)
+      next()
+    } else {
+      response.sendStatus(401);
+    }
   }
 }
+
 
 // Central Point Math
 exports.getCentralPoints = function(ownerPoints, acceptedPoints, num) {
