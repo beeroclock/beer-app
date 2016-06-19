@@ -25,7 +25,6 @@ exports.createSession = function(request, response, newUser) {
   return request.session.regenerate(function() {
     request.session.user = newUser;
     response.redirect('/app');
-    console.log("Request session user saved as: " + request.session.user);
   })
 }
 

@@ -16,15 +16,15 @@ var sequelize = require('./db').Sequelize;
 var seq = require('./db').seq;
 
 // Authentication and Calculation utilities
-var util = require('./utilities');
+var utils = require('./utilities');
 
 // Open app if logged in, middleware will reroute if not
-router.get('/', util.checkUser, function(request, response) {
+router.get('/', utils.checkUser, function(request, response) {
   response.redirect('/app');
 });
 
 // Reroute to app
-router.get('/app', util.checkUser, function(request, response) {
+router.get('/app', utils.checkUser, function(request, response) {
   console.log("+++ 77 routes.js Sending to App")
   response.status(202).sendFile('/client/app.html');
 });
@@ -46,69 +46,33 @@ router.post('/signup', function(request, response) {
   controllers.signup.post(request, response);
 })
 
-
-
-/////-------
 // User logout
 router.get('/logout', function(request, response) {
-  controllers.logout(request, response)
+  controllers.logout.get(request, response)
 });
-
 
 // Search for friend
 router.get('/friends/:friendName', function(request, response) {
-  var friendName = request.params.friendName;
-  controllers.findFriend(friendName)
-    response.sendStatus(200)
-  // var friend = request.body.friend;
-  //   db.User.find({
-  //     where: {
-  //       username: friend
-  //     }
-  //   }).then(function(foundFriend) {
-  //     if (foundFriend || foundFriend.id !== request.session.user) {
-
-  //       db.Friend.findOne({
-  //         where:{
-  //           $or: [
-  //             {
-  //               friendId: foundFriend.id,
-  //               UserId: request.session.user
-  //             },
-  //             {
-  //               friendId: request.session.user,
-  //               UserId: foundFriend.id
-  //             }
-  //           ]
-  //         }
-  //       }).then(function(result){
-  //         if(result === null){
-  //           // create connections
-  //           db.Friend.create({
-  //             friendId: foundFriend.id,
-  //             UserId: request.session.user
-  //           });
-  //           db.Friend.create({
-  //             friendId: request.session.user,
-  //             UserId: foundFriend.id
-  //           });
-  //           console.log('You two are bros now!')
-  //           response.sendStatus(201)
-  //         } else {
-  //           // connections already exist
-  //           console.log("bromance already created inside")
-  //           response.sendStatus(409)
-  //         }
-  //       })
-  //     } else {
-  //       console.log("That friend doesn't exist, or you are that friend")
-  //       response.sendStatus(400)
-  //     }
-  //   });
+  controllers.friends.get(request, response)
 });
 
+router.get('/friends/', function(request, response) {
+  controllers.friendsList.get(request, response)
+});
+
+router.post('/friendship', function(request, response) {
+  controllers.friendship.post(request, response)
+})
+
+router.put('/friendship', function(request, response) {
+  controllers.friendship.put(request, response)
+})
+
+
+///--------
+
 // Get current user's friends
-router.get('/friends', util.checkUser, function(request, response) {
+router.get('/friends', utils.checkUser, function(request, response) {
   db.Friend.findAll({
     where: {
       UserId: request.session.user
@@ -140,7 +104,7 @@ router.get('/friends', util.checkUser, function(request, response) {
 
 
 // Check one event
-router.get('/events/:id', util.checkUser, function(request, response) {
+router.get('/events/:id', utils.checkUser, function(request, response) {
   var eventId = request.params.id;
   seq.query(
       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
@@ -177,7 +141,7 @@ router.get('/events/:id', util.checkUser, function(request, response) {
 
 
 // Get a list of all events
-router.get('/events', util.checkUser, function(request, response) {
+router.get('/events', utils.checkUser, function(request, response) {
   seq.query(
       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
         replacements: [request.session.user],
@@ -225,7 +189,7 @@ router.get('/events', util.checkUser, function(request, response) {
 });
 
 // Accept event invite
-router.post('/events/:id', util.checkUser, function(request, response) {
+router.post('/events/:id', utils.checkUser, function(request, response) {
   var id = request.params.id;
   var acceptedId = request.session.user;
   var acceptedAt = Date.now();
@@ -249,7 +213,7 @@ router.post('/events/:id', util.checkUser, function(request, response) {
             var ownerPoints = [lat1, lon1]
             var acceptedPoints = [lat2, lon2]
             var centralLatLong;
-            centralLatLong = util.getCentralPoints(ownerPoints,
+            centralLatLong = utils.getCentralPoints(ownerPoints,
               acceptedPoints, 1)
             acceptedEvent.acceptedName = acceptor.username;
             acceptedEvent.acceptedId = request.session.user; // TO TEST
@@ -290,7 +254,7 @@ router.post('/events/:id', util.checkUser, function(request, response) {
 });
 
 // Creating new event
-router.post('/events', util.checkUser, function(request, response) {
+router.post('/events', utils.checkUser, function(request, response) {
   var UserId = request.session.user;
   var ownerLat = request.body.ownerLat;
   var ownerLong = request.body.ownerLong;
@@ -359,7 +323,7 @@ router.post('/events', util.checkUser, function(request, response) {
 });
 
 // Return current user
-router.get('/user', util.checkUser, function (request, response) {
+router.get('/user', utils.checkUser, function (request, response) {
   db.User.find({
     where: {
       id: request.session.user
@@ -380,7 +344,7 @@ router.post('/yelp', function (request, response) {
   var centerLong = request.body.centerLong;
   console.log("Center lat from form: ", centerLat);
   console.log("Center long from form: ",centerLong);
-  util.searchYelpApi(request, response, centerLat, centerLong);
+  utils.searchYelpApi(request, response, centerLat, centerLong);
 });
 
 // Search Uber
@@ -395,7 +359,7 @@ router.post('/uber', function (request, response) {
   console.log("End lat from form: ", endLat);
   console.log("End long from form: ", endLong);
 
-  util.searchUberApi(request, response, startLat, startLong, endLat, endLong);
+  utils.searchUberApi(request, response, startLat, startLong, endLat, endLong);
 });
 
 module.exports = router;

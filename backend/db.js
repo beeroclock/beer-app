@@ -136,19 +136,14 @@ var Attendee = sequelize.define('Attendee', {
 var Friend = sequelize.define('Friend', {
   inviteId: {
     type: Sequelize.INTEGER,
-    allowNull: false
   },
   inviteeId: {
     type: Sequelize.INTEGER,
-    allowNull: false
   },
   accepted: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
-    }
-}, {
-  timestamps: true
+    type: Sequelize.BOOLEAN,
+    defaultValue: null
+  }
 });
 
 // Create the tables in the database

@@ -50,44 +50,100 @@ module.exports = {
         }
       })
     }
+  },
+  friends: {
+    get: function (username, callback) {
+      var friendObj = {}
+      db.User.find({
+        where: {
+          username: username
+        }
+      })
+      .then(function (foundFriend) {
+        friendObj.id = foundFriend.id
+        friendObj.username = foundFriend.username
+        db.Friend.find({
+          where: {
+            $or:[{inviteId: foundFriend.dataValues.id}, {inviteeId: foundFriend.dataValues.id}]
+          }
+        })
+        .then(function (foundFriendship) {
+          friendObj.foundFriendship = foundFriendship;
+          callback(friendObj);
+        })
+      })
+    }
+  },
+  friendsList: {
+    get: function (userId, callback) {
+      db.Friend.findAll({
+        where: {
+          $or: [
+            {
+              inviteeId: userId,
+              accepted: true
+            },
+            {
+              inviteId: userId,
+              accepted: true
+            }
+          ]
+        }
+      })
+      .then(function (friendsList) {
+        callback(friendsList)
+      })
+    }
+  },
+  friendship: {
+    post: function (userId, friendId, callback) {
+        db.Friend.findOne({
+          where: {
+            $or: [
+              {
+                inviteId: friendId,
+                inviteeId: userId
+              },
+              {
+                inviteeId: friendId,
+                inviteId: userId
+              }
+            ]
+          }
+        })
+        .then(function(result) {
+          if(result === null){
+            db.Friend.create({
+              inviteId: userId,
+              inviteeId: friendId
+            })
+            .then(function(friendshipRequestCreated) {
+              callback(friendshipRequestCreated)
+            })
+          }else{
+            callback(false)
+          };
+        })
+    },
+    put: function (inviteId, inviteeId, userResponse, callback) {
+      db.Friend.find({
+        where: {
+          $and:[{inviteId: inviteId}, {inviteeId: inviteeId}]
+        }
+      })
+      .then(function(result) {
+        if(result){
+          result.update({
+            accepted: userResponse
+          })
+          .then(function (friendshipUpdated) {
+            callback(friendshipUpdated)
+          })
+        }else{
+          callback(false)
+        };
+      })
+    }
   }
 }
-
-// exports.signup = function (username, password, email, request, response) {
-//   db.User.findOrCreate({
-//     where: {
-//       username: username,
-//       password: password,
-//       email: email
-//     }
-//   })
-//   .spread(function(result, created) {
-//     if (created === true) {
-//       util.createSession(request, response, result.dataValues.id);
-//     }
-//   })
-// }
-// //login
-// exports.login = function (username, password, request, response) {
-
-// }
-// //logout
-// exports.logout = function (request, response) {
-//   request.session.destroy(function() {
-//     console.log("Logged out")
-//     response.redirect('/login');
-//   });
-// }
-
-// //FRIENDS BACKEND ROUTES
-// exports.findFriend = function (friendName) {
-//   db.User.find({
-//     where: {
-//       username: friendName
-//     }
-//   })
-//   .then(function(foundFriend) {
-//     return foundFriend
-//   })
-// }
 
