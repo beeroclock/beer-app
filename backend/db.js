@@ -34,46 +34,27 @@ if(process.env.CLEARDB_DATABASE_URL){
 
 // User Schema
 var User = sequelize.define('User', {
-  username: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  password: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  email: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  currentEvent: {
-    type: Sequelize.INTEGER,
-    allowNull: true
-  }
+  username: Sequelize.STRING,
+  password: Sequelize.STRING,
+  email: Sequelize.STRING
 }, {
   timestamps: true
 });
 
 // Event Schema
 var Event = sequelize.define('Event', {
-  acceptedAt: Sequelize.STRING,
-  acceptedId: Sequelize.INTEGER,
-  eventType: Sequelize.INTEGER,
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
   ownerName: {
     type: Sequelize.STRING,
     allowNull: true
   },
-  acceptedName: {
-    type: Sequelize.STRING,
-    allowNull: true
-  },
-  message: {
-    type: Sequelize.STRING
-  },
-  accepted: {
+  active: {
     type: Sequelize.BOOLEAN,
     allowNull: false,
-    defaultValue: false
+    defaultValue: true
   },
   ownerLat: {
     type: Sequelize.FLOAT(53),
@@ -85,24 +66,6 @@ var Event = sequelize.define('Event', {
     defaultValue: null
   },
   ownerLong: {
-    type: Sequelize.FLOAT(53),
-    allowNull: true,
-    validate: {
-      min: -180.0,
-      max: 180.0
-    },
-    defaultValue: null
-  },
-  acceptedLat: {
-    type: Sequelize.FLOAT(53),
-    allowNull: true,
-    validate: {
-      min: -90.0,
-      max: 90.0
-    },
-    defaultValue: null
-  },
-  acceptedLong: {
     type: Sequelize.FLOAT(53),
     allowNull: true,
     validate: {
@@ -129,9 +92,40 @@ var Event = sequelize.define('Event', {
     },
     defaultValue: null
   },
-  UserId: {
+  expirationDate: {
+    type: Sequelize.DATE,
+    allowNull: false
+  }
+}, {
+  timestamps: true,
+  paranoid: true
+});
+
+var Attendee = sequelize.define('Attendee', {
+    eventId: {
     type: Sequelize.INTEGER,
     allowNull: false
+  },
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
+  attendeeLat: {
+    type: Sequelize.FLOAT(53),
+    allowNull: true,
+    validate: {
+      min: -90.0,
+      max: 90.0
+    },
+    defaultValue: null
+  },
+  attendeeLong: {
+    type: Sequelize.FLOAT(53),
+    allowNull: true,
+    validate: {
+      min: -180.0,
+      max: 180.0
+    }
   }
 }, {
   timestamps: true,
@@ -140,36 +134,31 @@ var Event = sequelize.define('Event', {
 
 // Friend Schema
 var Friend = sequelize.define('Friend', {
-  friendId: {
+  inviteId: {
     type: Sequelize.INTEGER,
     allowNull: false
   },
-  UserId: {
+  inviteeId: {
     type: Sequelize.INTEGER,
     allowNull: false
-  }
+  },
+  accepted: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    }
 }, {
   timestamps: true
 });
 
-// Relationships Setup
-
-// Friend.belongsTo(User);
-// Event.belongsTo(User);
-//
-// User.hasMany(Friend);
-// User.hasMany(Event);
-
 // Create the tables in the database
-
 User.sync();
 Event.sync();
+Attendee.sync();
 Friend.sync();
 
 // Make all Models available in Router
-
 exports.User = User;
 exports.Event = Event;
+exports.Attendee = Attendee;
 exports.Friend = Friend;
-// exports.Sequelize = Sequelize;
-// exports.seq = sequelize;

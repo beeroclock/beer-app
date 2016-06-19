@@ -2,8 +2,8 @@
 var router = require('express').Router();
 var request = require('request');
 var parser = require('body-parser');
-var bcrypt = require('bcrypt-nodejs');
-var services = require('./services');
+
+var controllers = require('./controllers');
 
 // Database Requirements
 var mysql = require('mysql');
@@ -23,41 +23,88 @@ router.get('/', util.checkUser, function(request, response) {
   response.redirect('/app');
 });
 
+// Reroute to app
+router.get('/app', util.checkUser, function(request, response) {
+  console.log("+++ 77 routes.js Sending to App")
+  response.status(202).sendFile('/client/app.html');
+});
+
+// User login API to create session
+router.post('/login', function(request, response) {
+  controllers.login.post(request, response);
+});
+
 // Serve the authentication SPA when logged out
 router.get('/login', function(request, response) {
   var dirname = __dirname
-  dirname = dirname.slice(0, -6)
+  dirname = dirname.slice(0, -7)
   response.status(200).sendFile(dirname + '/client/auth.html')
 })
 
 // Create a new User
 router.post('/signup', function(request, response) {
-  var username = request.body.username;
-  var password = request.body.password;
-  var email = request.body.email;
-  if (username !== null || password !== null || email !== null) {
-    services.signup(username, password, email, request, response)
-  } else {
-    response.sendStatus(400);
-  };
+  controllers.signup.post(request, response);
 })
 
-// User login API to create session
-router.post('/login', function(request, response) {
-  var username = request.body.username;
-  var password = request.body.password;
-  services.login(username, password, request, result)
-});
 
+
+/////-------
 // User logout
 router.get('/logout', function(request, response) {
-  services.logout(request, response)
+  controllers.logout(request, response)
 });
 
-// Reroute to app
-router.get('/app', util.checkUser, function(request, response) {
-  console.log("+++ 77 routes.js Sending to App")
-  response.status(202).sendFile('/client/app.html');
+
+// Search for friend
+router.get('/friends/:friendName', function(request, response) {
+  var friendName = request.params.friendName;
+  controllers.findFriend(friendName)
+    response.sendStatus(200)
+  // var friend = request.body.friend;
+  //   db.User.find({
+  //     where: {
+  //       username: friend
+  //     }
+  //   }).then(function(foundFriend) {
+  //     if (foundFriend || foundFriend.id !== request.session.user) {
+
+  //       db.Friend.findOne({
+  //         where:{
+  //           $or: [
+  //             {
+  //               friendId: foundFriend.id,
+  //               UserId: request.session.user
+  //             },
+  //             {
+  //               friendId: request.session.user,
+  //               UserId: foundFriend.id
+  //             }
+  //           ]
+  //         }
+  //       }).then(function(result){
+  //         if(result === null){
+  //           // create connections
+  //           db.Friend.create({
+  //             friendId: foundFriend.id,
+  //             UserId: request.session.user
+  //           });
+  //           db.Friend.create({
+  //             friendId: request.session.user,
+  //             UserId: foundFriend.id
+  //           });
+  //           console.log('You two are bros now!')
+  //           response.sendStatus(201)
+  //         } else {
+  //           // connections already exist
+  //           console.log("bromance already created inside")
+  //           response.sendStatus(409)
+  //         }
+  //       })
+  //     } else {
+  //       console.log("That friend doesn't exist, or you are that friend")
+  //       response.sendStatus(400)
+  //     }
+  //   });
 });
 
 // Get current user's friends
@@ -89,123 +136,8 @@ router.get('/friends', util.checkUser, function(request, response) {
       response.sendStatus(404)
     }
   });
-
-
-
-
-
-
-
-  // seq.query(
-  //     'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
-  //       replacements: [request.session.user],
-  //       type: sequelize.QueryTypes.SELECT
-  //     })
-  //   .then(function(friends) {
-  //     console.log("LINE 126: ", friends);
-  //     response.status(200).json({
-  //       friends
-  //     });
-  //   });
 });
 
-// Add a friend to current user
-router.post('/friends', util.checkUser, function(request, response) {
-  var friend = request.body.friend;
-  console.log("Friend to add: ", friend)
-  console.log("Current user: ", request.session.user)
-
-    db.User.find({
-      where: {
-        username: friend
-      }
-    }).then(function(foundFriend) {
-      if (foundFriend || foundFriend.id !== request.session.user) {
-
-        db.Friend.findOne({
-          where:{
-            $or: [
-              {
-                friendId: foundFriend.id,
-                UserId: request.session.user
-              },
-              {
-                friendId: request.session.user,
-                UserId: foundFriend.id
-              }
-            ]
-          }
-        }).then(function(result){
-          if(result === null){
-            // create connections
-            db.Friend.create({
-              friendId: foundFriend.id,
-              UserId: request.session.user
-            });
-            db.Friend.create({
-              friendId: request.session.user,
-              UserId: foundFriend.id
-            });
-            console.log('You two are bros now!')
-            response.sendStatus(201)
-          } else {
-            // connections already exist
-            console.log("bromance already created inside")
-            response.sendStatus(409)
-          }
-        })
-
-
-
-
-
-
-
-
-
-        // db.Friend.findOrCreate({
-        //   where: {
-        //     friendId: foundFriend.id,
-        //     UserId: request.session.user
-        //   }
-        // }).spread(function(result) {
-        //   if (result.$options.isNewRecord === true) {
-        //     db.Friend.findOrCreate({
-        //       where: {
-        //         friendId: request.session.user,
-        //         UserId: foundFriend.id
-        //       }
-        //     }).spread(function(result) {
-        //       if (result.$options.isNewRecord === true) {
-        //         console.log('You two are bros now!')
-        //         response.sendStatus(201)
-        //       } else {
-        //         console.log("bromance already created inside")
-        //         response.sendStatus(409)
-        //       }
-        //     })
-        //   } else {
-        //     console.log("bromance already created")
-        //     response.sendStatus(409)
-        //   }
-        // });
-        //
-
-
-
-
-
-
-
-
-
-
-      } else {
-        console.log("That friend doesn't exist, or you are that friend")
-        response.sendStatus(400)
-      }
-    });
-});
 
 // Check one event
 router.get('/events/:id', util.checkUser, function(request, response) {
