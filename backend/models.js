@@ -59,7 +59,7 @@ module.exports = {
           username: username
         }
       })
-      .then(function (foundFriend, callback) {
+      .then(function (foundFriend) {
         friendObj.id = foundFriend.id
         friendObj.username = foundFriend.username
         db.Friend.find({
@@ -69,8 +69,7 @@ module.exports = {
         })
         .then(function (foundFriendship) {
           friendObj.foundFriendship = foundFriendship;
-          callback(friendObj)
-
+          callback(friendObj);
         })
       })
     }
@@ -98,8 +97,6 @@ module.exports = {
   },
   friendship: {
     post: function (userId, friendId, callback) {
-      console.log("+++ 101 models.js userId: ", userId)
-      console.log("+++ 102 models.js friendId: ", friendId)
         db.Friend.findOne({
           where: {
             $or: [
@@ -129,7 +126,6 @@ module.exports = {
         })
     },
     put: function (inviteId, inviteeId, userResponse, callback) {
-      console.log("+++ 109 models.js PATCH")
       db.Friend.find({
         where: {
           $and:[{inviteId: inviteId}, {inviteeId: inviteeId}]
@@ -143,7 +139,9 @@ module.exports = {
           .then(function (friendshipUpdated) {
             callback(friendshipUpdated)
           })
-        }
+        }else{
+          callback(false)
+        };
       })
     }
   }

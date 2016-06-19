@@ -50,14 +50,13 @@ module.exports = controllers = {
   friends: {
     get: function (request, response) {
       var username = request.params.friendName;
-      models.friends.get(username, function (response) {
-        response.status(200).json({ response });
+      models.friends.get(username, function (foundFriend) {
+        response.status(200).json({ foundFriend });
       })
     }
   },
   friendsList:{
     get: function (request, response) {
-      console.log("+++ 60 controllers.js request.session.user: ", request.session.user)
       var userId = request.session.user.id;
       console.log("+++ 61 controllers.js userId: ", userId)
       models.friendsList.get(userId, function (friendsList) {
@@ -67,7 +66,6 @@ module.exports = controllers = {
   },
   friendship: {
     post: function(request, response) {
-      console.log("+++ 69 controllers.js request.session.user: ", request.session.user)
       var friendId = request.body.friendId;
       var userId = request.body.userId;
       models.friendship.post(userId, friendId, function (friendshipRequestCreated) {
@@ -79,13 +77,13 @@ module.exports = controllers = {
       })
     },
     put: function(request, response) {
-      console.log("+++ 71 controllers.js patch")
       var inviteId = request.body.userId;
       var inviteeId = request.body.friendId;
       var userResponse = request.body.userResponse;
       models.friendship.put(inviteId, inviteeId, userResponse, function (friendshipUpdated) {
         if (friendshipUpdated) {
-          response.status(200).json(friendshipUpdated.dataValues)
+          var result = friendshipUpdated.dataValues
+          response.status(200).json(result)
         } else{
           response.sendStatus(404);
         };
