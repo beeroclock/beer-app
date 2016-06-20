@@ -1,6 +1,6 @@
 var db = require('./db.js');
 var Promise = require('bluebird');
-var _ = require('underscore');
+var _ = require('lodash');
 var bcrypt = require('bcrypt-nodejs');
 
 // Sequelize Extras to enable raw SQL
@@ -63,17 +63,21 @@ module.exports = {
         }
       })
       .then(function (foundFriend) {
-        friendObj.id = foundFriend.id
-        friendObj.username = foundFriend.username
-        db.Friend.find({
-          where: {
-            $or:[{inviteId: foundFriend.dataValues.id}, {inviteeId: foundFriend.dataValues.id}]
-          }
-        })
-        .then(function (foundFriendship) {
-          friendObj.foundFriendship = foundFriendship;
-          callback(friendObj);
-        })
+        if (foundFriend) {
+          friendObj.id = foundFriend.id
+          friendObj.username = foundFriend.username
+          db.Friend.find({
+            where: {
+              $or:[{inviteId: foundFriend.dataValues.id}, {inviteeId: foundFriend.dataValues.id}]
+            }
+          })
+          .then(function (foundFriendship) {
+            friendObj.foundFriendship = foundFriendship;
+            callback(friendObj);
+          })
+        }else{
+          callback(foundFriend)
+        };
       })
     }
   },
@@ -96,19 +100,40 @@ module.exports = {
       })
       .then(function (friendsList) {
         if(friendsList && friendsList.length > 0) {
-              var friendIds = friendsList.map(function(friendConn){
+              var friendIds = []
+              var inviteeIds = friendsList.map(function(friendConn){
                 return {
-                  id: friendConn.id
+                  inviteeId: friendConn.dataValues.inviteeId
                 }
               });
+              inviteeIds = _(inviteeIds).forEach(function(inviteeId) {
+                _.forEach(inviteeId, function(value) {
+                  friendIds.push(value)
+                })
+              })
+              var inviteIds = friendsList.map(function(friendConn){
+                return {
+                  inviteId: friendConn.dataValues.inviteId
+                }
+              });
+              inviteIds = _(inviteIds).forEach(function(inviteId) {
+                _.forEach(inviteId, function(value) {
+                  friendIds.push(value)
+                })
+              })
+              // friendIds = _.uniq(friendIds)
+              friendIds = _.pull(friendIds, userId)
+              console.log("+++ 126 models.js friendIds: ", friendIds)
               db.User.findAll({
                 where: {
-                  $or: friendIds
+                  id: friendIds
                 }
-              }).then(function(friends){
+              })
+              .then(function(friends){
                 var friends = friends.map(function(friend){
                   return {id: friend.id, username: friend.username};
                 });
+                friends = _.orderBy(friends, ['username'],['asc'])
                 callback(friends);
               });
         } else {
@@ -170,30 +195,44 @@ module.exports = {
     }
   },
   events: {
+    // (POST) Create a new event, (GET) get Friend's events
     post: function (newEventObj, callback) {
-      var timelimit = new Date();
-      timelimit.setHours(timelimit.getHours() + 12);
-      db.User.find({
+      var currentTime = new Date();
+      db.Event.findAll({
         where: {
-          id: newEventObj.userId
+          userId: newEventObj.userId,
+          expirationDate: {
+            $gt: currentTime
+          }
         }
       })
-      .then(function (user) {
-        console.log("+++ 182 models.js newEventObj: ", newEventObj)
-        db.Event.create({
-          userId: newEventObj.userId,
-          ownerName: user.dataValues.username,
-          ownerLat: newEventObj.ownerLat,
-          ownerLong: newEventObj.ownerLong,
-          expirationDate: timelimit
-        })
-        .then(function(eventCreated) {
-          if (eventCreated) {
-            callback(eventCreated)
-          } else{
-            callback(false)
-          };
-        })
+      .then(function (eventFound) {
+        if (!eventFound[0]) {
+          currentTime.setHours(currentTime.getHours() + 12);
+          db.User.find({
+            where: {
+              id: newEventObj.userId
+            }
+          })
+          .then(function (user) {
+            db.Event.create({
+              userId: newEventObj.userId,
+              ownerName: user.dataValues.username,
+              ownerLat: newEventObj.ownerLat,
+              ownerLong: newEventObj.ownerLong,
+              expirationDate: currentTime
+            })
+            .then(function(eventCreated) {
+              if (eventCreated) {
+                callback(eventCreated)
+              } else{
+                callback(false)
+              };
+            })
+          })
+        }else{
+          callback(false)
+        }
       })
     },
     get: function (userId, callback) {
@@ -242,9 +281,47 @@ module.exports = {
         };
       })
     }
+  },
+  acceptEvent: {
+    post: function (eventId, userId, attendeeLat, attendeeLong, callback) {
+      db.Event.find({
+        id: eventId
+      })
+      .then(function (eventFound) {
+        if (!eventFound[0]) {
+          db.Attendee.findAll({
+              eventId: eventId
+          })
+          .then(function (eventAttendees) {
+            if (eventAttendees) {
+              console.log("+++ 271 models.js eventAttendees: ", eventAttendees)
+              callback(true)
+            }else{
+              callback(false)
+            };
+          })
+        }else{
+          callback(false)
+        };
+      })
+    }
   }
 }
 
+
+          // db.Attendee.create({
+          //   eventId: eventId,
+          //   userId: userId,
+          //   attendeeLat: attendeeLat,
+          //   attendeeLong, attendeeLong
+          // })
+          // .then(function (created) {
+          //   if (created) {
+          //     callback(created)
+          //   } else{
+          //     callback(false)
+          //   };
+          // })
 
 
 

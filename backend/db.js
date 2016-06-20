@@ -43,12 +43,8 @@ var User = sequelize.define('User', {
 
 // Event Schema
 var Event = sequelize.define('Event', {
-  userId: {
-    type: Sequelize.INTEGER
-  },
-  ownerName: {
-    type: Sequelize.STRING
-  },
+  userId: Sequelize.INTEGER,
+  ownerName: Sequelize.STRING,
   active: {
     type: Sequelize.BOOLEAN,
     defaultValue: true
@@ -96,14 +92,8 @@ var Event = sequelize.define('Event', {
 });
 
 var Attendee = sequelize.define('Attendee', {
-    eventId: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-  },
-  userId: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-  },
+  eventId: Sequelize.INTEGER,
+  userId: Sequelize.INTEGER,
   attendeeLat: {
     type: Sequelize.FLOAT(53),
     allowNull: true,
@@ -128,12 +118,8 @@ var Attendee = sequelize.define('Attendee', {
 
 // Friend Schema
 var Friend = sequelize.define('Friend', {
-  inviteId: {
-    type: Sequelize.INTEGER,
-  },
-  inviteeId: {
-    type: Sequelize.INTEGER,
-  },
+  inviteId: Sequelize.INTEGER,
+  inviteeId: Sequelize.INTEGER,
   accepted: {
     type: Sequelize.BOOLEAN,
     defaultValue: null

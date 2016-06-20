@@ -26,6 +26,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-jsbeautifier": "^0.2.12",
     "jwt-simple": "^0.4.1",
+    "lodash": "^4.13.1",
     "mysql": "^2.11.1",
     "node-uber": "^0.9.6",
     "pg": "^5.1.0",

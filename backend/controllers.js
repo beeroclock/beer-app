@@ -23,7 +23,7 @@ module.exports = controllers = {
            });
           })
         }else{
-          response.sendStatus(400);
+          response.sendStatus(406);
         };
       })
     }
@@ -45,7 +45,7 @@ module.exports = controllers = {
            });
           })
         }else{
-            response.sendStatus(400);
+            response.sendStatus(406);
           };
         })
       } else {
@@ -67,7 +67,11 @@ module.exports = controllers = {
     get: function (request, response) {
       var username = request.params.friendName;
       models.friends.get(username, function (foundFriend) {
-        response.status(200).json({ foundFriend });
+        if(foundFriend){
+          response.status(200).json(foundFriend);
+        } else{
+          response.sendStatus(204);
+        };
       })
     }
   },
@@ -80,7 +84,7 @@ module.exports = controllers = {
         if (friendsList) {
           response.status(200).json(friendsList)
         } else{
-          response.status(400).json(friendsList)
+          response.sendStatus(204)
         };
       })
     }
@@ -92,9 +96,9 @@ module.exports = controllers = {
       var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
       models.friendship.post(userId, friendId, function (friendshipRequestCreated) {
         if (friendshipRequestCreated) {
-          response.status(200).json({friendshipRequestCreated})
+          response.status(200).json(friendshipRequestCreated)
         } else{
-          response.sendStatus(404);
+          response.sendStatus(302);
         };
       })
     },
@@ -107,23 +111,24 @@ module.exports = controllers = {
           var result = friendshipUpdated.dataValues
           response.status(200).json(result)
         } else{
-          response.sendStatus(404);
+          response.sendStatus(409);
         };
       })
     }
   },
+  // (POST) Create a new event, (GET) get Friend's events
   events: {
     post: function (request, response) {
-    console.log("+++ 116 controllers.js Here")
     var newEventObj = {};
-    newEventObj.userId = 7; // NEED TO CHANGE TO request.session.user.id when auth is working
+    newEventObj.userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
     newEventObj.ownerLat = request.body.ownerLat;
     newEventObj.ownerLong = request.body.ownerLong;
     models.events.post(newEventObj, function(result) {
+      console.log("+++ 126 controllers.js result: ", result)
         if(result){
           response.status(200).json(result)
         } else{
-          response.status(400)
+          response.sendStatus(409);
         };
       })
     },
@@ -133,10 +138,27 @@ module.exports = controllers = {
         if(result){
           response.status(200).json(result)
         } else{
-          response.status(400)
+          response.sendStatus(409);
         };
       })
     }
+  },
+  // Accept an event
+  acceptEvent: {
+    post: function (request, response) {
+      var eventId = request.params.id;
+      var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var attendeeLat = request.body.lat;
+      var attendeeLong = request.body.long;
+      models.acceptEvent.post(eventId, userId, attendeeLat, attendeeLong, function (result) {
+        if(result){
+          response.status(200).json(result)
+        } else{
+          response.sendStatus(409);
+        };
+      })
+    }
+
   }
 }
 

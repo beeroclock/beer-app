@@ -76,9 +76,14 @@ router.post('/events', function(request, response) {
   controllers.events.post(request, response)
 })
 
-//get Event
+//get Friend's Events
 router.get('/events/', function(request, response) {
   controllers.events.get(request, response)
+})
+
+//Accept Event
+router.post('/acceptEvent/:id', function(request, response) {
+  controllers.acceptEvent.post(request, response)
 })
 
 ///--------
