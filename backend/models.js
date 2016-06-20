@@ -11,6 +11,7 @@ var seq = require('./db').seq;
 var util = require('./utilities');
 
 module.exports = {
+  // login with existing user
   login: {
     post: function (username, password, callback) {
       db.User.find({
@@ -29,6 +30,7 @@ module.exports = {
       })
     }
   },
+  // signup new user
   signup: {
     post: function (username, password, email, callback) {
       db.User.findOrCreate({
@@ -51,6 +53,7 @@ module.exports = {
       })
     }
   },
+  // find user by username
   friends: {
     get: function (username, callback) {
       var friendObj = {}
@@ -74,6 +77,7 @@ module.exports = {
       })
     }
   },
+  // get user's friends list
   friendsList: {
     get: function (userId, callback) {
       db.Friend.findAll({
@@ -107,13 +111,14 @@ module.exports = {
                 });
                 callback(friends);
               });
-            } else {
-              callback(false);
+        } else {
+          callback(false);
 
-            }
+        }
       })
     }
   },
+  // (POST) request a new friendship, (PUT) Update friendship status.
   friendship: {
     post: function (userId, friendId, callback) {
         db.Friend.findOne({
@@ -163,6 +168,90 @@ module.exports = {
         };
       })
     }
+  },
+  events: {
+    post: function (newEventObj, callback) {
+      var timelimit = new Date();
+      timelimit.setHours(timelimit.getHours() + 12);
+      db.User.find({
+        where: {
+          id: newEventObj.userId
+        }
+      })
+      .then(function (user) {
+        console.log("+++ 182 models.js newEventObj: ", newEventObj)
+        db.Event.create({
+          userId: newEventObj.userId,
+          ownerName: user.dataValues.username,
+          ownerLat: newEventObj.ownerLat,
+          ownerLong: newEventObj.ownerLong,
+          expirationDate: timelimit
+        })
+        .then(function(eventCreated) {
+          if (eventCreated) {
+            callback(eventCreated)
+          } else{
+            callback(false)
+          };
+        })
+      })
+    },
+    get: function (userId, callback) {
+      db.Friend.findAll({
+        where: {
+          $or: [
+            {
+              inviteeId: userId,
+              accepted: true
+            },
+            {
+              inviteId: userId,
+              accepted: true
+            }
+          ]
+        }
+      })
+      .then(function (friendsList) {
+        if(!!friendsList && friendsList.length !== 0) {
+          var friendsNames = friendsList.map(function(usersFriends) {
+            return {
+              UserId: {
+                $eq: usersFriends.id
+              }
+            };
+          });
+          console.log("+++ 223 models.js friendsNames: ", friendsNames)
+          var currentTime = new Date();
+          db.Event.findAll({
+            where: {
+              $or: friendsNames,
+              expirationDate: {
+                $gt: currentTime
+              }
+            }
+          })
+          .then(function(eventsFound){
+            if (eventsFound) {
+              callback(eventsFound)
+            } else{
+              callback(false)
+            };
+          })
+        } else{
+          callback(false)
+        };
+      })
+    }
   }
 }
+
+
+
+
+
+
+
+
+
+
 

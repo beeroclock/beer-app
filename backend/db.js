@@ -44,21 +44,17 @@ var User = sequelize.define('User', {
 // Event Schema
 var Event = sequelize.define('Event', {
   userId: {
-    type: Sequelize.INTEGER,
-    allowNull: false
+    type: Sequelize.INTEGER
   },
   ownerName: {
-    type: Sequelize.STRING,
-    allowNull: true
+    type: Sequelize.STRING
   },
   active: {
     type: Sequelize.BOOLEAN,
-    allowNull: false,
     defaultValue: true
   },
   ownerLat: {
     type: Sequelize.FLOAT(53),
-    allowNull: true,
     validate: {
       min: -90.0,
       max: 90.0
@@ -67,7 +63,6 @@ var Event = sequelize.define('Event', {
   },
   ownerLong: {
     type: Sequelize.FLOAT(53),
-    allowNull: true,
     validate: {
       min: -180.0,
       max: 180.0
@@ -93,8 +88,7 @@ var Event = sequelize.define('Event', {
     defaultValue: null
   },
   expirationDate: {
-    type: Sequelize.DATE,
-    allowNull: false
+    type: Sequelize.DATE
   }
 }, {
   timestamps: true,

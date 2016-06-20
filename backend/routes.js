@@ -56,271 +56,253 @@ router.get('/friends/:friendName', function(request, response) {
   controllers.friends.get(request, response)
 });
 
+// Get friends list
 router.get('/friends/', function(request, response) {
   controllers.friendsList.get(request, response)
 });
 
+// Request new friendship
 router.post('/friendship', function(request, response) {
   controllers.friendship.post(request, response)
 })
 
+// Update friendship status
 router.put('/friendship', function(request, response) {
   controllers.friendship.put(request, response)
 })
 
+// Create new event
+router.post('/events', function(request, response) {
+  controllers.events.post(request, response)
+})
+
+//get Event
+router.get('/events/', function(request, response) {
+  controllers.events.get(request, response)
+})
 
 ///--------
 
-// Get current user's friends
-router.get('/friends', utils.checkUser, function(request, response) {
-  db.Friend.findAll({
-    where: {
-      UserId: request.session.user
-    }
-  }).then(function(friendList){
-    if(friendList && friendList.length > 0) {
-      var friendIds = friendList.map(function(friendConn){
-        return {
-          id: friendConn.friendId
-        }
-      });
-
-      db.User.findAll({
-        where: {
-          $or: friendIds
-        }
-      }).then(function(friends){
-        var friends = friends.map(function(friend){
-          return {id: friend.id, username: friend.username};
-        });
-        response.status(200).json({ friends });
-      });
-    } else {
-      console.log("No Friends found for ", request.session.user);
-      response.sendStatus(404)
-    }
-  });
-});
 
 
-// Check one event
-router.get('/events/:id', utils.checkUser, function(request, response) {
-  var eventId = request.params.id;
-  seq.query(
-      'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
-        replacements: [request.session.user],
-        type: sequelize.QueryTypes.SELECT
-      })
-    .then(function(friendList) {
-      if (!!friendList && friendList.length !== 0) {
-        var friendIds = friendList.map(function(usersFriends) {
-          return {
-            UserId: {
-              $eq: usersFriends.id
-            }
-          };
-        });
-        friendIds.push({
-          UserId: {
-            $eq: request.session.user
-          }
-        });
-        db.Event.findAll({
-          where: {
-            id: eventId,
-            $or: friendIds
-          }
-        }).then(function(item) {
-          response.status(200).json(item)
-        })
-      } else {
-        response.sendStatus(404);
-      }
-    })
-})
+// // Check one event
+// router.get('/events/:id', utils.checkUser, function(request, response) {
+//   var eventId = request.params.id;
+//   seq.query(
+//       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
+//         replacements: [request.session.user],
+//         type: sequelize.QueryTypes.SELECT
+//       })
+//     .then(function(friendList) {
+//       if (!!friendList && friendList.length !== 0) {
+//         var friendIds = friendList.map(function(usersFriends) {
+//           return {
+//             UserId: {
+//               $eq: usersFriends.id
+//             }
+//           };
+//         });
+//         friendIds.push({
+//           UserId: {
+//             $eq: request.session.user
+//           }
+//         });
+//         db.Event.findAll({
+//           where: {
+//             id: eventId,
+//             $or: friendIds
+//           }
+//         }).then(function(item) {
+//           response.status(200).json(item)
+//         })
+//       } else {
+//         response.sendStatus(404);
+//       }
+//     })
+// })
 
 
-// Get a list of all events
-router.get('/events', utils.checkUser, function(request, response) {
-  seq.query(
-      'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
-        replacements: [request.session.user],
-        type: sequelize.QueryTypes.SELECT
-      })
-    .then(function(friendList) {
-      if(!!friendList && friendList.length !== 0) {
-        var friendIds = friendList.map(function(usersFriends) {
+// // Get a list of all events
+// router.get('/events', utils.checkUser, function(request, response) {
+//   seq.query(
+//       'SELECT Users.id, Users.username FROM Users where Users.id in (SELECT Friends.FriendId from Friends where Friends.UserId = ?)', {
+//         replacements: [request.session.user],
+//         type: sequelize.QueryTypes.SELECT
+//       })
+//     .then(function(friendList) {
+//       if(!!friendList && friendList.length !== 0) {
+//         var friendIds = friendList.map(function(usersFriends) {
 
-          return {
-            UserId: {
-              $eq: usersFriends.id
-            }
-          };
-        });
+//           return {
+//             UserId: {
+//               $eq: usersFriends.id
+//             }
+//           };
+//         });
 
-        var timelimit = new Date();
-        timelimit.setHours(timelimit.getHours() - 1);
+//         var timelimit = new Date();
+//         timelimit.setHours(timelimit.getHours() - 1);
 
-        db.Event.findAll({
-          where: {
-            accepted: 0,
-            $or: friendIds,
-            createdAt: {
-              $gt: timelimit
-            }
-          }
-        }).then(function(results) {
-          if (results) {
-            // var results = item.map(function(item, index) {
-            //   if(friendList[index]){
-            //     item.dataValues.username = friendList[index].username;
-            //     return item
-            //   }
-            // })
-            response.status(200).json({results})
-          } else {
-            response.sendStatus(404)
-          };
-        });
-      } else {
-        response.sendStatus(404);
-      }
-    });
-});
+//         db.Event.findAll({
+//           where: {
+//             accepted: 0,
+//             $or: friendIds,
+//             createdAt: {
+//               $gt: timelimit
+//             }
+//           }
+//         }).then(function(results) {
+//           if (results) {
+//             // var results = item.map(function(item, index) {
+//             //   if(friendList[index]){
+//             //     item.dataValues.username = friendList[index].username;
+//             //     return item
+//             //   }
+//             // })
+//             response.status(200).json({results})
+//           } else {
+//             response.sendStatus(404)
+//           };
+//         });
+//       } else {
+//         response.sendStatus(404);
+//       }
+//     });
+// });
 
-// Accept event invite
-router.post('/events/:id', utils.checkUser, function(request, response) {
-  var id = request.params.id;
-  var acceptedId = request.session.user;
-  var acceptedAt = Date.now();
-  var acceptedLat = request.body.acceptedLat;
-  var acceptedLong = request.body.acceptedLong;
+// // Accept event invite
+// router.post('/events/:id', utils.checkUser, function(request, response) {
+//   var id = request.params.id;
+//   var acceptedId = request.session.user;
+//   var acceptedAt = Date.now();
+//   var acceptedLat = request.body.acceptedLat;
+//   var acceptedLong = request.body.acceptedLong;
 
-  db.Event.findById(id)
-    .then(function(acceptedEvent) {
-      if (acceptedEvent.accepted !== true) {
-        db.User.find({
-            where: {
-              id: request.session.user
-            }
-          })
-          .then(function(acceptor) {
-            console.log("acceptor: ", acceptor)
-            var lat1 = acceptedEvent.ownerLat;
-            var lon1 = acceptedEvent.ownerLong;
-            var lat2 = acceptedLat;
-            var lon2 = acceptedLong;
-            var ownerPoints = [lat1, lon1]
-            var acceptedPoints = [lat2, lon2]
-            var centralLatLong;
-            centralLatLong = utils.getCentralPoints(ownerPoints,
-              acceptedPoints, 1)
-            acceptedEvent.acceptedName = acceptor.username;
-            acceptedEvent.acceptedId = request.session.user; // TO TEST
-            acceptedEvent.acceptedLat = acceptedLat;
-            acceptedEvent.acceptedLong = acceptedLong;
-            acceptedEvent.acceptedAt = acceptedAt;
-            acceptedEvent.centerLat = centralLatLong[0].x;
-            acceptedEvent.centerLong = centralLatLong[0].y;
-            acceptedEvent.accepted = true;
-            console.log("acceptedEvent: ", JSON.stringify(acceptedEvent,
-              null, "\t"));
-            acceptedEvent.save()
-            console.log("Sweet! We updated that event, Angelina Brolie.")
+//   db.Event.findById(id)
+//     .then(function(acceptedEvent) {
+//       if (acceptedEvent.accepted !== true) {
+//         db.User.find({
+//             where: {
+//               id: request.session.user
+//             }
+//           })
+//           .then(function(acceptor) {
+//             console.log("acceptor: ", acceptor)
+//             var lat1 = acceptedEvent.ownerLat;
+//             var lon1 = acceptedEvent.ownerLong;
+//             var lat2 = acceptedLat;
+//             var lon2 = acceptedLong;
+//             var ownerPoints = [lat1, lon1]
+//             var acceptedPoints = [lat2, lon2]
+//             var centralLatLong;
+//             centralLatLong = utils.getCentralPoints(ownerPoints,
+//               acceptedPoints, 1)
+//             acceptedEvent.acceptedName = acceptor.username;
+//             acceptedEvent.acceptedId = request.session.user; // TO TEST
+//             acceptedEvent.acceptedLat = acceptedLat;
+//             acceptedEvent.acceptedLong = acceptedLong;
+//             acceptedEvent.acceptedAt = acceptedAt;
+//             acceptedEvent.centerLat = centralLatLong[0].x;
+//             acceptedEvent.centerLong = centralLatLong[0].y;
+//             acceptedEvent.accepted = true;
+//             console.log("acceptedEvent: ", JSON.stringify(acceptedEvent,
+//               null, "\t"));
+//             acceptedEvent.save()
+//             console.log("Sweet! We updated that event, Angelina Brolie.")
 
-            db.User.findById(request.session.user)
-            .then(function (currentUser) {
-              db.Event.findById(currentUser.currentEvent)
-              .then(function (currentEvent) {
-                currentEvent.update({
-                  accepted: true
-                })
-              })
-            })
+//             db.User.findById(request.session.user)
+//             .then(function (currentUser) {
+//               db.Event.findById(currentUser.currentEvent)
+//               .then(function (currentEvent) {
+//                 currentEvent.update({
+//                   accepted: true
+//                 })
+//               })
+//             })
 
-            response.status(202).json(acceptedEvent)
-            acceptor.update({
-                currentEvent: acceptedEvent.id
-              })
-              .then(function () {
-                console.log("currentEvent updated for userid", request.session.user)
-              })
-          })
-      } else {
-        console.log("That event already expired, Brosephalus.")
-        response.status(403)
-      };
-    });
-});
+//             response.status(202).json(acceptedEvent)
+//             acceptor.update({
+//                 currentEvent: acceptedEvent.id
+//               })
+//               .then(function () {
+//                 console.log("currentEvent updated for userid", request.session.user)
+//               })
+//           })
+//       } else {
+//         console.log("That event already expired, Brosephalus.")
+//         response.status(403)
+//       };
+//     });
+// });
 
-// Creating new event
-router.post('/events', utils.checkUser, function(request, response) {
-  var UserId = request.session.user;
-  var ownerLat = request.body.ownerLat;
-  var ownerLong = request.body.ownerLong;
-  var eventType = request.body.eventType;
-  var message = request.body.message || null;
+// // Creating new event
+// router.post('/events', utils.checkUser, function(request, response) {
+//   var UserId = request.session.user;
+//   var ownerLat = request.body.ownerLat;
+//   var ownerLong = request.body.ownerLong;
+//   var eventType = request.body.eventType;
+//   var message = request.body.message || null;
 
-  if (UserId !== null || ownerLat !== null || ownerLong !== null) {
+//   if (UserId !== null || ownerLat !== null || ownerLong !== null) {
 
-    var timelimit = new Date();
+//     var timelimit = new Date();
 
-    if(Number(eventType) !== Number(2)){
-      timelimit.setHours(timelimit.getHours() - 1);
-    }
+//     if(Number(eventType) !== Number(2)){
+//       timelimit.setHours(timelimit.getHours() - 1);
+//     }
 
-    db.Event.find({
-      where: {
-        UserId: UserId,
-        createdAt: {
-          $gt: timelimit
-        },
-        accepted: false,
-        eventType: 1
-      }
-    }).then(function(result) {
-      if(result === null) {
-        db.Event.create({
-          UserId: UserId,
-          ownerLat: ownerLat,
-          ownerLong: ownerLong,
-          eventType: eventType,
-          message: message
-        }).then(function(result){
-          if (result.$options.isNewRecord === true) {
-            db.User.find({
-              where: {
-                id: request.session.user
-              }
-            }).then(function(owner) {
-              result.ownerName = owner.username;
-              result.save()
-              console.log('time to turn up, Bro-ntosaurus!')
-              response.status(201).send(result);
-              if (Number(eventType) === Number(1)) {
-                owner.update({
-                  currentEvent: result.id
-                })
-                .then(function () {
-                  console.log("Event recognized as brewski")
-                })
-              }
-            })
-          } else {
-            console.log("That record already exists")
-            response.sendStatus(202)
-          }
-        });
-      } else {
-        console.log("Event already created, Broham")
-        response.sendStatus(409)
-      }
-    });
-  } else {
-    console.log("Bro, some or all your incoming data is null, bro")
-    response.sendStatus(400)
-  }
-});
+//     db.Event.find({
+//       where: {
+//         UserId: UserId,
+//         createdAt: {
+//           $gt: timelimit
+//         },
+//         accepted: false,
+//         eventType: 1
+//       }
+//     }).then(function(result) {
+//       if(result === null) {
+//         db.Event.create({
+//           UserId: UserId,
+//           ownerLat: ownerLat,
+//           ownerLong: ownerLong,
+//           eventType: eventType,
+//           message: message
+//         }).then(function(result){
+//           if (result.$options.isNewRecord === true) {
+//             db.User.find({
+//               where: {
+//                 id: request.session.user
+//               }
+//             }).then(function(owner) {
+//               result.ownerName = owner.username;
+//               result.save()
+//               console.log('time to turn up, Bro-ntosaurus!')
+//               response.status(201).send(result);
+//               if (Number(eventType) === Number(1)) {
+//                 owner.update({
+//                   currentEvent: result.id
+//                 })
+//                 .then(function () {
+//                   console.log("Event recognized as brewski")
+//                 })
+//               }
+//             })
+//           } else {
+//             console.log("That record already exists")
+//             response.sendStatus(202)
+//           }
+//         });
+//       } else {
+//         console.log("Event already created, Broham")
+//         response.sendStatus(409)
+//       }
+//     });
+//   } else {
+//     console.log("Bro, some or all your incoming data is null, bro")
+//     response.sendStatus(400)
+//   }
+// });
 
 // Return current user
 router.get('/user', utils.checkUser, function (request, response) {

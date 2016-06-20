@@ -7,7 +7,7 @@ var utils = require('./utilities');
 var controllers;
 module.exports = controllers = {
   //USER BACKEND CONTROLLERS
-  //login
+  // login with existing user
   login: {
     post: function (request, response) {
       var username = request.body.username;
@@ -28,6 +28,7 @@ module.exports = controllers = {
       })
     }
   },
+  // signup new user
   signup: {
     post: function (request, response) {
       var username = request.body.username;
@@ -52,6 +53,7 @@ module.exports = controllers = {
       };
     }
   },
+  // logout user
   logout: {
     get: function (request, response) {
       request.session.destroy(function() {
@@ -60,6 +62,7 @@ module.exports = controllers = {
       });
     }
   },
+  // find user by username
   friends: {
     get: function (request, response) {
       var username = request.params.friendName;
@@ -68,9 +71,10 @@ module.exports = controllers = {
       })
     }
   },
+  // get user's friends list
   friendsList:{
     get: function (request, response) {
-      var userId = 1
+      var userId = 1 // NEED TO CHANGE TO request.session.user.id when auth is working
 
       models.friendsList.get(userId, function (friendsList) {
         if (friendsList) {
@@ -81,10 +85,11 @@ module.exports = controllers = {
       })
     }
   },
+  //(POST) request a new friendship, (PUT) Update friendship status.
   friendship: {
     post: function(request, response) {
       var friendId = request.body.friendId;
-      var userId = request.body.userId;
+      var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
       models.friendship.post(userId, friendId, function (friendshipRequestCreated) {
         if (friendshipRequestCreated) {
           response.status(200).json({friendshipRequestCreated})
@@ -94,7 +99,7 @@ module.exports = controllers = {
       })
     },
     put: function(request, response) {
-      var inviteId = request.body.userId;
+      var inviteId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
       var inviteeId = request.body.friendId;
       var userResponse = request.body.userResponse;
       models.friendship.put(inviteId, inviteeId, userResponse, function (friendshipUpdated) {
@@ -106,7 +111,43 @@ module.exports = controllers = {
         };
       })
     }
+  },
+  events: {
+    post: function (request, response) {
+    console.log("+++ 116 controllers.js Here")
+    var newEventObj = {};
+    newEventObj.userId = 7; // NEED TO CHANGE TO request.session.user.id when auth is working
+    newEventObj.ownerLat = request.body.ownerLat;
+    newEventObj.ownerLong = request.body.ownerLong;
+    models.events.post(newEventObj, function(result) {
+        if(result){
+          response.status(200).json(result)
+        } else{
+          response.status(400)
+        };
+      })
+    },
+    get: function (request, response) {
+      var userId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
+      models.events.get(userId, function (result) {
+        if(result){
+          response.status(200).json(result)
+        } else{
+          response.status(400)
+        };
+      })
+    }
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
