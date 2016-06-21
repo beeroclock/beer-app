@@ -55,28 +55,40 @@ module.exports = {
   },
   // find user by username
   friends: {
-    get: function (username, callback) {
-      var friendObj = {}
+    get: function (username, myUserId, callback) {
+      var userObj = {}
       db.User.find({
         where: {
           username: username
         }
       })
-      .then(function (foundFriend) {
-        if (foundFriend) {
-          friendObj.id = foundFriend.id
-          friendObj.username = foundFriend.username
+      .then(function (foundUser) {
+        if (foundUser) {
+          userObj.id = foundUser.id
+          userObj.username = foundUser.username
           db.Friend.find({
             where: {
-              $or:[{inviteId: foundFriend.dataValues.id}, {inviteeId: foundFriend.dataValues.id}]
+              $and:[{inviteId: foundUser.dataValues.id}, {inviteeId: myUserId}]
             }
           })
           .then(function (foundFriendship) {
-            friendObj.foundFriendship = foundFriendship;
-            callback(friendObj);
+            if (foundFriendship !== null) {
+            userObj.foundFriendship = foundFriendship;
+            callback(userObj);
+            } else {
+              db.Friend.find({
+                where: {
+                  $and:[{inviteId: myUserId}, {inviteeId: foundUser.dataValues.id}]
+                }
+              })
+              .then(function(orFoundFriendship) {
+                userObj.foundFriendship = orFoundFriendship;
+                callback(userObj);
+              })
+            };
           })
         }else{
-          callback(foundFriend)
+          callback(false)
         };
       })
     }

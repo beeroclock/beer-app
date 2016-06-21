@@ -65,8 +65,9 @@ module.exports = controllers = {
   // find user by username
   friends: {
     get: function (request, response) {
+      var myUserId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
       var username = request.params.friendName;
-      models.friends.get(username, function (foundFriend) {
+      models.friends.get(username, myUserId, function (foundFriend) {
         if(foundFriend){
           response.status(200).json(foundFriend);
         } else{
