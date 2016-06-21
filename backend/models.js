@@ -269,32 +269,32 @@ module.exports = {
       db.Event.find({
         id: eventId
       })
-      .then(function (eventFound) {
-        if (!eventFound[0]) {
-          db.Attendee.findAll({
-              eventId: eventId
-          })
-          .then(function (eventAttendees) {
-            if (eventAttendees) {
-              console.log("+++ 271 models.js eventAttendees: ", eventAttendees)
-              callback(true)
-            }else{
-              callback(false)
-            };
-          })
-        }else{
-          callback(false)
-        };
+      .then(function(attendees) {
+        db.Attendee.findOrCreate({
+          where: {
+            eventId: eventId,
+            userId: userId
+          }
+        })
+        .spread(function (userAttending, create) {
+          if (create) {
+            userAttending.eventId = eventId;
+            userAttending.userId = userId;
+            userAttending.attendeeLat = acceptedLat;
+            userAttending.attendeeLong = acceptedLong;
+            userAttending.save();
+            callback(userAttending);
+          } else{
+            callback(userAttending)
+          };
+        })
       })
     }
   }
 }
-
-
-
-
-
-
+          // db.Attendee.findAll({
+          //     eventId: eventId
+          // })
 
 
 

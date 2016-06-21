@@ -155,6 +155,7 @@ module.exports = controllers = {
       var acceptedLong = request.body.acceptedLong;
       models.acceptEvent.post(eventId, userId, acceptedLat, acceptedLong, function (result) {
         if(result){
+          // models.eventAttendees.get( NEED TO WRITE THIS ROUTE)
           response.status(200).json(result)
         } else{
           response.sendStatus(409);
