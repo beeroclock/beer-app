@@ -7,7 +7,7 @@ var utils = require('./utilities');
 var controllers;
 module.exports = controllers = {
   //USER BACKEND CONTROLLERS
-  //login
+  // login with existing user
   login: {
     post: function (request, response) {
       var username = request.body.username;
@@ -23,11 +23,12 @@ module.exports = controllers = {
            });
           })
         }else{
-          response.sendStatus(400);
+          response.sendStatus(406);
         };
       })
     }
   },
+  // signup new user
   signup: {
     post: function (request, response) {
       var username = request.body.username;
@@ -44,7 +45,7 @@ module.exports = controllers = {
            });
           })
         }else{
-            response.sendStatus(400);
+            response.sendStatus(406);
           };
         })
       } else {
@@ -52,6 +53,7 @@ module.exports = controllers = {
       };
     }
   },
+  // logout user
   logout: {
     get: function (request, response) {
       request.session.destroy(function() {
@@ -60,41 +62,49 @@ module.exports = controllers = {
       });
     }
   },
+  // find user by username
   friends: {
     get: function (request, response) {
+      var myUserId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
       var username = request.params.friendName;
-      models.friends.get(username, function (foundFriend) {
-        response.status(200).json({ foundFriend });
+      models.friends.get(username, myUserId, function (foundFriend) {
+        if(foundFriend){
+          response.status(200).json(foundFriend);
+        } else{
+          response.sendStatus(204);
+        };
       })
     }
   },
+  // get user's friends list
   friendsList:{
     get: function (request, response) {
-      var userId = 1
+      var userId = 1 // NEED TO CHANGE TO request.session.user.id when auth is working
 
       models.friendsList.get(userId, function (friendsList) {
         if (friendsList) {
           response.status(200).json(friendsList)
         } else{
-          response.status(400).json(friendsList)
+          response.sendStatus(204)
         };
       })
     }
   },
+  //(POST) request a new friendship, (PUT) Update friendship status.
   friendship: {
     post: function(request, response) {
       var friendId = request.body.friendId;
-      var userId = request.body.userId;
+      var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
       models.friendship.post(userId, friendId, function (friendshipRequestCreated) {
         if (friendshipRequestCreated) {
-          response.status(200).json({friendshipRequestCreated})
+          response.status(200).json(friendshipRequestCreated)
         } else{
-          response.sendStatus(404);
+          response.sendStatus(302);
         };
       })
     },
     put: function(request, response) {
-      var inviteId = request.body.userId;
+      var inviteId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
       var inviteeId = request.body.friendId;
       var userResponse = request.body.userResponse;
       models.friendship.put(inviteId, inviteeId, userResponse, function (friendshipUpdated) {
@@ -102,11 +112,67 @@ module.exports = controllers = {
           var result = friendshipUpdated.dataValues
           response.status(200).json(result)
         } else{
-          response.sendStatus(404);
+          response.sendStatus(409);
         };
       })
     }
+  },
+  // (POST) Create a new event, (GET) get Friend's events
+  events: {
+    post: function (request, response) {
+    var newEventObj = {};
+    newEventObj.userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+    newEventObj.ownerLat = request.body.ownerLat;
+    newEventObj.ownerLong = request.body.ownerLong;
+    models.events.post(newEventObj, function(result) {
+      console.log("+++ 126 controllers.js result: ", result)
+        if(result){
+          response.status(200).json(result)
+        } else{
+          response.sendStatus(409);
+        };
+      })
+    },
+    get: function (request, response) {
+      var userId = 3; // NEED TO CHANGE TO request.session.user.id when auth is working
+      models.friendsList.get(userId, function (friendsList) {
+        if(friendsList){
+          models.events.get(friendsList, function (item) {
+            response.status(200).json(item)
+          })
+        } else{
+          response.sendStatus(409);
+        };
+      })
+    }
+  },
+  // Accept an event
+  acceptEvent: {
+    post: function (request, response) {
+      var eventId = request.params.id;
+      var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var attendeeLat = request.body.lat;
+      var attendeeLong = request.body.long;
+      models.acceptEvent.post(eventId, userId, attendeeLat, attendeeLong, function (result) {
+        if(result){
+          response.status(200).json(result)
+        } else{
+          response.sendStatus(409);
+        };
+      })
+    }
+
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
