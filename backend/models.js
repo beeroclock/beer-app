@@ -259,7 +259,6 @@ module.exports = {
       .then(function(foundEvent) {
         callback(foundEvent)
       })
-
     }
   },
   acceptEvent: {
