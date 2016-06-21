@@ -1,6 +1,6 @@
 var db = require('./db.js');
 var Promise = require('bluebird');
-var _ = require('underscore');
+var _ = require('lodash');
 var bcrypt = require('bcrypt-nodejs');
 
 // Sequelize Extras to enable raw SQL
@@ -11,6 +11,7 @@ var seq = require('./db').seq;
 var util = require('./utilities');
 
 module.exports = {
+  // login with existing user
   login: {
     post: function (username, password, callback) {
       db.User.find({
@@ -29,6 +30,7 @@ module.exports = {
       })
     }
   },
+  // signup new user
   signup: {
     post: function (username, password, email, callback) {
       db.User.findOrCreate({
@@ -51,29 +53,47 @@ module.exports = {
       })
     }
   },
+  // find user by username
   friends: {
-    get: function (username, callback) {
-      var friendObj = {}
+    get: function (username, myUserId, callback) {
+      var userObj = {}
       db.User.find({
         where: {
           username: username
         }
       })
-      .then(function (foundFriend) {
-        friendObj.id = foundFriend.id
-        friendObj.username = foundFriend.username
-        db.Friend.find({
-          where: {
-            $or:[{inviteId: foundFriend.dataValues.id}, {inviteeId: foundFriend.dataValues.id}]
-          }
-        })
-        .then(function (foundFriendship) {
-          friendObj.foundFriendship = foundFriendship;
-          callback(friendObj);
-        })
+      .then(function (foundUser) {
+        if (foundUser) {
+          userObj.id = foundUser.id
+          userObj.username = foundUser.username
+          db.Friend.find({
+            where: {
+              $and:[{inviteId: foundUser.dataValues.id}, {inviteeId: myUserId}]
+            }
+          })
+          .then(function (foundFriendship) {
+            if (foundFriendship !== null) {
+            userObj.foundFriendship = foundFriendship;
+            callback(userObj);
+            } else {
+              db.Friend.find({
+                where: {
+                  $and:[{inviteId: myUserId}, {inviteeId: foundUser.dataValues.id}]
+                }
+              })
+              .then(function(orFoundFriendship) {
+                userObj.foundFriendship = orFoundFriendship;
+                callback(userObj);
+              })
+            };
+          })
+        }else{
+          callback(false)
+        };
       })
     }
   },
+  // get user's friends list
   friendsList: {
     get: function (userId, callback) {
       db.Friend.findAll({
@@ -92,28 +112,50 @@ module.exports = {
       })
       .then(function (friendsList) {
         if(friendsList && friendsList.length > 0) {
-              var friendIds = friendsList.map(function(friendConn){
+              var friendIds = []
+              var inviteeIds = friendsList.map(function(friendConn){
                 return {
-                  id: friendConn.id
+                  inviteeId: friendConn.dataValues.inviteeId
                 }
               });
+              inviteeIds = _(inviteeIds).forEach(function(inviteeId) {
+                _.forEach(inviteeId, function(value) {
+                  friendIds.push(value)
+                })
+              })
+              var inviteIds = friendsList.map(function(friendConn){
+                return {
+                  inviteId: friendConn.dataValues.inviteId
+                }
+              });
+              inviteIds = _(inviteIds).forEach(function(inviteId) {
+                _.forEach(inviteId, function(value) {
+                  friendIds.push(value)
+                })
+              })
+              // friendIds = _.uniq(friendIds)
+              friendIds = _.pull(friendIds, userId)
+              console.log("+++ 126 models.js friendIds: ", friendIds)
               db.User.findAll({
                 where: {
-                  $or: friendIds
+                  id: friendIds
                 }
-              }).then(function(friends){
+              })
+              .then(function(friends){
                 var friends = friends.map(function(friend){
                   return {id: friend.id, username: friend.username};
                 });
+                friends = _.orderBy(friends, ['username'],['asc'])
                 callback(friends);
               });
-            } else {
-              callback(false);
+        } else {
+          callback(false);
 
-            }
+        }
       })
     }
   },
+  // (POST) request a new friendship, (PUT) Update friendship status.
   friendship: {
     post: function (userId, friendId, callback) {
         db.Friend.findOne({
@@ -163,6 +205,142 @@ module.exports = {
         };
       })
     }
+  },
+  events: {
+    // (POST) Create a new event, (GET) get Friend's events
+    post: function (newEventObj, callback) {
+      var currentTime = new Date();
+      db.Event.findAll({
+        where: {
+          userId: newEventObj.userId,
+          expirationDate: {
+            $gt: currentTime
+          }
+        }
+      })
+      .then(function (eventFound) {
+        if (!eventFound[0]) {
+          currentTime.setHours(currentTime.getHours() + 12);
+          db.User.find({
+            where: {
+              id: newEventObj.userId
+            }
+          })
+          .then(function (user) {
+            db.Event.create({
+              userId: newEventObj.userId,
+              ownerName: user.dataValues.username,
+              ownerLat: newEventObj.ownerLat,
+              ownerLong: newEventObj.ownerLong,
+              expirationDate: currentTime
+            })
+            .then(function(eventCreated) {
+              if (eventCreated) {
+                callback(eventCreated)
+              } else{
+                callback(false)
+              };
+            })
+          })
+        }else{
+          callback(false)
+        }
+      })
+    },
+    get: function (userId, callback) {
+      db.Friend.findAll({
+        where: {
+          $or: [
+            {
+              inviteeId: userId,
+              accepted: true
+            },
+            {
+              inviteId: userId,
+              accepted: true
+            }
+          ]
+        }
+      })
+      .then(function (friendsList) {
+        if(!!friendsList && friendsList.length !== 0) {
+          var friendsNames = friendsList.map(function(usersFriends) {
+            return {
+              UserId: {
+                $eq: usersFriends.id
+              }
+            };
+          });
+          console.log("+++ 223 models.js friendsNames: ", friendsNames)
+          var currentTime = new Date();
+          db.Event.findAll({
+            where: {
+              $or: friendsNames,
+              expirationDate: {
+                $gt: currentTime
+              }
+            }
+          })
+          .then(function(eventsFound){
+            if (eventsFound) {
+              callback(eventsFound)
+            } else{
+              callback(false)
+            };
+          })
+        } else{
+          callback(false)
+        };
+      })
+    }
+  },
+  acceptEvent: {
+    post: function (eventId, userId, attendeeLat, attendeeLong, callback) {
+      db.Event.find({
+        id: eventId
+      })
+      .then(function (eventFound) {
+        if (!eventFound[0]) {
+          db.Attendee.findAll({
+              eventId: eventId
+          })
+          .then(function (eventAttendees) {
+            if (eventAttendees) {
+              console.log("+++ 271 models.js eventAttendees: ", eventAttendees)
+              callback(true)
+            }else{
+              callback(false)
+            };
+          })
+        }else{
+          callback(false)
+        };
+      })
+    }
   }
 }
+
+
+          // db.Attendee.create({
+          //   eventId: eventId,
+          //   userId: userId,
+          //   attendeeLat: attendeeLat,
+          //   attendeeLong, attendeeLong
+          // })
+          // .then(function (created) {
+          //   if (created) {
+          //     callback(created)
+          //   } else{
+          //     callback(false)
+          //   };
+          // })
+
+
+
+
+
+
+
+
+
 
