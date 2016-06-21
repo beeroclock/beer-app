@@ -134,11 +134,11 @@ module.exports = controllers = {
       })
     },
     get: function (request, response) {
-      var userId = 3; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var userId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
       models.friendsList.get(userId, function (friendsList) {
         if(friendsList){
-          models.events.get(friendsList, function (item) {
-            response.status(200).json(item)
+          models.events.get(friendsList, function (foundEvent) {
+            response.status(200).json(foundEvent)
           })
         } else{
           response.sendStatus(409);
@@ -151,9 +151,9 @@ module.exports = controllers = {
     post: function (request, response) {
       var eventId = request.params.id;
       var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
-      var attendeeLat = request.body.lat;
-      var attendeeLong = request.body.long;
-      models.acceptEvent.post(eventId, userId, attendeeLat, attendeeLong, function (result) {
+      var acceptedLat = request.body.acceptedLat;
+      var acceptedLong = request.body.acceptedLong;
+      models.acceptEvent.post(eventId, userId, acceptedLat, acceptedLong, function (result) {
         if(result){
           response.status(200).json(result)
         } else{
@@ -161,7 +161,6 @@ module.exports = controllers = {
         };
       })
     }
-
   }
 }
 

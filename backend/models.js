@@ -246,11 +246,14 @@ module.exports = {
       })
     },
     get: function (friendsList, callback) {
+      var friendIds = [];
+      _.forEach(friendsList, function (friend) {
+        friendIds.push(friend.id)
+      })
       var currentTime = new Date();
-      var friend = friendsList[0]
       db.Event.findAll({
         where: {
-          userId: friend.id,
+          userId: friendIds,
           expirationDate: {
             $gt: currentTime
           }
@@ -262,7 +265,7 @@ module.exports = {
     }
   },
   acceptEvent: {
-    post: function (eventId, userId, attendeeLat, attendeeLong, callback) {
+    post: function (eventId, userId, acceptedLat, acceptedLong, callback) {
       db.Event.find({
         id: eventId
       })
@@ -286,21 +289,6 @@ module.exports = {
     }
   }
 }
-
-
-          // db.Attendee.create({
-          //   eventId: eventId,
-          //   userId: userId,
-          //   attendeeLat: attendeeLat,
-          //   attendeeLong, attendeeLong
-          // })
-          // .then(function (created) {
-          //   if (created) {
-          //     callback(created)
-          //   } else{
-          //     callback(false)
-          //   };
-          // })
 
 
 
