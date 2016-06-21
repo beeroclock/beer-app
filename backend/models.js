@@ -133,9 +133,7 @@ module.exports = {
                   friendIds.push(value)
                 })
               })
-              // friendIds = _.uniq(friendIds)
               friendIds = _.pull(friendIds, userId)
-              console.log("+++ 126 models.js friendIds: ", friendIds)
               db.User.findAll({
                 where: {
                   id: friendIds
@@ -247,51 +245,21 @@ module.exports = {
         }
       })
     },
-    get: function (userId, callback) {
-      db.Friend.findAll({
+    get: function (friendsList, callback) {
+      var currentTime = new Date();
+      var friend = friendsList[0]
+      db.Event.findAll({
         where: {
-          $or: [
-            {
-              inviteeId: userId,
-              accepted: true
-            },
-            {
-              inviteId: userId,
-              accepted: true
-            }
-          ]
+          userId: friend.id,
+          expirationDate: {
+            $gt: currentTime
+          }
         }
       })
-      .then(function (friendsList) {
-        if(!!friendsList && friendsList.length !== 0) {
-          var friendsNames = friendsList.map(function(usersFriends) {
-            return {
-              UserId: {
-                $eq: usersFriends.id
-              }
-            };
-          });
-          console.log("+++ 223 models.js friendsNames: ", friendsNames)
-          var currentTime = new Date();
-          db.Event.findAll({
-            where: {
-              $or: friendsNames,
-              expirationDate: {
-                $gt: currentTime
-              }
-            }
-          })
-          .then(function(eventsFound){
-            if (eventsFound) {
-              callback(eventsFound)
-            } else{
-              callback(false)
-            };
-          })
-        } else{
-          callback(false)
-        };
+      .then(function(foundEvent) {
+        callback(foundEvent)
       })
+
     }
   },
   acceptEvent: {

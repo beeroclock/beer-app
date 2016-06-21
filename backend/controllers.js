@@ -134,10 +134,12 @@ module.exports = controllers = {
       })
     },
     get: function (request, response) {
-      var userId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
-      models.events.get(userId, function (result) {
-        if(result){
-          response.status(200).json(result)
+      var userId = 3; // NEED TO CHANGE TO request.session.user.id when auth is working
+      models.friendsList.get(userId, function (friendsList) {
+        if(friendsList){
+          models.events.get(friendsList, function (item) {
+            response.status(200).json(item)
+          })
         } else{
           response.sendStatus(409);
         };
