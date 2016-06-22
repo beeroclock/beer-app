@@ -15,7 +15,6 @@ module.exports = controllers = {
       models.login.post(username, password, function(isUser){
         if (isUser) {
           utils.createSession(request, response, isUser, function (token, name) {
-            console.log("+++ 18 controllers.js token: ", token)
            response.status(200).send( {
              'username': name,
              'beeroclock': token,
@@ -125,7 +124,6 @@ module.exports = controllers = {
     newEventObj.ownerLat = request.body.ownerLat;
     newEventObj.ownerLong = request.body.ownerLong;
     models.events.post(newEventObj, function(result) {
-      console.log("+++ 126 controllers.js result: ", result)
         if(result){
           response.status(200).json(result)
         } else{
@@ -141,7 +139,7 @@ module.exports = controllers = {
             response.status(200).json(foundEvent)
           })
         } else{
-          response.sendStatus(409);
+          response.sendStatus(204);
         };
       })
     }
@@ -155,10 +153,23 @@ module.exports = controllers = {
       var acceptedLong = request.body.acceptedLong;
       models.acceptEvent.post(eventId, userId, acceptedLat, acceptedLong, function (result) {
         if(result){
-          // models.eventAttendees.get( NEED TO WRITE THIS ROUTE)
-          response.status(200).json(result)
+          models.eventAttendees.get(eventId, function (attendees) {
+            response.status(200).json(attendees)
+          })
         } else{
           response.sendStatus(409);
+        };
+      })
+    }
+  },
+  activeEvent: {
+    get: function(request, response) {
+      var eventId = request.params.id;
+      models.activeEvent.get(eventId, function (result) {
+        if(result){
+          response.status(200).json(result)
+        } else{
+          response.sendStatus(204);
         };
       })
     }

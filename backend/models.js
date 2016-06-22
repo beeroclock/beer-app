@@ -290,11 +290,48 @@ module.exports = {
         })
       })
     }
+  },
+  eventAttendees: {
+    get: function (eventId, callback) {
+      db.Attendee.findAll({
+          eventId: eventId
+      })
+      .then(function(attendees) {
+        callback(attendees)
+      })
+    }
+  },
+  activeEvent: {
+    get: function(eventId, callback) {
+      eventData = {}
+      var currentTime = new Date();
+      db.Event.find({
+        where: {
+          id: eventId,
+          expirationDate: {
+            $gt: currentTime
+          }
+        }
+      })
+      .then(function(event) {
+        if (event) {
+          eventData.event = event;
+          db.Attendee.findAll({
+            where:{
+              eventId: event.id
+            }
+          })
+          .then(function(attendees) {
+            eventData.attendees = attendees;
+            callback(eventData)
+          })
+        } else{
+          callback(false)
+        };
+      })
+    }
   }
 }
-          // db.Attendee.findAll({
-          //     eventId: eventId
-          // })
 
 
 
