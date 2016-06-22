@@ -246,11 +246,14 @@ module.exports = {
       })
     },
     get: function (friendsList, callback) {
+      var friendIds = [];
+      _.forEach(friendsList, function (friend) {
+        friendIds.push(friend.id)
+      })
       var currentTime = new Date();
-      var friend = friendsList[0]
       db.Event.findAll({
         where: {
-          userId: friend.id,
+          userId: friendIds,
           expirationDate: {
             $gt: currentTime
           }
@@ -259,55 +262,76 @@ module.exports = {
       .then(function(foundEvent) {
         callback(foundEvent)
       })
-
     }
   },
   acceptEvent: {
-    post: function (eventId, userId, attendeeLat, attendeeLong, callback) {
+    post: function (eventId, userId, acceptedLat, acceptedLong, callback) {
       db.Event.find({
         id: eventId
       })
-      .then(function (eventFound) {
-        if (!eventFound[0]) {
+      .then(function(attendees) {
+        db.Attendee.findOrCreate({
+          where: {
+            eventId: eventId,
+            userId: userId
+          }
+        })
+        .spread(function (userAttending, create) {
+          if (create) {
+            userAttending.eventId = eventId;
+            userAttending.userId = userId;
+            userAttending.attendeeLat = acceptedLat;
+            userAttending.attendeeLong = acceptedLong;
+            userAttending.save();
+            callback(userAttending);
+          } else{
+            callback(userAttending)
+          };
+        })
+      })
+    }
+  },
+  eventAttendees: {
+    get: function (eventId, callback) {
+      db.Attendee.findAll({
+          eventId: eventId
+      })
+      .then(function(attendees) {
+        callback(attendees)
+      })
+    }
+  },
+  activeEvent: {
+    get: function(eventId, callback) {
+      eventData = {}
+      var currentTime = new Date();
+      db.Event.find({
+        where: {
+          id: eventId,
+          expirationDate: {
+            $gt: currentTime
+          }
+        }
+      })
+      .then(function(event) {
+        if (event) {
+          eventData.event = event;
           db.Attendee.findAll({
-              eventId: eventId
+            where:{
+              eventId: event.id
+            }
           })
-          .then(function (eventAttendees) {
-            if (eventAttendees) {
-              console.log("+++ 271 models.js eventAttendees: ", eventAttendees)
-              callback(true)
-            }else{
-              callback(false)
-            };
+          .then(function(attendees) {
+            eventData.attendees = attendees;
+            callback(eventData)
           })
-        }else{
+        } else{
           callback(false)
         };
       })
     }
   }
 }
-
-
-          // db.Attendee.create({
-          //   eventId: eventId,
-          //   userId: userId,
-          //   attendeeLat: attendeeLat,
-          //   attendeeLong, attendeeLong
-          // })
-          // .then(function (created) {
-          //   if (created) {
-          //     callback(created)
-          //   } else{
-          //     callback(false)
-          //   };
-          // })
-
-
-
-
-
-
 
 
 
