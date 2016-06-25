@@ -5,16 +5,6 @@ var parser = require('body-parser');
 
 var controllers = require('./controllers');
 
-// Database Requirements
-var mysql = require('mysql');
-
-// Models
-var db = require('./db'); // Available: .User, .Event, .Friend
-
-// Sequelize Extras to enable raw SQL
-var sequelize = require('./db').Sequelize;
-var seq = require('./db').seq;
-
 // Authentication and Calculation utilities
 var utils = require('./utilities');
 
@@ -51,7 +41,7 @@ router.get('/logout', function(request, response) {
   controllers.logout.get(request, response)
 });
 
-// Search for friend
+// Search for friend by username
 router.get('/friends/:friendName', function(request, response) {
   controllers.friends.get(request, response)
 });
@@ -90,6 +80,15 @@ router.post('/acceptEvent/:id', function(request, response) {
 router.get('/events/:id', function(request, response) {
   controllers.activeEvent.get(request, response)
 })
+
+router.get('/testRoute/:id', function(request, response) {
+  controllers.testRoute.get(request, response)
+})
+
+
+
+
+module.exports = router;
 ///--------
 
 
@@ -121,4 +120,3 @@ router.post('/uber', function (request, response) {
   utils.searchUberApi(request, response, startLat, startLong, endLat, endLong);
 });
 
-module.exports = router;

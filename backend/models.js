@@ -265,7 +265,7 @@ module.exports = {
     }
   },
   acceptEvent: {
-    post: function (eventId, userId, acceptedLat, acceptedLong, callback) {
+    post: function (eventId, userId, username, acceptedLat, acceptedLong, callback) {
       db.Event.find({
         id: eventId
       })
@@ -280,9 +280,11 @@ module.exports = {
           if (create) {
             userAttending.eventId = eventId;
             userAttending.userId = userId;
+            userAttending.username = username;
             userAttending.attendeeLat = acceptedLat;
             userAttending.attendeeLong = acceptedLong;
             userAttending.save();
+            console.log("+++ 286 models.js userAttending: ", userAttending)
             callback(userAttending);
           } else{
             callback(userAttending)
@@ -317,7 +319,7 @@ module.exports = {
         if (event) {
           eventData.event = event;
           db.Attendee.findAll({
-            where:{
+            where: {
               eventId: event.id
             }
           })
@@ -328,6 +330,27 @@ module.exports = {
         } else{
           callback(false)
         };
+      })
+    }
+  },
+  testRoute: {
+    get: function (eventId, callback) {
+      console.log("+++ 339 models.js Here")
+      db.Attendee.findAll({
+        include: [{
+          model: db.User,
+          where: {
+            $and: {id: 2}
+          },
+          attributes: {exclude: ['password', 'email', 'createdAt', 'udpatedAt']}
+        }],
+        // where: {
+        //   eventId: eventId
+        // },
+        // include: [db.User]
+      })
+      .then(function(event) {
+        callback(event)
       })
     }
   }
