@@ -23,6 +23,16 @@ exports.createTest = function(){
           username: "test3",
           password: "3",
           email: "3@1.com"
+        },
+        {
+          username: "test4",
+          password: "4",
+          email: "4@1.com"
+        },
+        {
+          username: "test5",
+          password: "5",
+          email: "5@1.com"
         }
       ];
       var usersCreated = [];
@@ -125,18 +135,21 @@ exports.createTest = function(){
                 {
                   "eventId": 1,
                   "userId": 2,
+                  "username": 'test2',
                   "attendeeLat": 34.34,
                   "attendeeLong": -118.132
                 },
                 {
                   "eventId": 1,
                   "userId": 5,
+                  "username": 'test5',
                   "attendeeLat": 33.33,
                   "attendeeLong": -117.1
                 },
                 {
                   "eventId": 2,
                   "userId": 5,
+                  "username": 'test5',
                   "attendeeLat": 32.32,
                   "attendeeLong": -117.1
                 }

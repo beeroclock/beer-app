@@ -23,8 +23,6 @@ var sequelize = null;
 
 if(process.env.CLEARDB_DATABASE_URL){
   sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
-// } else if(process.env.DATABASE_URL){
-//   sequelize = new Sequelize(process.env.DATABASE_URL);
 } else {
   // the application is executed on the local machine ... use mysql
   sequelize = new Sequelize(dbName, dbUser, dbPass);
@@ -38,6 +36,15 @@ var User = sequelize.define('User', {
   username: Sequelize.STRING,
   password: Sequelize.STRING,
   email: Sequelize.STRING
+}, {
+  classMethods: {
+    associate: function(models) {
+      User.belongsToMany(models.Attendee, {
+        as:'attendees',
+        through: 'UserAttendees'
+      });
+    }
+  }
 }, {
   timestamps: true
 });
@@ -92,9 +99,11 @@ var Event = sequelize.define('Event', {
   paranoid: true
 });
 
+// Attendee Schema
 var Attendee = sequelize.define('Attendee', {
   eventId: Sequelize.INTEGER,
   userId: Sequelize.INTEGER,
+  username: Sequelize.STRING,
   attendeeLat: {
     type: Sequelize.FLOAT(53),
     allowNull: true,
@@ -113,9 +122,19 @@ var Attendee = sequelize.define('Attendee', {
     }
   }
 }, {
+  classMethods: {
+    associate: function(models) {
+      Attendee.belongsToMany(models.User, {
+        as:'users',
+        through: 'UserAttendees'
+      });
+    }
+  }
+}, {
   timestamps: true,
   paranoid: true
 });
+
 
 // Friend Schema
 var Friend = sequelize.define('Friend', {
@@ -127,20 +146,36 @@ var Friend = sequelize.define('Friend', {
   }
 });
 
-//Many to Many constrains
-// Event.belongsToMany(User, {
+//User has many events, events have one user
+User.hasMany(Event, {
+  foreignKey: 'userId'
+})
+
+Event.belongsTo(User, {
+  foreignKey: 'userId'
+});
+
+//Event has many attendees, attendees, have many events
+Event.hasMany(Attendee, {
+  foreignKey: 'eventId'
+});
+
+Attendee.hasMany(Event, {
+  foreignKey: 'userId'
+});
+
+Attendee.belongsTo(User, {
+  foreignKey: 'id'
+})
+
+// User.belongsToMany(Attendee, {
 //   through: {
 //     model: Attendee
 //   },
-//   foreignKey: 'userId'
+//   foreignKey: 'id',
+//   defaultValue: null
 // });
 
-// User.belongsToMany(Event, {
-//   through: {
-//     model: Attendee
-//   },
-//   foreignKey: 'eventId'
-// });
 
 // Create the tables in the database
 User.sync().then(function(){

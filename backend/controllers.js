@@ -150,9 +150,10 @@ module.exports = controllers = {
     post: function (request, response) {
       var eventId = request.params.id;
       var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var username = request.body.username
       var acceptedLat = request.body.acceptedLat;
       var acceptedLong = request.body.acceptedLong;
-      models.acceptEvent.post(eventId, userId, acceptedLat, acceptedLong, function (result) {
+      models.acceptEvent.post(eventId, userId, username, acceptedLat, acceptedLong, function (result) {
         if(result){
           models.activeEvent.get(eventId, function (attendees) {
             response.status(200).json(attendees)
