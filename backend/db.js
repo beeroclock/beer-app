@@ -1,6 +1,7 @@
 // Requirements
 var Sequelize = require('sequelize');
 var url = require('url');
+var createTest = require("./test.js").createTest;
 
 var dbName = "beer";
 var dbUser = "root";
@@ -126,14 +127,36 @@ var Friend = sequelize.define('Friend', {
   }
 });
 
+//Many to Many constrains
+// Event.belongsToMany(User, {
+//   through: {
+//     model: Attendee
+//   },
+//   foreignKey: 'userId'
+// });
+
+// User.belongsToMany(Event, {
+//   through: {
+//     model: Attendee
+//   },
+//   foreignKey: 'eventId'
+// });
+
 // Create the tables in the database
-User.sync();
-Event.sync();
-Attendee.sync();
-Friend.sync();
+User.sync().then(function(){
+  Event.sync().then(function() {
+    Friend.sync().then(function () {
+      Attendee.sync().then(function () {
+        // Create Test data
+        createTest();
+      })
+    })
+  })
+})
 
 // Make all Models available in Router
 exports.User = User;
 exports.Event = Event;
 exports.Attendee = Attendee;
 exports.Friend = Friend;
+// exports.EventAttendee = EventAttendee;
