@@ -1,6 +1,7 @@
 var request = require('request');
 var parser = require('body-parser');
 
+//Services
 var models = require('./models')
 var utils = require('./utilities');
 
@@ -153,7 +154,7 @@ module.exports = controllers = {
       var acceptedLong = request.body.acceptedLong;
       models.acceptEvent.post(eventId, userId, acceptedLat, acceptedLong, function (result) {
         if(result){
-          models.eventAttendees.get(eventId, function (attendees) {
+          models.activeEvent.get(eventId, function (attendees) {
             response.status(200).json(attendees)
           })
         } else{
@@ -166,6 +167,18 @@ module.exports = controllers = {
     get: function(request, response) {
       var eventId = request.params.id;
       models.activeEvent.get(eventId, function (result) {
+        if(result){
+          response.status(200).json(result)
+        } else{
+          response.sendStatus(204);
+        };
+      })
+    }
+  },
+  testRoute: {
+    get: function (request, response) {
+      var eventId = request.params.id;
+      models.testRoute.get(eventId, function (result) {
         if(result){
           response.status(200).json(result)
         } else{

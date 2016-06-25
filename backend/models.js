@@ -283,6 +283,7 @@ module.exports = {
             userAttending.attendeeLat = acceptedLat;
             userAttending.attendeeLong = acceptedLong;
             userAttending.save();
+            console.log("+++ 286 models.js userAttending: ", userAttending)
             callback(userAttending);
           } else{
             callback(userAttending)
@@ -328,6 +329,23 @@ module.exports = {
         } else{
           callback(false)
         };
+      })
+    }
+  },
+  testRoute: {
+
+    get: function (eventId, callback) {
+      db.Event.findAll({
+        include: [{
+            model: User,
+            through: {
+              attributes: ['userId'],
+              where: {eventId: eventId}
+            }
+          }]
+      })
+      .then(function(event) {
+        callback(event)
       })
     }
   }
