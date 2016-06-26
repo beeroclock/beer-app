@@ -46,15 +46,15 @@ exports.createTest = function(){
           {
             "userId": 1,
             "ownerName": "test1",
-            "ownerLat": 33.3451,
-            "ownerLong": -128.1443,
+            "ownerLat": 33.8,
+            "ownerLong": -117.25,
             "expirationDate": "2017-06-25 16:59:01"
           },
           {
             "userId": 2,
             "ownerName": "test2",
-            "ownerLat": 23.31,
-            "ownerLong": -128.123,
+            "ownerLat": 33.8,
+            "ownerLong": -117.25,
             "expirationDate": "2017-06-25 16:59:01"
           }
         ];
@@ -152,6 +152,13 @@ exports.createTest = function(){
                   "username": 'test5',
                   "attendeeLat": 32.32,
                   "attendeeLong": -117.1
+                },
+                {
+                  "eventId": 1,
+                  "userId": 3,
+                  "username": "test1",
+                  "acceptedLat": 34.010202,
+                  "acceptedLong": -118.486764
                 }
 
               ];

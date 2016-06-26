@@ -1,6 +1,7 @@
 // Requirements
 var session = require('express-session');
 var jwt  = require('jwt-simple');
+var _ = require('lodash');
 
 var Yelp = require('yelp');
 var Uber = require('node-uber');
@@ -61,22 +62,6 @@ exports.checkUser = function(request, response, next) {
   }
 }
 
-
-// Central Point Math
-exports.getCentralPoints = function(ownerPoints, acceptedPoints, num) {
-  var d0 = (acceptedPoints[0] - ownerPoints[0]) / (num + 1);
-  var d1 = (acceptedPoints[1] - ownerPoints[1]) / (num + 1);
-  var points = [];
-  for (var i = 1; i <= num; i++) {
-    points.push({
-      x: ownerPoints[0] + d0 * i,
-      y: ownerPoints[1] + d1 * i
-    });
-  }
-  console.log("points: ", points)
-  return points;
-}
-
 exports.searchYelpApi = function (request, response, centerLat, centerLong){
   var cLat = centerLat;
   var cLong = centerLong;
@@ -121,4 +106,20 @@ exports.searchUberApi = function (request, response, startLat, startLong, endLat
       });
     }
   });
+}
+
+//---------
+
+// Central Point Math
+exports.getSingleCentralPoints = function(ownerPoints, acceptedPoints, num) {
+  var d0 = (acceptedPoints[0] - ownerPoints[0]) / (num + 1);
+  var d1 = (acceptedPoints[1] - ownerPoints[1]) / (num + 1);
+  var points = [];
+  for (var i = 1; i <= num; i++) {
+    points.push({
+      x: ownerPoints[0] + d0 * i,
+      y: ownerPoints[1] + d1 * i
+    });
+  }
+  return points;
 }
