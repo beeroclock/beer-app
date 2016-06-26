@@ -269,7 +269,7 @@ module.exports = {
       db.Event.find({
         id: eventId
       })
-      .then(function(attendees) {
+      .then(function(eventFound) {
         db.Attendee.findOrCreate({
           where: {
             eventId: eventId,
@@ -284,10 +284,9 @@ module.exports = {
             userAttending.attendeeLat = acceptedLat;
             userAttending.attendeeLong = acceptedLong;
             userAttending.save();
-            console.log("+++ 286 models.js userAttending: ", userAttending)
-            callback(userAttending);
+            callback(userAttending, eventFound);
           } else{
-            callback(userAttending)
+            callback(userAttending, eventFound)
           };
         })
       })
@@ -333,27 +332,42 @@ module.exports = {
       })
     }
   },
-  testRoute: {
-    get: function (eventId, callback) {
-      console.log("+++ 339 models.js Here")
-      db.Attendee.findAll({
-        include: [{
-          model: db.User,
-          where: {
-            $and: {id: 2}
-          },
-          attributes: {exclude: ['password', 'email', 'createdAt', 'udpatedAt']}
-        }],
-        // where: {
-        //   eventId: eventId
-        // },
-        // include: [db.User]
+  updateEventLocation: {
+    put: function (eventId, centralPoints, callback) {
+      db.Event.find({
+        where:{
+          id: eventId
+        }
       })
-      .then(function(event) {
+      .then(function (event) {
+        event.centerLat = centralPoints.centerLat,
+        event.centerLong = centralPoints.centerLong
+        event.save();
         callback(event)
       })
     }
   }
+  // testRoute: {
+  //   get: function (eventId, callback) {
+  //     console.log("+++ 339 models.js Here")
+  //     db.Attendee.findAll({
+  //       include: [{
+  //         model: db.User,
+  //         where: {
+  //           $and: {id: 2}
+  //         },
+  //         attributes: {exclude: ['password', 'email', 'createdAt', 'udpatedAt']}
+  //       }],
+  //       // where: {
+  //       //   eventId: eventId
+  //       // },
+  //       // include: [db.User]
+  //     })
+  //     .then(function(event) {
+  //       callback(event)
+  //     })
+  //   }
+  // }
 }
 
 

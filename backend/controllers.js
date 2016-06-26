@@ -4,6 +4,8 @@ var parser = require('body-parser');
 //Services
 var models = require('./models')
 var utils = require('./utilities');
+// var midpointsLogic = require('./midpointsLogic');
+var locationsAverage = require('./locationsAverage');
 
 var controllers;
 module.exports = controllers = {
@@ -153,10 +155,17 @@ module.exports = controllers = {
       var username = request.body.username
       var acceptedLat = request.body.acceptedLat;
       var acceptedLong = request.body.acceptedLong;
-      models.acceptEvent.post(eventId, userId, username, acceptedLat, acceptedLong, function (result) {
-        if(result){
+      models.acceptEvent.post(eventId, userId, username, acceptedLat, acceptedLong, function (userAttending, event) {
+        if(userAttending){
           models.activeEvent.get(eventId, function (attendees) {
-            response.status(200).json(attendees)
+            var attendeesList = attendees.attendees;
+            var eventOwnerLat = event.dataValues.ownerLat;
+            var eventOwnerLong = event.dataValues.ownerLong;
+            locationsAverage.getCentralPoints(attendeesList, eventOwnerLat, eventOwnerLong, function (centerPoints) {
+              models.updateEventLocation.put(eventId, centerPoints, function (eventUpdated) {
+                response.status(200).json(eventUpdated)
+              })
+            })
           })
         } else{
           response.sendStatus(409);
