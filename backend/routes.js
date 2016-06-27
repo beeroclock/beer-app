@@ -66,7 +66,7 @@ router.post('/events', function(request, response) {
   controllers.events.post(request, response)
 })
 
-//get Friend's Events
+//get Active Friend's Events
 router.get('/events/', function(request, response) {
   controllers.events.get(request, response)
 })
