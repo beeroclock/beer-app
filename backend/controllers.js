@@ -156,7 +156,8 @@ module.exports = controllers = {
       var acceptedLat = request.body.acceptedLat;
       var acceptedLong = request.body.acceptedLong;
       models.acceptEvent.post(eventId, userId, username, acceptedLat, acceptedLong, function (userAttending, event) {
-        if(userAttending){
+        var isActive = event.dataValues.active
+        if(userAttending && isActive){
           models.activeEvent.get(eventId, function (attendees) {
             var attendeesList = attendees.attendees;
             var eventOwnerLat = event.dataValues.ownerLat;
@@ -167,7 +168,10 @@ module.exports = controllers = {
               })
             })
           })
-        } else{
+        } else if (!isActive){
+          console.log("+++ 172 controllers.js -- Event is Inactive/Locked")
+          response.status(200).json(event)
+        }else{
           response.sendStatus(409);
         };
       })
@@ -185,15 +189,11 @@ module.exports = controllers = {
       })
     }
   },
-  testRoute: {
-    get: function (request, response) {
+  lockEvent: {
+    put: function (request, response) {
       var eventId = request.params.id;
-      models.testRoute.get(eventId, function (result) {
-        if(result){
-          response.status(200).json(result)
-        } else{
-          response.sendStatus(204);
-        };
+      models.lockEvent.put(eventId, function(result) {
+        response.status(200).json(result)
       })
     }
   }
