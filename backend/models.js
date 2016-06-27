@@ -346,6 +346,20 @@ module.exports = {
         callback(event)
       })
     }
+  },
+  lockEvent: {
+    put: function (eventId, callback) {
+      db.Event.find({
+        where:{
+          id: eventId
+        }
+      })
+      .then(function (event) {
+        event.active = false;
+        event.save();
+        callback(event)
+      })
+    }
   }
   // testRoute: {
   //   get: function (eventId, callback) {
