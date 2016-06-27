@@ -1,5 +1,7 @@
 var _ = require('lodash');
 
+//Using this site for testing: http://www.darrinward.com/lat-long/
+
 exports.getCentralPoints = function (attendeesList, eventOwnerLat, eventOwnerLong, callback) {
 
   var points = [];

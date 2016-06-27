@@ -85,6 +85,10 @@ router.get('/testRoute/:id', function(request, response) {
   controllers.testRoute.get(request, response)
 })
 
+router.put('/lockEvent/:id', function (request, response) {
+  controllers.lockEvent.put(request, response)
+})
+
 
 
 
