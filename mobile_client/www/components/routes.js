@@ -4,13 +4,13 @@ angular.module('app.routes', [])
   $stateProvider
     .state('login', {
       url: '/login',
-      templateUrl: 'login/login.html',
+      templateUrl: 'components/login/login.html',
       controller: 'LoginController',
       authenticate: false
     })
     .state('signup', {
       url: '/signup',
-      templateUrl: 'signup/signup.html',
+      templateUrl: 'components/signup/signup.html',
       controller: 'SignupController',
       authenticate: false
     });
