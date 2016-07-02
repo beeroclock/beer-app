@@ -1,5 +1,5 @@
 angular.module('app.SignupController', [])
-.controller('SignupController', function($scope, $state, $rootScope, SignupFactory){
+.controller('SignupController', function($scope, $state, $rootScope, $ionicPopup, SignupFactory){
 
   $scope.data = {};
 
@@ -10,7 +10,10 @@ angular.module('app.SignupController', [])
       SignupFactory.setTokenAndHttpHeaders(result['beeroclock-token'])
     })
     .error(function(result){
-      console.log("+++ 10 loginController.js result: ", result)
+      var popup = $ionicPopup.alert({
+            title: 'Sign up failed!',
+            template: 'Please enter a unique username and email'
+          });
     })
   }
 })
