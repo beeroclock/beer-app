@@ -1,0 +1,9 @@
+ion-view(view-title='Login')
+  ion-content
+    .list.list-inset
+      label.item.item-input
+        input(type='text', placeholder='Username', ng-model='data.username', autofocus)
+      label.item.item-input
+        input(type='password', placeholder='Password', ng-model='data.password')
+    button.button.button-block.button-calm(ng-click='login()') Login
+    button.button.button-block.button-balanced(ui-sref='signup') Create Account
