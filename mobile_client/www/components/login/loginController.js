@@ -1,8 +1,16 @@
 angular.module('app.LoginController', [])
+.controller('LoginController', function($scope, $state, $rootScope, LoginFactory){
 
-.controller('LoginController', LoginController);
-
-function LoginController($scope, $state) {
   $scope.data = {};
-  $scope.login = function(){};
-}
+
+  $scope.login = function(){
+    LoginFactory.login($scope.data.username, $scope.data.password)
+    .success(function (result) {
+      $rootScope.userId = result.userId;
+      LoginFactory.setTokenAndHttpHeaders(result['beeroclock-token'])
+    })
+    .error(function(result){
+      console.log("+++ 10 loginController.js result: ", result)
+    })
+  };
+});
