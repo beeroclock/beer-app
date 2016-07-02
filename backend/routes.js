@@ -15,10 +15,8 @@ router.get('/', utils.checkUser, function(request, response) {
 
 // Reroute to app
 router.get('/app', utils.checkUser, function(request, response) {
-  var dirname = __dirname
-  dirname = dirname.slice(0, -7)
   console.log("Redirecting to Main")
-  response.status(202).sendFile(dirname + 'mobile_client/www/components/main/main.html');
+  response.status(202)
 });
 
 // User login API to create session
@@ -44,50 +42,50 @@ router.get('/logout', function(request, response) {
 });
 
 // Search for friend by username
-router.get('/friends/:friendName', function(request, response) {
+router.get('/friends/:friendName', utils.checkUser, function(request, response) {
   controllers.friends.get(request, response)
 });
 
 // Get friends list
-router.get('/friends/', function(request, response) {
+router.get('/friends/', utils.checkUser, function(request, response) {
   controllers.friendsList.get(request, response)
 });
 
 // Request new friendship
-router.post('/friendship', function(request, response) {
+router.post('/friendship', utils.checkUser, function(request, response) {
   controllers.friendship.post(request, response)
 })
 
 // Update friendship status
-router.put('/friendship', function(request, response) {
+router.put('/friendship', utils.checkUser, function(request, response) {
   controllers.friendship.put(request, response)
 })
 
 // Create new event
-router.post('/events', function(request, response) {
+router.post('/events', utils.checkUser, function(request, response) {
   controllers.events.post(request, response)
 })
 
 //get Active Friend's Events
-router.get('/events/', function(request, response) {
+router.get('/events/', utils.checkUser, function(request, response) {
   controllers.events.get(request, response)
 })
 
 //Accept Event
-router.post('/acceptEvent/:id', function(request, response) {
+router.post('/acceptEvent/:id', utils.checkUser, function(request, response) {
   controllers.acceptEvent.post(request, response)
 })
 
 //Get single active event
-router.get('/events/:id', function(request, response) {
+router.get('/events/:id', utils.checkUser, function(request, response) {
   controllers.activeEvent.get(request, response)
 })
 
-router.get('/testRoute/:id', function(request, response) {
+router.get('/testRoute/:id', utils.checkUser, function(request, response) {
   controllers.testRoute.get(request, response)
 })
 
-router.put('/lockEvent/:id', function (request, response) {
+router.put('/lockEvent/:id', utils.checkUser, function (request, response) {
   controllers.lockEvent.put(request, response)
 })
 

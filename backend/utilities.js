@@ -25,7 +25,7 @@ var yelp = new Yelp({
 
 // Auth
 var decodeToken = exports.decodeToken = function(request){
-  return jwt.decode(request.headers['beeroclock'], 'itsberroclocksomewhere');
+  return jwt.decode(request.headers['beeroclock-token'], 'itsberroclocksomewhere');
 }
 
 //Create session
@@ -51,8 +51,9 @@ exports.checkUser = function(request, response, next) {
     response.status(401).send("No token detected")
   } else {
     if (isLoggedIn(token)){
+      console.log("+++ 54 utilities.js User is Logged in")
       var hash = jwt.decode(token, 'itsberroclocksomewhere');
-      request.session.user = hash.userId;
+      request.session.userId = hash.userId;
       next()
     } else {
       response.sendStatus(401);
