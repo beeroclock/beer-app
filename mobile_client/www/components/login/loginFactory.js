@@ -5,9 +5,14 @@ function loginFactory($http) {
 
   url = 'http://localhost:8000';
 
-  var setTokenAndHttpHeaders = function (token) {
+  var setTokenAndHttpHeaders = function (token, userId, callback) {
     $http.defaults.headers.common['beeroclock-token'] = token;
-    $http.get(url + '/app')
+    $http.defaults.headers.common.userId = userId;
+    if($http.defaults.headers.common['beeroclock-token'] && $http.defaults.headers.common.userId){
+      callback(true)
+    }else{
+      callback(false)
+    };
   }
 
   var login = function(username, password){

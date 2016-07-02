@@ -13,6 +13,12 @@ angular.module('app.routes', [])
       templateUrl: 'components/signup/signup.html',
       controller: 'SignupController',
       authenticate: false
+    })
+    .state('main', {
+      url: '/main',
+      templateUrl: 'components/main/main.html',
+      controller: 'MainController',
+      authenticate: false
     });
 
   // if none of the above states are matched, use this as the fallback

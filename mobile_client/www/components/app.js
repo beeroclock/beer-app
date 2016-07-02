@@ -4,7 +4,9 @@ angular.module('app', [
   'app.LoginController',
   'app.LoginFactory',
   'app.SignupController',
-  'app.SignupFactory'
+  'app.SignupFactory',
+  'app.MainController',
+  'app.MainFactory'
 ])
 
 .run(function($ionicPlatform) {
