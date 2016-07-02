@@ -5,11 +5,6 @@ function loginFactory($http) {
 
   url = 'http://localhost:8000';
 
-  var setTokenAndHttpHeaders = function (token) {
-    $http.defaults.headers.common['beeroclock-token'] = token;
-    $http.get(url + '/app')
-  }
-
   var login = function(username, password){
     return $http({
       method: 'POST',
@@ -22,7 +17,6 @@ function loginFactory($http) {
   };
 
   return {
-    login: login,
-    setTokenAndHttpHeaders: setTokenAndHttpHeaders
+    login: login
   };
 }

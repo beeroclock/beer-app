@@ -1,10 +1,13 @@
 angular.module('app', [
   'ionic',
   'app.routes',
+  'app.AuthFactory',
   'app.LoginController',
   'app.LoginFactory',
   'app.SignupController',
-  'app.SignupFactory'
+  'app.SignupFactory',
+  'app.MainController',
+  'app.MainFactory'
 ])
 
 .run(function($ionicPlatform) {
