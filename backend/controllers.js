@@ -134,6 +134,7 @@ module.exports = controllers = {
       })
     },
     get: function (request, response) {
+      console.log("+++ 137 controllers.js request.session: ", request.session)
       var userId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
       models.friendsList.get(userId, function (friendsList) {
         if(friendsList){
