@@ -1,5 +1,5 @@
 angular.module('app.LoginController', [])
-.controller('LoginController', function($scope, $state, $rootScope, $ionicPopup, LoginFactory){
+.controller('LoginController', function($scope, $state, $rootScope, $ionicPopup, LoginFactory, AuthFactory){
 
   $scope.data = {};
 
@@ -7,7 +7,7 @@ angular.module('app.LoginController', [])
     LoginFactory.login($scope.data.username, $scope.data.password)
     .success(function (result) {
       $rootScope.userId = result.userId;
-      LoginFactory.setTokenAndHttpHeaders(result['beeroclock-token'], $rootScope.userId, function (result) {
+      AuthFactory.setTokenAndHttpHeaders(result['beeroclock-token'], $rootScope.userId, function (result) {
           if (result) {
             $state.go('main')
           } else{

@@ -5,11 +5,6 @@ function signupFactory($http) {
 
   url = 'http://localhost:8000';
 
-  var setTokenAndHttpHeaders = function (token) {
-    $http.defaults.headers.common['beeroclock-token'] = token;
-    $http.get(url + '/app')
-  }
-
   var signup = function(username, password, email){
     return $http({
       method: 'POST',
@@ -23,7 +18,6 @@ function signupFactory($http) {
   }
 
   return {
-    signup: signup,
-    setTokenAndHttpHeaders: setTokenAndHttpHeaders
+    signup: signup
   }
 }
