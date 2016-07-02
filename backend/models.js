@@ -11,6 +11,30 @@ var seq = require('./db').seq;
 var util = require('./utilities');
 
 module.exports = {
+  // signup new user
+  signup: {
+    post: function (username, password, email, callback) {
+      db.User.findOrCreate({
+        where: {
+          $or:[{username: username}, {email: email}]
+        }
+      })
+      .spread(function (found, create) {
+        if (create) {
+          console.log("+++ 43 models.js Here")
+          bcrypt.hash(password, null, null, function(err, hash) {
+            found.username = username;
+            found.email = email;
+            found.password = hash;
+            found.save();
+            callback(found);
+          })
+        }else{
+          callback(false);
+        }
+      })
+    }
+  },
   // login with existing user
   login: {
     post: function (username, password, callback) {
@@ -27,29 +51,6 @@ module.exports = {
         } else {
           callback(false)
         };
-      })
-    }
-  },
-  // signup new user
-  signup: {
-    post: function (username, password, email, callback) {
-      db.User.findOrCreate({
-        where: {
-          $or:[{username: username}, {email: email}]
-        }
-      })
-      .spread(function (found, create) {
-        if (create) {
-          bcrypt.hash(password, null, null, function(err, hash) {
-            found.username = username;
-            found.email = email;
-            found.password = hash;
-            found.save();
-            callback(found);
-          })
-        }else{
-          callback(false);
-        }
       })
     }
   },

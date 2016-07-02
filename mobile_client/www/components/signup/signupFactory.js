@@ -10,11 +10,20 @@ function signupFactory($http) {
     $http.get(url + '/app')
   }
 
-  var signup = function(username, password){
-    console.log("+++ 14 signupFactory.js HERE")
+  var signup = function(username, password, email){
+    return $http({
+      method: 'POST',
+      url: url + '/signup',
+      data: {
+        username: username,
+        password: password,
+        email: email
+      }
+    })
   }
 
   return {
+    signup: signup,
     setTokenAndHttpHeaders: setTokenAndHttpHeaders
   }
 }
