@@ -1,0 +1,11 @@
+ion-view(view-title='Login')
+  ion-content
+    .list.list-inset
+      label.item.item-input
+        input(type='text', placeholder='Username', ng-model='data.username', autofocus)
+      label.item.item-input
+        input(type='password', placeholder='Password', ng-model='data.password')
+      label.item.item-input
+        input(type='email', placeholder='Email', ng-model='data.email')
+    button.button.button-block.button-calm(ng-click='login()') Sign Up
+    button.button.button-block.button-balanced(ui-sref='login') Back to Login

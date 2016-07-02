@@ -7,7 +7,8 @@ angular.module('app.MainController', [])
     console.log("+++ 7 mainController.js $rootScope.userId: ", $rootScope.userId)
     MainFactory.ActiveFriendsEvents($rootScope.userId)
     .success(function (result) {
-      console.log("+++ 10 mainController.js result: ", result)
+      $scope.friendsEvents = result
+      console.log("+++ 11 mainController.js $scope.friendsEvents: ", $scope.friendsEvents)
     })
   }
 

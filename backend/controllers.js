@@ -67,7 +67,7 @@ module.exports = controllers = {
   // find user by username
   friends: {
     get: function (request, response) {
-      var myUserId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var myUserId = request.session.userId;
       var username = request.params.friendName;
       models.friends.get(username, myUserId, function (foundFriend) {
         if(foundFriend){
@@ -81,7 +81,7 @@ module.exports = controllers = {
   // get user's friends list
   friendsList:{
     get: function (request, response) {
-      var userId = 1 // NEED TO CHANGE TO request.session.user.id when auth is working
+      var userId = request.session.userId;
       models.friendsList.get(userId, function (friendsList) {
         if (friendsList) {
           response.status(200).json(friendsList)
@@ -95,7 +95,7 @@ module.exports = controllers = {
   friendship: {
     post: function(request, response) {
       var friendId = request.body.friendId;
-      var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var userId = request.session.userId;
       models.friendship.post(userId, friendId, function (friendshipRequestCreated) {
         if (friendshipRequestCreated) {
           response.status(201).json(friendshipRequestCreated)
@@ -105,7 +105,7 @@ module.exports = controllers = {
       })
     },
     put: function(request, response) {
-      var inviteId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var inviteId = request.session.userId;
       var inviteeId = request.body.friendId;
       var userResponse = request.body.userResponse;
       models.friendship.put(inviteId, inviteeId, userResponse, function (friendshipUpdated) {
@@ -122,7 +122,7 @@ module.exports = controllers = {
   events: {
     post: function (request, response) {
     var newEventObj = {};
-    newEventObj.userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+    newEventObj.userId = request.session.userId;
     newEventObj.ownerLat = request.body.ownerLat;
     newEventObj.ownerLong = request.body.ownerLong;
     models.events.post(newEventObj, function(result) {
@@ -134,8 +134,7 @@ module.exports = controllers = {
       })
     },
     get: function (request, response) {
-      console.log("+++ 137 controllers.js request.session: ", request.session)
-      var userId = 1; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var userId = request.session.userId;
       models.friendsList.get(userId, function (friendsList) {
         if(friendsList){
           models.events.get(friendsList, function (foundEvent) {
@@ -151,7 +150,7 @@ module.exports = controllers = {
   acceptEvent: {
     post: function (request, response) {
       var eventId = request.params.id;
-      var userId = request.body.userId; // NEED TO CHANGE TO request.session.user.id when auth is working
+      var userId = request.session.userId;
       var username = request.body.username
       var acceptedLat = request.body.acceptedLat;
       var acceptedLong = request.body.acceptedLong;
