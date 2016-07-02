@@ -17,6 +17,7 @@ router.get('/', utils.checkUser, function(request, response) {
 router.get('/app', utils.checkUser, function(request, response) {
   var dirname = __dirname
   dirname = dirname.slice(0, -7)
+  console.log("Redirecting to Main")
   response.status(202).sendFile(dirname + 'mobile_client/www/components/main/main.html');
 });
 
