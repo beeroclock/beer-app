@@ -1,6 +1,7 @@
 angular.module('app', [
   'ionic',
-  'app.routes'
+  'app.routes',
+  'app.LoginController'
 ])
 
 .run(function($ionicPlatform) {
