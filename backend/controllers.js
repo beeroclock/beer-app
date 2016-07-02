@@ -45,7 +45,7 @@ module.exports = controllers = {
           utils.createSession(request, response, isUser, function (token, name) {
            response.status(200).send( {
              'username': name,
-             'beeroclock': token,
+             'beeroclock-token': token,
              'userId': isUser.dataValues.id
            });
           })

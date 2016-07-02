@@ -15,8 +15,9 @@ router.get('/', utils.checkUser, function(request, response) {
 
 // Reroute to app
 router.get('/app', utils.checkUser, function(request, response) {
-  console.log("+++ 77 routes.js Sending to App")
-  response.status(202).sendFile('/client/app.html');
+  var dirname = __dirname
+  dirname = dirname.slice(0, -7)
+  response.status(202).sendFile(dirname + 'mobile_client/www/components/main/main.html');
 });
 
 // User login API to create session

@@ -46,15 +46,13 @@ var isLoggedIn = function(token) {
 
 // Reroute based on Auth status
 exports.checkUser = function(request, response, next) {
-  var token = request.headers['beeroclock'];
+  var token = request.headers['beeroclock-token'];
   if (!token || (token === "undefined")){
     response.status(401).send("No token detected")
   } else {
     if (isLoggedIn(token)){
       var hash = jwt.decode(token, 'itsberroclocksomewhere');
-      console.log("+++ 50 utilities.js hash: ", hash)
       request.session.user = hash.userId;
-      console.log("+++ 52 utilities.js request.session.user: ", request.session.user)
       next()
     } else {
       response.sendStatus(401);
