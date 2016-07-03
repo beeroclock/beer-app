@@ -58,14 +58,16 @@ module.exports = controllers = {
   // Change password
   changePassword: {
     patch: function (request, response) {
-      var userId = request.session.userId;
+      var userId = request.headers.userid;
       var password = request.body.password;
       var newPassword = request.body.newPassword;
       models.changePassword.patch(userId, password, newPassword, function (result) {
           if (result) {
             response.sendStatus(202)
-          } else{
-            response.sendStatus(409)
+          } else if (result === null){
+            response.status(400).send({
+             message: 'Password incryption failed. Most likely user tried to update to current password'
+           });
           };
       })
     }
@@ -73,16 +75,17 @@ module.exports = controllers = {
   // logout user
   logout: {
     get: function (request, response) {
-      request.session.destroy(function() {
+      request.headers.userid = null;
+      request.headerstoken = null;
         console.log("Logged out")
         response.redirect('/login');
-      });
+
     }
   },
   // find user by username
   friends: {
     get: function (request, response) {
-      var myUserId = request.session.userId;
+      var myUserId = request.headers.userid;
       var username = request.params.friendName;
       models.friends.get(username, myUserId, function (foundFriend) {
         if(foundFriend){
@@ -96,7 +99,7 @@ module.exports = controllers = {
   // get user's friends list
   friendsList:{
     get: function (request, response) {
-      var userId = request.session.userId;
+      var userId = request.headers.userid;
       models.friendsList.get(userId, function (friendsList) {
         if (friendsList) {
           response.status(200).json(friendsList)
@@ -109,8 +112,8 @@ module.exports = controllers = {
   //(POST) request a new friendship, (PUT) Update friendship status.
   friendship: {
     post: function(request, response) {
+      var userId = request.headers.userid;
       var friendId = request.body.friendId;
-      var userId = request.session.userId;
       models.friendship.post(userId, friendId, function (friendshipRequestCreated) {
         if (friendshipRequestCreated) {
           response.status(201).json(friendshipRequestCreated)
@@ -120,7 +123,7 @@ module.exports = controllers = {
       })
     },
     put: function(request, response) {
-      var inviteId = request.session.userId;
+      var inviteId = request.headers.userid;
       var inviteeId = request.body.friendId;
       var userResponse = request.body.userResponse;
       models.friendship.put(inviteId, inviteeId, userResponse, function (friendshipUpdated) {
@@ -128,7 +131,7 @@ module.exports = controllers = {
           var result = friendshipUpdated.dataValues
           response.status(202).json(result)
         } else{
-          response.sendStatus(409);
+          response.sendStatus(400);
         };
       })
     }
@@ -137,19 +140,19 @@ module.exports = controllers = {
   events: {
     post: function (request, response) {
     var newEventObj = {};
-    newEventObj.userId = request.session.userId;
+    newEventObj.userId = request.headers.userid;
     newEventObj.ownerLat = request.body.ownerLat;
     newEventObj.ownerLong = request.body.ownerLong;
     models.events.post(newEventObj, function(result) {
         if(result){
           response.status(201).json(result)
         } else{
-          response.sendStatus(409);
+          response.sendStatus(400);
         };
       })
     },
     get: function (request, response) {
-      var userId = request.session.userId;
+      var userId = request.headers.userid;
       models.friendsList.get(userId, function (friendsList) {
         if(friendsList){
           models.events.get(friendsList, function (foundEvent) {
@@ -164,8 +167,8 @@ module.exports = controllers = {
   // Accept an event
   acceptEvent: {
     post: function (request, response) {
+      var userId = request.headers.userid;
       var eventId = request.params.id;
-      var userId = request.session.userId;
       var username = request.body.username
       var acceptedLat = request.body.acceptedLat;
       var acceptedLong = request.body.acceptedLong;
@@ -186,7 +189,7 @@ module.exports = controllers = {
           console.log("+++ 172 controllers.js -- Event is Inactive/Locked")
           response.status(200).json(event)
         }else{
-          response.sendStatus(409);
+          response.sendStatus(400);
         };
       })
     }
