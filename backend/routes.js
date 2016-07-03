@@ -24,13 +24,6 @@ router.post('/login', function(request, response) {
   controllers.login.post(request, response);
 });
 
-// Serve the authentication SPA when logged out
-router.get('/login', function(request, response) {
-  var dirname = __dirname
-  dirname = dirname.slice(0, -7)
-  response.status(200).sendFile(dirname + '/client/auth.html')
-})
-
 // Create a new User
 router.post('/signup', function(request, response) {
   controllers.signup.post(request, response);

@@ -6,7 +6,6 @@ function signupFactory($http) {
   url = 'http://localhost:8000';
 
   var signup = function(username, password, email){
-    console.log("+++ 9 signupFactory.js FACTT")
     return $http({
       method: 'POST',
       url: url + '/signup',

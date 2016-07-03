@@ -4,17 +4,16 @@ angular.module('app.SignupController', [])
   $scope.data = {};
 
   $scope.signup = function(){
-    console.log("+++ 7 signupController.js CONT")
     SignupFactory.signup($scope.data.username, $scope.data.password, $scope.data.email)
     .success(function (result) {
       $rootScope.username = result.username;
       $rootScope.userId = result.userId;
-      AuthFactory.setTokenAndHttpHeaders(result['beeroclock-token'], $rootScope.userId, function (result) {
-          if (result) {
+      AuthFactory.setTokenAndHttpHeaders(result['beeroclock-token'], result.userId, function (authResult) {
+          if (authResult) {
             $state.go('main')
           } else{
             var popup = $ionicPopup.alert({
-              title: 'Signup failed!',
+              title: 'Sign up failed!',
               template: 'No token detected'
             });
           };
