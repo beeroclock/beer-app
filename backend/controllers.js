@@ -76,10 +76,11 @@ module.exports = controllers = {
   logout: {
     get: function (request, response) {
       request.headers.userid = null;
-      request.headerstoken = null;
+      request.headers.token = null;
+      if(request.headers.userid === null && request.headers.token === null){
         console.log("Logged out")
-        response.redirect('/login');
-
+        response.sendStatus(200);
+      }
     }
   },
   // find user by username

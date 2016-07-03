@@ -6,7 +6,6 @@ angular.module('app.LoginController', [])
   $scope.login = function(){
     LoginFactory.login($scope.data.username, $scope.data.password)
     .success(function (result) {
-      console.log("+++ 9 loginController.js result: ", result)
       $rootScope.userId = result.userId;
       AuthFactory.setTokenAndHttpHeaders(result['beeroclock-token'], result.userId, function (result) {
           if (result) {

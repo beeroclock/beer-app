@@ -5,7 +5,7 @@ function settingsFactory($http) {
 
   url = 'http://localhost:8000';
 
-  var changePassword = function(password, newPassword, callback){
+  var changePassword = function(password, newPassword){
     return $http({
       method: 'PATCH',
       url: url + '/changePassword',
@@ -14,9 +14,15 @@ function settingsFactory($http) {
         newPassword: newPassword
       }
     })
-
   }
+
+  var logout = function() {
+    return $http.get(url + '/logout')
+  }
+
+
   return {
-    changePassword: changePassword
+    changePassword: changePassword,
+    logout: logout
   }
 }

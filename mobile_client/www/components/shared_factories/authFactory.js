@@ -14,7 +14,19 @@ function authFactory($http) {
       callback(false)
     };
   }
+
+  var removeTokenAndHttpHeaders = function (callback) {
+    $http.defaults.headers.common['beeroclock-token'] = null;
+    $http.defaults.headers.common.userId = null;
+    if($http.defaults.headers.common['beeroclock-token'] === null && $http.defaults.headers.common.userId === null){
+      callback(true)
+    }else{
+      callback(false)
+    };
+  }
+
   return {
-    setTokenAndHttpHeaders: setTokenAndHttpHeaders
+    setTokenAndHttpHeaders: setTokenAndHttpHeaders,
+    removeTokenAndHttpHeaders: removeTokenAndHttpHeaders
   }
 }
