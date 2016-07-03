@@ -76,8 +76,8 @@ module.exports = {
                   callback(found)
                 })
               } else{
-                console.log("+++ 82 models.js Password incryption failed")
-                callback(false)
+                console.log("+++ 82 models.js Password incryption failed. Most likely user tried to update to current password")
+                callback(err)
               };
           })
         } else{

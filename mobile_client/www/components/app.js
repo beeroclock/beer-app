@@ -7,7 +7,9 @@ angular.module('app', [
   'app.SignupController',
   'app.SignupFactory',
   'app.MainController',
-  'app.MainFactory'
+  'app.MainFactory',
+  'app.SettingsController',
+  'app.SettingsFactory'
 ])
 
 .run(function($ionicPlatform) {

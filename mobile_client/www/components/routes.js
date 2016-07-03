@@ -18,7 +18,13 @@ angular.module('app.routes', [])
       url: '/main',
       templateUrl: 'components/main/main.html',
       controller: 'MainController',
-      authenticate: false
+      authenticate: true
+    })
+    .state('settings', {
+      url: '/settings',
+      templateUrl: 'components/settings/settings.html',
+      controller: 'SettingsController',
+      authenticate: true
     });
 
   // if none of the above states are matched, use this as the fallback

@@ -53,7 +53,8 @@ exports.checkUser = function(request, response, next) {
     if (isLoggedIn(token)){
       console.log("+++ 54 utilities.js User is Logged in")
       var hash = jwt.decode(token, 'itsberroclocksomewhere');
-      request.session.userId = hash.userId;
+      request.token = hash,
+      request.userId = hash.userId;
       next()
     } else {
       response.sendStatus(401);

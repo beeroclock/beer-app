@@ -1,0 +1,16 @@
+
+<ion-view view-title="Settings">
+  <ion-content>
+    <div class="list list-inset">
+      <ion-view view-title="Change Password"></ion-view>
+      <label class="item item-input">
+        <input type="password" placeholder="Old Password" ng-model="data.password" autofocus="autofocus"/>
+      </label>
+      <label class="item item-input">
+        <input type="password" placeholder="New Password" ng-model="data.newPassword"/>
+      </label>
+    </div>
+    <button class="button button-block button-calm" ng-click="changePassword()">Change Password</button>
+    <button class="button button-block button-calm" ng-click="logout()">Log Out</button>
+  </ion-content>
+</ion-view>
