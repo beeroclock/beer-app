@@ -58,7 +58,7 @@ module.exports = controllers = {
   // Change password
   changePassword: {
     patch: function (request, response) {
-      var userId = 6; //request.session.userId;
+      var userId = request.session.userId;
       var password = request.body.password;
       var newPassword = request.body.newPassword;
       models.changePassword.patch(userId, password, newPassword, function (result) {
