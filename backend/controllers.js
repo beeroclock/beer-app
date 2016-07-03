@@ -55,6 +55,21 @@ module.exports = controllers = {
       })
     }
   },
+  // Change password
+  changePassword: {
+    patch: function (request, response) {
+      var userId = request.session.userId;
+      var password = request.body.password;
+      var newPassword = request.body.newPassword;
+      models.changePassword.patch(userId, password, newPassword, function (result) {
+          if (result) {
+            response.sendStatus(202)
+          } else{
+            response.sendStatus(409)
+          };
+      })
+    }
+  },
   // logout user
   logout: {
     get: function (request, response) {
