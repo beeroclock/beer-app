@@ -1,0 +1,11 @@
+
+<ion-view view-title="Main">
+  <ion-content>
+    <div>{{root.username}}</div>
+    <div>Your friend's Events</div>
+    <div ng-repeat="event in friendsEvents">
+      <button class="button button-block button-calm">{{event.ownerName}}</button>
+      <div>{{event.id}}</div>
+    </div>
+  </ion-content>
+</ion-view>
