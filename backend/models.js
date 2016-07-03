@@ -46,9 +46,42 @@ module.exports = {
       .then(function(found) {
         if (found) {
           bcrypt.compare(password, found.password, function(err, res) {
+            if (res) {
               callback(found)
+            } else{
+              callback(false)
+            };
           });
         } else {
+          callback(false)
+        };
+      })
+    }
+  },
+  // change password
+  changePassword: {
+    patch: function(userId, password, newPassword, callback) {
+      db.User.find({
+        where: {
+          id: userId
+        }
+      })
+      .then(function (found) {
+        if (found) {
+          bcrypt.compare(password, found.password, function(err, res) {
+              if (res) {
+                bcrypt.hash(newPassword, null, null, function(err, hash) {
+                  found.password = hash;
+                  found.save();
+                  callback(found)
+                })
+              } else{
+                console.log("+++ 82 models.js Password incryption failed")
+                callback(false)
+              };
+          })
+        } else{
+          console.log("+++ 86 models.js User not found")
           callback(false)
         };
       })

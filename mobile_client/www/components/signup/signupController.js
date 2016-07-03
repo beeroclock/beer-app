@@ -4,6 +4,7 @@ angular.module('app.SignupController', [])
   $scope.data = {};
 
   $scope.signup = function(){
+    console.log("+++ 7 signupController.js CONT")
     SignupFactory.signup($scope.data.username, $scope.data.password, $scope.data.email)
     .success(function (result) {
       $rootScope.username = result.username;

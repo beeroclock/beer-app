@@ -36,6 +36,11 @@ router.post('/signup', function(request, response) {
   controllers.signup.post(request, response);
 })
 
+// Change password
+router.patch('/changePassword', function(request, response) {
+  controllers.changePassword.patch(request, response);
+})
+
 // User logout
 router.get('/logout', function(request, response) {
   controllers.logout.get(request, response)
