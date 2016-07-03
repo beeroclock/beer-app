@@ -3,7 +3,6 @@ ion-view(view-title='Main')
     div {{root.username}}
     div Your friend's Events
     div(ng-repeat="event in friendsEvents")
-      button.button.button-block.button-calm{{event.ownerName}}
+      button.button.button-block.button-calm {{event.ownerName}}
       div {{event.id}}
-
 
