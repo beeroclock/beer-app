@@ -1,12 +1,10 @@
 
-<ion-view view-title="Main">
+<ion-view view-title="Hello, {{username}}">
   <ion-content>
     <button class="button button-block button-balanced" ui-sref="settings">Settings</button>
-    <div>{{root.username}}</div>
     <div>Your friend's Events</div>
     <div ng-repeat="event in friendsEvents">
-      <button class="button button-block button-calm">{{event.ownerName}}</button>
-      <div>{{event.id}}</div>
+      <button class="button button-block button-calm" ng-click="getEvent(event.id)">{{event.ownerName}}</button>
     </div>
   </ion-content>
 </ion-view>

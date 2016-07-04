@@ -37,15 +37,6 @@ var User = sequelize.define('User', {
   password: Sequelize.STRING,
   email: Sequelize.STRING
 }, {
-  classMethods: {
-    associate: function(models) {
-      User.belongsToMany(models.Attendee, {
-        as:'attendees',
-        through: 'UserAttendees'
-      });
-    }
-  }
-}, {
   timestamps: true
 });
 
@@ -122,15 +113,6 @@ var Attendee = sequelize.define('Attendee', {
     }
   }
 }, {
-  classMethods: {
-    associate: function(models) {
-      Attendee.belongsToMany(models.User, {
-        as:'users',
-        through: 'UserAttendees'
-      });
-    }
-  }
-}, {
   timestamps: true,
   paranoid: true
 });
@@ -147,26 +129,26 @@ var Friend = sequelize.define('Friend', {
 });
 
 //User has many events, events have one user
-User.hasMany(Event, {
-  foreignKey: 'userId'
-})
+// User.hasMany(Event, {
+//   foreignKey: 'userId'
+// })
 
-Event.belongsTo(User, {
-  foreignKey: 'userId'
-});
+// Event.belongsTo(User, {
+//   foreignKey: 'userId'
+// });
 
-//Event has many attendees, attendees, have many events
-Event.hasMany(Attendee, {
-  foreignKey: 'eventId'
-});
+// //Event has many attendees, attendees, have many events
+// Event.hasMany(Attendee, {
+//   foreignKey: 'eventId'
+// });
 
-Attendee.hasMany(Event, {
-  foreignKey: 'userId'
-});
+// Attendee.hasMany(Event, {
+//   foreignKey: 'userId'
+// });
 
-Attendee.belongsTo(User, {
-  foreignKey: 'id'
-})
+// Attendee.belongsTo(User, {
+//   foreignKey: 'id'
+// })
 
 // User.belongsToMany(Attendee, {
 //   through: {
