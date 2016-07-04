@@ -13,10 +13,14 @@ html(lang='en')
     //cordova script (this will be a 404 during development)
     script(src='cordova.js')
 
+    //dependencies
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js')
+
     //app scripts
     script(src='components/app.js')
     script(src='components/routes.js')
     script(src='components/shared_factories/authFactory.js')
+    script(src='components/shared_factories/geoFactory.js')
     script(src='components/login/loginController.js')
     script(src='components/login/loginFactory.js')
     script(src='components/signup/signupController.js')
