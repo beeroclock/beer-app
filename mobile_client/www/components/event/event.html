@@ -1,0 +1,12 @@
+
+<ion-view view-title="This is {{currentEventInView.ownerName}}'s event">
+  <ion-content>
+    <button class="button button-block button-calm" ng-click="acceptEvent(currentEventInView.id)">Accept Event</button>
+    <div class="list list-inset">
+      <div>People going to this event:</div>
+      <div ng-repeat="invitee in currentEventAttendees">
+        <div>{{invitee.username}}</div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
