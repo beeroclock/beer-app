@@ -25,7 +25,13 @@ angular.module('app.routes', [])
       templateUrl: 'components/settings/settings.html',
       controller: 'SettingsController',
       authenticate: true
-    });
+    })
+    .state('event', {
+      url: '/event',
+      templateUrl: 'components/event/event.html',
+      controller: 'EventController',
+      authenticate: true
+    })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');

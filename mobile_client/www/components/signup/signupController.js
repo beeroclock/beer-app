@@ -6,8 +6,8 @@ angular.module('app.SignupController', [])
   $scope.signup = function(){
     SignupFactory.signup($scope.data.username, $scope.data.password, $scope.data.email)
     .success(function (result) {
-      $rootScope.username = result.username;
       $rootScope.userId = result.userId;
+      $rootScope.username = result.username;
       AuthFactory.setTokenAndHttpHeaders(result['beeroclock-token'], result.userId, function (authResult) {
           if (authResult) {
             $state.go('main')

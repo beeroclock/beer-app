@@ -9,7 +9,9 @@ angular.module('app', [
   'app.MainController',
   'app.MainFactory',
   'app.SettingsController',
-  'app.SettingsFactory'
+  'app.SettingsFactory',
+  'app.EventController',
+  'app.EventFactory'
 ])
 
 .run(function($ionicPlatform) {

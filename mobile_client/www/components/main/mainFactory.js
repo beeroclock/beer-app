@@ -9,7 +9,12 @@ function mainFactory($http) {
     return $http.get(url + '/events')
   }
 
+  var getEvent = function(eventId){
+    return $http.get(url + '/events/' + eventId)
+  };
+
   return {
-    ActiveFriendsEvents: ActiveFriendsEvents
+    ActiveFriendsEvents: ActiveFriendsEvents,
+    getEvent: getEvent
   }
 }

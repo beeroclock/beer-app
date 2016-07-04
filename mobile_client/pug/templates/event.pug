@@ -1,0 +1,8 @@
+ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
+  ion-content
+    button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)') Accept Event
+    .list.list-inset
+      div People going to this event:
+      div(ng-repeat="invitee in currentEventAttendees")
+        div {{invitee.username}}
+
