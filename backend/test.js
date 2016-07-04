@@ -11,27 +11,27 @@ exports.createTest = function(){
       var users = [
         {
           username: "test1",
-          password: "1",
+          password: "$2a$10$RbfwGyHOSJLsVGN7v.6ll.US88K3GYUSG/8ZBRHf65p2ifVdeuUQu",
           email: "1@1.com"
         },
         {
           username: "test2",
-          password: "2",
+          password: "$2a$10$RbfwGyHOSJLsVGN7v.6ll.US88K3GYUSG/8ZBRHf65p2ifVdeuUQu",
           email: "2@1.com"
         },
         {
           username: "test3",
-          password: "3",
+          password: "$2a$10$RbfwGyHOSJLsVGN7v.6ll.US88K3GYUSG/8ZBRHf65p2ifVdeuUQu",
           email: "3@1.com"
         },
         {
           username: "test4",
-          password: "4",
+          password: "$2a$10$RbfwGyHOSJLsVGN7v.6ll.US88K3GYUSG/8ZBRHf65p2ifVdeuUQu",
           email: "4@1.com"
         },
         {
           username: "test5",
-          password: "5",
+          password: "$2a$10$RbfwGyHOSJLsVGN7v.6ll.US88K3GYUSG/8ZBRHf65p2ifVdeuUQu",
           email: "5@1.com"
         }
       ];
