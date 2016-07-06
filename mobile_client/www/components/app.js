@@ -12,7 +12,8 @@ angular.module('app', [
   'app.SettingsController',
   'app.SettingsFactory',
   'app.EventController',
-  'app.EventFactory'
+  'app.EventFactory',
+  'app.FriendsController'
 ])
 
 .constant('_', window._)

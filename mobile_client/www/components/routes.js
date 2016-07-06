@@ -32,6 +32,12 @@ angular.module('app.routes', [])
       controller: 'EventController',
       authenticate: true
     })
+    .state('friends', {
+      url: '/friends',
+      templateUrl: 'components/friends/friends.html',
+      controller: 'FriendsController',
+      authenticate: true
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
