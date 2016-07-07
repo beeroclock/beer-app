@@ -83,6 +83,17 @@ module.exports = controllers = {
       }
     }
   },
+  allUsers: {
+    get: function(request, response) {
+      models.allUsers.get(function(result){
+        if (result) {
+          response.status(200).json(result)
+        } else {
+          response.sendStatus(400)
+        }
+      })
+    }
+  },
   // find user by username
   friends: {
     get: function (request, response) {

@@ -87,6 +87,20 @@ module.exports = {
       })
     }
   },
+  allUsers: {
+    get: function(callback) {
+      db.User.findAll({
+        attributes: {exclude: ['email', 'password', 'createdAt', 'updatedAt']}
+      })
+      .then(function(result){
+        if (result.length) {
+          callback(result)
+        } else {
+          callback(false)
+        }
+      })
+    }
+  },
   // find user by username
   friends: {
     get: function (username, myUserId, callback) {
