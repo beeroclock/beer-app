@@ -39,6 +39,11 @@ router.get('/logout', function(request, response) {
   controllers.logout.get(request, response)
 });
 
+//Get all users on the db
+router.get('/allUsers/', utils.checkUser, function(request, response) {
+  controllers.allUsers.get(request, response)
+});
+
 // Search for friend by username
 router.get('/friends/:friendName', utils.checkUser, function(request, response) {
   controllers.friends.get(request, response)
