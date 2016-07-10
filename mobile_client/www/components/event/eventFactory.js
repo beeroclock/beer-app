@@ -19,10 +19,12 @@ function eventFactory($http, $rootScope) {
     })
   }
 
-  var eventData = $rootScope.currentEvent.event;
+  var lockEvent = function (eventId){
+    return $http.put(url + '/lockEvent/' + eventId)
+  }
 
   return {
     acceptEvent: acceptEvent,
-    eventData: eventData
+    lockEvent: lockEvent
   };
 }

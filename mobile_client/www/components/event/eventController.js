@@ -12,6 +12,24 @@ angular.module('app.EventController', [])
 
   $scope.eventLoading = false;
 
+  $scope.eventLocked = false;
+
+  var isEventLocked = function() {
+    console.log("+++ 18 eventController.js Here")
+    if($scope.currentEventInView.active === false){
+      $scope.eventLocked = true;
+    }
+  }
+
+  $scope.isUserOwner = true;
+
+  var userOwner = function (){
+    if($scope.currentEventInView.userId === $rootScope.userId){
+      $scope.isUserOwner = false;
+    }
+  }
+
+
   //User is attending this event
   $scope.userAttending = false;
 
@@ -98,9 +116,24 @@ angular.module('app.EventController', [])
 
     // })
   }
+
+  $scope.lockEvent = function(eventId) {
+    EventFactory.lockEvent(eventId)
+    .then(function () {
+      $scope.eventLocked = true;
+      console.log("+++ 108 eventController.js Event Locked")
+      var popup = $ionicPopup.alert({
+        title: 'Event Locked',
+        template: 'This event\'s location is now locked'
+      });
+    })
+  }
+
   var initialize = function () {
     isUserGoing();
     drawMap();
+    userOwner();
+    isEventLocked();
     // eventLoading();
   };
 

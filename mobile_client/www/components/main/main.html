@@ -1,7 +1,9 @@
 
 <ion-view view-title="Hello, {{username}}">
+  <ion-nav-buttons side="secondary">
+    <button class="button" ui-sref="settings"><i class="icon ion-gear-a"></i></button>
+  </ion-nav-buttons>
   <ion-content>
-    <button class="button button-block button-balanced" ui-sref="settings">Settings</button>
     <button class="button button-block button-energized" ui-sref="friends">Friends</button>
     <div>Your friend's Events</div>
     <div ng-repeat="event in friendsEvents">
