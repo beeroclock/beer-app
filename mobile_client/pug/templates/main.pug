@@ -1,6 +1,8 @@
 ion-view(view-title='Hello, {{username}}')
+  ion-nav-buttons(side='secondary')
+    button.button(ui-sref='settings')
+      i.icon.ion-gear-a
   ion-content
-    button.button.button-block.button-balanced(ui-sref='settings') Settings
     button.button.button-block.button-energized(ui-sref='friends') Friends
     div Your friend's Events
     div(ng-repeat="event in friendsEvents")

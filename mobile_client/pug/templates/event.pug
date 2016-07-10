@@ -1,11 +1,18 @@
 ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
+  ion-nav-buttons(side='secondary')
+    button.button(ui-sref='main')
+      i.icon.ion-home
   ion-content
     #map(data-tap-disabled="true")
-    button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)', ng-hide="userAttending") Accept Event
     .list.list-inset
       div(ng-show="userAttending") You're going to this event
       div People going to this event:
       div(ng-repeat="invitee in currentEventAttendees")
         div {{invitee.username}}
+    div(ng-show="isUserOwner")
+      button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)', ng-hide="userAttending") Accept Event
+    div(ng-show="!isUserOwner")
+      button.button.button-block.button-calm(ng-click='lockEvent(currentEventInView.id)', ng-hide="eventLocked") Lock Event
     img(src='../../assets/images/beer.gif' ng-show="eventLoading")
+
 
