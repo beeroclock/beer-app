@@ -9814,3 +9814,17 @@ a.button {
   opacity: 0;
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
+
+#map-canvas {
+  width: 100%;
+  height: 225px;
+  margin: auto;
+  padding: 0;
+  position: relative; }
+
+#map {
+  width: 100%;
+  height: 50%; }
+
+.scroll {
+  height: 100%; }
