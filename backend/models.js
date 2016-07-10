@@ -141,7 +141,7 @@ module.exports = {
       })
     }
   },
-  // get user's friends list
+  // get user's friends list **BEING USED BY (GET) get Friend's events****
   friendsList: {
     get: function (userId, callback) {
       db.Friend.findAll({
@@ -188,11 +188,83 @@ module.exports = {
                 }
               })
               .then(function(friends){
+                console.log("+++ 192 models.js friends: ", friends)
                 var friends = friends.map(function(friend){
                   return {id: friend.id, username: friend.username};
                 });
                 friends = _.orderBy(friends, ['username'],['asc'])
                 callback(friends);
+              });
+        } else {
+          callback(false);
+
+        }
+      })
+    }
+  },
+  // get user's friends list *** To populate friend's List ***
+  friendsListAndStatus: {
+    get: function (userId, callback) {
+      db.Friend.findAll({
+        where: {
+          $or: [
+            {
+              inviteeId: userId,
+            },
+            {
+              inviteId: userId,
+            }
+          ]
+        }
+      })
+      .then(function (friendsList) {
+        if(friendsList && friendsList.length > 0) {
+              var friendIds = []
+              var inviteeIds = friendsList.map(function(friendConn){
+                return {
+                  inviteeId: friendConn.dataValues.inviteeId
+                }
+              });
+              inviteeIds = _(inviteeIds).forEach(function(inviteeId) {
+                _.forEach(inviteeId, function(value) {
+                  friendIds.push(value)
+                })
+              })
+              var inviteIds = friendsList.map(function(friendConn){
+                return {
+                  inviteId: friendConn.dataValues.inviteId
+                }
+              });
+              inviteIds = _(inviteIds).forEach(function(inviteId) {
+                _.forEach(inviteId, function(value) {
+                  friendIds.push(value)
+                })
+              })
+              friendIds =  _.uniqBy(friendIds);
+              db.User.findAll({
+                where: {
+                  id: friendIds
+                },
+                attributes: {exclude: ['password', 'email', 'createdAt', 'updatedAt']}
+              })
+              .then(function(friends){
+
+                var list = {};
+
+                _.forEach(friends, function(friend){
+                  list[friend.id] = friend.username;
+                });
+
+                var finalList = _.map(friendsList, function(friendObj){
+                  var individualFriend = {}
+                  individualFriend.inviteName = list[friendObj.inviteId];
+                  individualFriend.inviteeName = list[friendObj.inviteeId];
+                  individualFriend.inviteId = friendObj.inviteId;
+                  individualFriend.inviteeId = friendObj.inviteeId;
+                  individualFriend.accepted = friendObj.accepted;
+                  return individualFriend;
+                })
+                callback(finalList)
               });
         } else {
           callback(false);

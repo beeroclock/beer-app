@@ -112,7 +112,7 @@ module.exports = controllers = {
   friendsList:{
     get: function (request, response) {
       var userId = request.headers.userid;
-      models.friendsList.get(userId, function (friendsList) {
+      models.friendsListAndStatus.get(userId, function (friendsList) {
         if (friendsList) {
           response.status(200).json(friendsList)
         } else{
