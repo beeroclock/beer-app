@@ -1,7 +1,7 @@
 angular.module('app.EventFactory', [])
 .factory('EventFactory', eventFactory);
 
-function eventFactory($http) {
+function eventFactory($http, $rootScope) {
 
   url = 'http://localhost:8000';
 
@@ -19,7 +19,10 @@ function eventFactory($http) {
     })
   }
 
+  var eventData = $rootScope.currentEvent.event;
+
   return {
-    acceptEvent: acceptEvent
+    acceptEvent: acceptEvent,
+    eventData: eventData
   };
 }
