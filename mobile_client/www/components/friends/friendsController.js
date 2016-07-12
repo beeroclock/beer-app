@@ -3,6 +3,12 @@ angular.module('app.FriendsController', [])
 
 function FriendsController($scope, FriendsFactory) {
   $scope.friends = {};
+  $scope.users = {};
+  $scope.modals = {};
+
+  $scope.getUsers = getUsers;
+  $scope.openModal = openModal;
+  $scope.closeModal = closeModal;
 
   //on init
   activate();
@@ -18,4 +24,24 @@ function FriendsController($scope, FriendsFactory) {
         console.log(err);
       });
   }
+
+  function getUsers() {
+    return FriendsFactory.getUsers()
+      .then(function(data) {
+        $scope.users.results = data;
+        console.log('$scope.users.results', $scope.users.results);
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+  }
+
+  function openModal(modal) {
+    $scope.modals[modal].show();
+  }
+
+  function closeModal(modal) {
+    $scope.modals[modal].hide();
+  }
+
 }
