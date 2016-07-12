@@ -1,14 +1,12 @@
 angular.module('app.SettingsFactory', [])
 .factory('SettingsFactory', settingsFactory);
 
-function settingsFactory($http) {
-
-  url = 'http://localhost:8000';
+function settingsFactory($http, apiUrl) {
 
   var changePassword = function(password, newPassword){
     return $http({
       method: 'PATCH',
-      url: url + '/changePassword',
+      url: apiUrl + '/changePassword',
       data: {
         password: password,
         newPassword: newPassword
@@ -17,7 +15,7 @@ function settingsFactory($http) {
   }
 
   var logout = function() {
-    return $http.get(url + '/logout')
+    return $http.get(apiUrl + '/logout')
   }
 
 

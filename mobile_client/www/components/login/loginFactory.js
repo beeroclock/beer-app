@@ -1,14 +1,12 @@
 angular.module('app.LoginFactory', [])
 .factory('LoginFactory', loginFactory);
 
-function loginFactory($http) {
-
-  url = 'http://localhost:8000';
+function loginFactory($http, apiUrl) {
 
   var login = function(username, password){
     return $http({
       method: 'POST',
-      url: url + '/login',
+      url: apiUrl + '/login',
       data: {
         username: username,
         password: password

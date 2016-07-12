@@ -1,6 +1,7 @@
 angular.module('app', [
   'ionic',
   'app.routes',
+  'app.constants',
   'app.AuthFactory',
   'app.GeoFactory',
   'app.LoginController',

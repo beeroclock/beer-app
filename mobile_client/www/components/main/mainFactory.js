@@ -1,16 +1,14 @@
 angular.module('app.MainFactory', [])
 .factory('MainFactory', mainFactory);
 
-function mainFactory($http) {
-
-  url = 'http://localhost:8000';
+function mainFactory($http, apiUrl) {
 
   var ActiveFriendsEvents = function () {
-    return $http.get(url + '/events')
+    return $http.get(apiUrl + '/events')
   }
 
   var getEvent = function(eventId){
-    return $http.get(url + '/events/' + eventId)
+    return $http.get(apiUrl + '/events/' + eventId)
   };
 
   return {
