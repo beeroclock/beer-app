@@ -1,15 +1,17 @@
 angular.module('app.FriendsFactory', [])
-.factory('FriendsFactory', friendsFactory);
+  .factory('FriendsFactory', friendsFactory);
 
 function friendsFactory($http) {
+  url = 'http://localhost:8000'; //needs to come from config
 
-  url = 'http://localhost:8000';
-
-  var allUsers = function(){
-    return $http.get(url + '/allUsers')
+  function getFriends() {
+    return $http.get(url + '/friends')
+      .then(function(friends) {
+        return friends.data;
+      });
   }
 
-  return{
-    allUsers: allUsers
-  }
+  return {
+    getFriends: getFriends
+  };
 }
