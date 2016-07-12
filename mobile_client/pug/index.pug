@@ -46,7 +46,9 @@ html(lang='en')
     script(id='friends-search-modal.html', type='text/ng-template').
       <ion-modal-view>
         <ion-header-bar>
-          <button ng-click="closeModal('search')">CLOSE</button>
+          <button ng-click="closeModal('search')">
+            <i class="icon ion-android-arrow-back"></i>
+          </button>
         </ion-header-bar>
         <ion-content>
           <ion-list>
@@ -58,7 +60,9 @@ html(lang='en')
     script(id='friends-request-modal.html', type='text/ng-template').
       <ion-modal-view>
         <ion-header-bar>
-          <button ng-click="closeModal('request')">CLOSE</button>
+          <button ng-click="closeModal('request')">
+            <i class="icon ion-android-arrow-back"></i>
+          </button>
         </ion-header-bar>
         <ion-content>
           <ion-list>
