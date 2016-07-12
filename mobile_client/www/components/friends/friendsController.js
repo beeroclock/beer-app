@@ -2,18 +2,20 @@ angular.module('app.FriendsController', [])
 .controller('FriendsController', FriendsController);
 
 function FriendsController($scope, FriendsFactory) {
-  $scope.friendList = []; //will get data from db
-  $scope.allUsers;
+  $scope.friends = {};
 
-  $scope.allUsers = function(){
-    FriendsFactory.allUsers()
-    .success(function (result) {
-      console.log("+++ 11 friendsController.js result: ", result)
-    })
-    .error(function (err) {
-      console.log("+++ 14 friendsController.js err: ", err)
-    })
+  //on init
+  activate();
+
+  //////////
+  function activate() {
+    return FriendsFactory.getFriends()
+      .then(function(data) {
+        $scope.friends.list = data;
+        console.log('$scope.friends.list', $scope.friends.list);
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
   }
-
-  $scope.allUsers();
 }
