@@ -41,3 +41,28 @@ html(lang='en')
     ion-nav-bar(class='bar-dark')
 
     ion-nav-view
+
+    //temporary modals
+    script(id='friends-search-modal.html', type='text/ng-template').
+      <ion-modal-view>
+        <ion-header-bar>
+          <button ng-click="closeModal('search')">CLOSE</button>
+        </ion-header-bar>
+        <ion-content>
+          <ion-list>
+            <ion-item>TEST</ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-modal-view>
+
+    script(id='friends-request-modal.html', type='text/ng-template').
+      <ion-modal-view>
+        <ion-header-bar>
+          <button ng-click="closeModal('request')">CLOSE</button>
+        </ion-header-bar>
+        <ion-content>
+          <ion-list>
+            <ion-item>TEST</ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-modal-view>
