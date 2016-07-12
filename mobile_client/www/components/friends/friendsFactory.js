@@ -10,7 +10,15 @@ function friendsFactory($http, apiUrl) {
       });
   }
 
+  function getUsers() {
+    return $http.get(apiUrl + '/allUsers')
+      .then(function(users) {
+        return users.data;
+      });
+  }
+
   return {
-    getFriends: getFriends
+    getFriends: getFriends,
+    getUsers: getUsers
   };
 }
