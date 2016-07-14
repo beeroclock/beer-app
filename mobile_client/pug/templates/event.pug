@@ -4,7 +4,9 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
       i.icon.ion-home
   ion-content
     #map(data-tap-disabled="true")
-    a(ng-click="centerOnMe()" class="button button-icon icon ion-navigate") Find Current Location.
+    a(ng-click="currentLocation()" class="button button-icon icon ion-navigate") Find Current Location.
+    br
+    a(class="button button-icon") on Map: {{latOnMap}}, {{longOnMap}}
     br
     a(class="button button-icon") Found: {{foundLat}}, {{foundLong}}
     .list.list-inset
