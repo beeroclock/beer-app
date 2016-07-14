@@ -4,6 +4,9 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
       i.icon.ion-home
   ion-content
     #map(data-tap-disabled="true")
+    a(ng-click="centerOnMe()" class="button button-icon icon ion-navigate") Find Current Location.
+    br
+    a(class="button button-icon") Found: {{foundLat}}, {{foundLong}}
     .list.list-inset
       div(ng-show="userAttending") You're going to this event
       div People going to this event:

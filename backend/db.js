@@ -84,7 +84,8 @@ var Event = sequelize.define('Event', {
   },
   expirationDate: {
     type: Sequelize.DATE
-  }
+  },
+  note: Sequelize.STRING
 }, {
   timestamps: true,
   paranoid: true

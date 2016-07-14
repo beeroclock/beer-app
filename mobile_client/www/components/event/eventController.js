@@ -47,8 +47,10 @@ angular.module('app.EventController', [])
   function drawMap() {
     console.log("+++ 30 eventController.js $scope.currentEventInView.ownerLat, $scope.currentEventInView.ownerLong: ", $scope.currentEventInView.ownerLat, $scope.currentEventInView.ownerLong)
     if($scope.currentEventInView.centerLat === null || $scope.currentEventInView.centerLat === undefined){
+      console.log("+++ 50 eventController.js CenterLL defined")
        var myLatlng = new google.maps.LatLng($scope.currentEventInView.ownerLat, $scope.currentEventInView.ownerLong);
     }else{
+      console.log("+++ 53 eventController.js centerLL Not defined")
        var myLatlng = new google.maps.LatLng($scope.currentEventInView.centerLat, $scope.currentEventInView.centerLong);
     }
 
@@ -61,7 +63,7 @@ angular.module('app.EventController', [])
            mapOptions);
 
        //Marker + infowindow + angularjs compiled ng-click
-       var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
+       var contentString = "<div><a ng-click='clickLocation()'>Central Bar!</a></div>";
        var compiled = $compile(contentString)($scope);
 
        var infowindow = new google.maps.InfoWindow({
@@ -94,28 +96,39 @@ angular.module('app.EventController', [])
 
        navigator.geolocation.getCurrentPosition(function(pos) {
          $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-         $scope.loading.hide();
+           $scope.loading = $ionicLoading.hide();
+           console.log("+++ 100 eventController.js pos: ", pos)
+           $scope.foundLat= pos.coords.latitude
+           $scope.foundLong = pos.coords.longitude
        }, function(error) {
          alert('Unable to get location: ' + error.message);
        });
      };
 
-     $scope.clickTest = function() {
+     $scope.clickLocation = function() {
        alert('Example of infowindow with ng-click')
      };
 
   //Accept Event
-  $scope.acceptEvent = function(eventId) {
-    // GeoFactory.getLocation()
-    // .then(function (locationResult) {
-      EventFactory.acceptEvent(eventId, $rootScope.userId, $rootScope.username)
-      .then(function(result) {
-        $scope.userAttending = true;
-        console.log("+++ 13 eventController.js result: ", result)
-      })
+  $scope.acceptEvent = function() {
 
-    // })
-  }
+    $scope.loading = $ionicLoading.show({
+      content: 'Getting current location...',
+      showBackdrop: false
+    });
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      console.log("pos: ", JSON.stringify(pos, null, "\t"));
+      $scope.loading = $ionicLoading.hide();
+        EventFactory.acceptEvent(eventId, $rootScope.userId, $rootScope.username, pos.coords.latitude, pos.coords.longitude)
+        .then(function (result) {
+            $scope.userAttending = true;
+            console.log("result: ", JSON.stringify(result, null, "\t"));
+        })
+    }, function(error) {
+      alert('Unable to get location: ' + error.message);
+    });
+  };
 
   $scope.lockEvent = function(eventId) {
     EventFactory.lockEvent(eventId)
