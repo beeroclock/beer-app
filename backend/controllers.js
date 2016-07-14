@@ -194,8 +194,11 @@ module.exports = controllers = {
             locationsAverage.getCentralPoints(attendeesList, eventOwnerLat, eventOwnerLong, function (centerPoints) {
               models.updateEventLocation.put(eventId, centerPoints, function (eventUpdated) {
                 utils.searchYelpApi(eventUpdated.centerLat, eventUpdated.centerLong, function (yelpData) {
-                    eventUpdated.yelpData = yelpData;
-                    response.status(200).json(eventUpdated)
+                    eventUpdatedWithYelpData ={
+                      eventUpdated: eventUpdated,
+                      yelpData: yelpData.businesses
+                    }
+                    response.status(200).json(eventUpdatedWithYelpData)
                 })
               })
             })

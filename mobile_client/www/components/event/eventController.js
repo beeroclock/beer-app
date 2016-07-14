@@ -46,11 +46,13 @@ angular.module('app.EventController', [])
   function drawMap(eventData, currentLat, currentLong) {
     var map
     map = null;
-    if(eventData.centerLat === null || eventData.centerLat === undefined){
+    if(eventData.eventUpdated === null || eventData.eventUpdated === undefined){
       var myLatlng = new google.maps.LatLng(eventData.ownerLat, eventData.ownerLong);
     }else{
-      var myLatlng = new google.maps.LatLng(eventData.centerLat, eventData.centerLong);
-      var eventLatlng = new google.maps.LatLng(eventData.ownerLat, eventData.ownerLong);
+      var myLatlng = new google.maps.LatLng(eventData.eventUpdated.ownerLat, eventData.eventUpdated.ownerLong);
+      var eventLatlng = new google.maps.LatLng(eventData.yelpData[0].location.coordinate.latitude, eventData.yelpData[0].location.coordinate.longitude);
+      $scope.locationName = eventData.yelpData[0].name
+      $scope.locationAddress = eventData.yelpData[0].location.display_address
     };
 
     var mapOptions = {
