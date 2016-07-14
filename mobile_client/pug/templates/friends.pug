@@ -1,8 +1,8 @@
 ion-view(view-title='Friends')
   ion-nav-buttons(side='secondary')
-    button.button
+    button.button(ng-click='openModal("request")')
       i.icon.ion-android-notifications-none
-    button.button
+    button.button(ng-click='openModal("search")')
       i.icon.ion-person-add
   ion-content
     div searchbox here

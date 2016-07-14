@@ -3,8 +3,6 @@ angular.module('app.GeoFactory', [])
 
 function geoFactory($http, $window, $q, $location, $ionicPlatform, $cordovaGeolocation) {
 
-  url = 'http://localhost:8000';
-
   var getLocation = function(){
   var posOptions = {timeout: 10000, enableHighAccuracy: false};
   console.log("+++ 10 geoFactory.js $cordovaGeolocation: ", $cordovaGeolocation)

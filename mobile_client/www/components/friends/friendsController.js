@@ -1,19 +1,59 @@
 angular.module('app.FriendsController', [])
-.controller('FriendsController', FriendsController);
+  .controller('FriendsController', FriendsController);
 
-function FriendsController($scope, FriendsFactory) {
-  $scope.friendList = []; //will get data from db
-  $scope.allUsers;
+function FriendsController($scope, $ionicModal, friendsFactory) {
+  $scope.friends = {};
+  $scope.users = {};
+  $scope.modals = {};
+  $scope.getUsers = getUsers;
+  $scope.openModal = openModal;
+  $scope.closeModal = closeModal;
+  var modalOpts = { scope: $scope, animation: 'slide-in-up' };
 
-  $scope.allUsers = function(){
-    FriendsFactory.allUsers()
-    .success(function (result) {
-      console.log("+++ 11 friendsController.js result: ", result)
-    })
-    .error(function (err) {
-      console.log("+++ 14 friendsController.js err: ", err)
-    })
+  init();
+
+  function init() {
+    $ionicModal.fromTemplateUrl('components/friends/friends.searchmodal.html', modalOpts)
+      .then(setModal('search'));
+
+    $ionicModal.fromTemplateUrl('components/friends/friends.requestmodal.html', modalOpts)
+      .then(setModal('request'));
+
+    friendsFactory.getFriends()
+      .then(setList('friends'))
+      .catch(logErr);
   }
 
-  $scope.allUsers();
+  function getUsers() {
+    friendsFactory.getUsers()
+      .then(setList('users'))
+      .catch(logErr);
+  }
+
+  function openModal(name) {
+    $scope.modals[name].show();
+  }
+
+  function closeModal(name) {
+    $scope.modals[name].hide();
+  }
+
+  function setModal(name) {
+    return function(modal) {
+      $scope.modals[name] = modal;
+      $scope.$on('$destroy', function() {
+        $scope.modals[name].remove();
+      });
+    };
+  }
+
+  function setList(listType) {
+    return function(data) {
+      $scope[listType].list = data;
+    };
+  }
+
+  function logErr(err) {
+    console.log(err);
+  }
 }

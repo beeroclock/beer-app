@@ -1,0 +1,12 @@
+
+<ion-modal-view>
+  <ion-header-bar class="bar bar-header bar-light">
+    <button ng-click="closeModal(&quot;search&quot;)"><i class="icon ion-android-arrow-back"></i></button>
+    <input type="search" placeholder="Search new friends..." ng-model="users.search"/>
+  </ion-header-bar>
+  <ion-content>
+    <ion-list>
+      <ion-item collection-repeat="uesr in users.list">TEST</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-modal-view>
