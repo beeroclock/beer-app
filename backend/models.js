@@ -387,7 +387,9 @@ module.exports = {
   acceptEvent: {
     post: function (eventId, userId, username, acceptedLat, acceptedLong, callback) {
       db.Event.find({
-        id: eventId
+        where:{
+          id: eventId
+        }
       })
       .then(function(eventFound) {
         db.Attendee.findOrCreate({
