@@ -1,20 +1,20 @@
 angular.module('app.FriendsFactory', [])
-  .factory('FriendsFactory', friendsFactory);
+  .factory('friendsFactory', friendsFactory);
 
 function friendsFactory($http, apiUrl) {
 
   function getFriends() {
     return $http.get(apiUrl + '/friends')
-      .then(function(friends) {
-        return friends.data;
-      });
+      .then(sendData);
   }
 
   function getUsers() {
     return $http.get(apiUrl + '/allUsers')
-      .then(function(users) {
-        return users.data;
-      });
+      .then(sendData);
+  }
+
+  function sendData(result) {
+    return result.data;
   }
 
   return {
