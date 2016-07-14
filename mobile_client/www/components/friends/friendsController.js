@@ -54,6 +54,6 @@ function FriendsController($scope, $ionicModal, friendsFactory) {
   }
 
   function logErr(err) {
-    console.err(err);
+    console.log(err);
   }
 }
