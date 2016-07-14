@@ -13,10 +13,10 @@ function FriendsController($scope, $ionicModal, friendsFactory) {
   init();
 
   function init() {
-    $ionicModal.fromTemplateUrl('friends-search-modal.html', modalOpts)
+    $ionicModal.fromTemplateUrl('components/friends/friends.searchmodal.html', modalOpts)
       .then(setModal('search'));
 
-    $ionicModal.fromTemplateUrl('friends-request-modal.html', modalOpts)
+    $ionicModal.fromTemplateUrl('components/friends/friends.requestmodal.html', modalOpts)
       .then(setModal('request'));
 
     friendsFactory.getFriends()

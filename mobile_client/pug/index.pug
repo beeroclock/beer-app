@@ -41,33 +41,3 @@ html(lang='en')
     ion-nav-bar(class='bar-dark')
 
     ion-nav-view
-
-    //temporary modals
-    script(id='friends-search-modal.html', type='text/ng-template').
-      <ion-modal-view>
-        <ion-header-bar class='bar bar-header bar-light'>
-          <button ng-click='closeModal("search")'>
-            <i class='icon ion-android-arrow-back'></i>
-          </button>
-          <input type='search' placeholder='Add new friends' ng-model='users.search'>
-        </ion-header-bar>
-        <ion-content>
-          <ion-list>
-            <ion-item collection-repeat='user in users.list'>TEST</ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-modal-view>
-
-    script(id='friends-request-modal.html', type='text/ng-template').
-      <ion-modal-view>
-        <ion-header-bar>
-          <button ng-click='closeModal("request")'>
-            <i class='icon ion-android-arrow-back'></i>
-          </button>
-        </ion-header-bar>
-        <ion-content>
-          <ion-list>
-            <ion-item>TEST</ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-modal-view>

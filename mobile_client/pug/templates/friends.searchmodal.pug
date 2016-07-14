@@ -1,0 +1,8 @@
+ion-modal-view
+  ion-header-bar.bar.bar-header.bar-light
+    button(ng-click='closeModal("search")')
+      i.icon.ion-android-arrow-back
+    input(type='search', placeholder='Search new friends...', ng-model='users.search')
+  ion-content
+    ion-list
+      ion-item(collection-repeat='uesr in users.list') TEST
