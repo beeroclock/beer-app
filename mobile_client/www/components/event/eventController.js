@@ -3,7 +3,7 @@ angular.module('app.EventController', [])
   //All data for current event
   $scope.currentEventInView = $rootScope.currentEvent.event
 
-  console.log("$scope.currentEventInView: ", JSON.stringify($scope.currentEventInView, null, "\t"));
+  console.log("+++ 6 eventController.js $scope.currentEventInView: ", JSON.stringify($scope.currentEventInView, null, "\t"));
 
   //Attendees of current event
   $scope.currentEventAttendees = _.orderBy($rootScope.currentEvent.attendees, ['username'],['asc'])
@@ -15,7 +15,6 @@ angular.module('app.EventController', [])
   $scope.eventLocked = false;
 
   var isEventLocked = function() {
-    console.log("+++ 18 eventController.js Here")
     if($scope.currentEventInView.active === false){
       $scope.eventLocked = true;
     }
@@ -29,7 +28,6 @@ angular.module('app.EventController', [])
     }
   }
 
-
   //User is attending this event
   $scope.userAttending = false;
 
@@ -39,95 +37,115 @@ angular.module('app.EventController', [])
         $scope.userAttending = true;
       }
     })
-    // GeoFactory.getLocation()
-    // .then(function (locationResult) {
-    //   console.log("+++ 24 eventController.js locationResult: ", locationResult)
-    // })
-  }
-  function drawMap() {
-    console.log("+++ 30 eventController.js $scope.currentEventInView.ownerLat, $scope.currentEventInView.ownerLong: ", $scope.currentEventInView.ownerLat, $scope.currentEventInView.ownerLong)
-    if($scope.currentEventInView.centerLat === null || $scope.currentEventInView.centerLat === undefined){
-      console.log("+++ 50 eventController.js CenterLL defined")
-       var myLatlng = new google.maps.LatLng($scope.currentEventInView.ownerLat, $scope.currentEventInView.ownerLong);
-    }else{
-      console.log("+++ 53 eventController.js centerLL Not defined")
-       var myLatlng = new google.maps.LatLng($scope.currentEventInView.centerLat, $scope.currentEventInView.centerLong);
+    if ($scope.userAttending) {
+      drawMap($scope.currentEventInView)
     }
+  }
 
-       var mapOptions = {
-         center: myLatlng,
-         zoom: 16,
-         mapTypeId: google.maps.MapTypeId.ROADMAP
-       };
-       var map = new google.maps.Map(document.getElementById("map"),
-           mapOptions);
 
-       //Marker + infowindow + angularjs compiled ng-click
-       var contentString = "<div><a ng-click='clickLocation()'>Central Bar!</a></div>";
-       var compiled = $compile(contentString)($scope);
+  function drawMap(eventData, currentLat, currentLong) {
+    var map
+    map = null;
+    if(eventData.eventUpdated === null || eventData.eventUpdated === undefined){
+      var myLatlng = new google.maps.LatLng(eventData.ownerLat, eventData.ownerLong);
+    }else{
+      var myLatlng = new google.maps.LatLng(eventData.eventUpdated.ownerLat, eventData.eventUpdated.ownerLong);
+      var eventLatlng = new google.maps.LatLng(eventData.yelpData[0].location.coordinate.latitude, eventData.yelpData[0].location.coordinate.longitude);
+      $scope.locationName = eventData.yelpData[0].name
+      $scope.locationAddress = eventData.yelpData[0].location.display_address
+    };
 
-       var infowindow = new google.maps.InfoWindow({
-         content: compiled[0]
-       });
+    var mapOptions = {
+      center: myLatlng,
+      zoom: 16,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
 
-       var marker = new google.maps.Marker({
-         position: myLatlng,
-         map: map,
-         title: 'Uluru (Ayers Rock)'
-       });
+    map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-       google.maps.event.addListener(marker, 'click', function() {
-         infowindow.open(map,marker);
-       });
+    //Marker + infowindow + angularjs compiled ng-click
+    var contentString = "<div><a ng-click='clickLocation()'>Central Bar!</a></div>";
+    var compiled = $compile(contentString)($scope);
 
-       $scope.map = map;
-     }
-     google.maps.event.addDomListener(window, 'load', drawMap);
+    var infowindow = new google.maps.InfoWindow({
+      content: compiled[0]
+    });
 
-     $scope.centerOnMe = function() {
-       if(!$scope.map) {
-         return;
-       }
+    var myMarker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: 'Owner\'s location'
+    });
 
-       $scope.loading = $ionicLoading.show({
-         content: 'Getting current location...',
-         showBackdrop: false
-       });
+    var eventMarker = new google.maps.Marker({
+      position: eventLatlng,
+      map: map,
+      title: 'Event\'s location'
+    });
 
-       navigator.geolocation.getCurrentPosition(function(pos) {
-         $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-           $scope.loading = $ionicLoading.hide();
-           console.log("+++ 100 eventController.js pos: ", pos)
-           $scope.foundLat= pos.coords.latitude
-           $scope.foundLong = pos.coords.longitude
-       }, function(error) {
-         alert('Unable to get location: ' + error.message);
-       });
-     };
+    google.maps.event.addListener(myMarker, 'click', function() {
+      infowindow.open(map, myMarker);
+    });
 
-     $scope.clickLocation = function() {
-       alert('Example of infowindow with ng-click')
-     };
+    google.maps.event.addListener(eventMarker, 'click', function() {
+      infowindow.open(map, eventMarker);
+    });
 
-  //Accept Event
-  $scope.acceptEvent = function() {
+    $scope.map = map;
+  }
+
+  google.maps.event.addDomListener(window, 'load', drawMap);
+
+  $scope.currentLocation = function(callback) {
+    console.log("+++ 81 eventController.js CurrentLocation")
+    if(!$scope.map) {
+      return;
+    }
 
     $scope.loading = $ionicLoading.show({
       content: 'Getting current location...',
       showBackdrop: false
+    }).then(function() {
+      $scope.showBeer = true;
     });
 
     navigator.geolocation.getCurrentPosition(function(pos) {
-      console.log("pos: ", JSON.stringify(pos, null, "\t"));
-      $scope.loading = $ionicLoading.hide();
-        EventFactory.acceptEvent(eventId, $rootScope.userId, $rootScope.username, pos.coords.latitude, pos.coords.longitude)
-        .then(function (result) {
-            $scope.userAttending = true;
-            console.log("result: ", JSON.stringify(result, null, "\t"));
-        })
+      $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+        $scope.loading = $ionicLoading.hide().then(function () {
+          $scope.showBeer = false;
+        });
+        callback(pos)
     }, function(error) {
       alert('Unable to get location: ' + error.message);
     });
+  };
+
+  $scope.clickLocation = function() {
+    alert('Example of infowindow with ng-click')
+  };
+
+  //Accept Event
+  $scope.acceptEvent = function() {
+    $scope.currentLocation(function (currentPosition){
+      var eventId = $scope.currentEventInView.id
+      var currentLat = currentPosition.coords.latitude;
+      var currentLong = currentPosition.coords.longitude;
+      EventFactory.acceptEvent(eventId, $rootScope.userId, $rootScope.username, currentLat, currentLong)
+      .success(function (acceptedEvent) {
+        $scope.userAttending = true;
+        drawMap(acceptedEvent, currentLat, currentLong)
+        var popup = $ionicPopup.alert({
+          title: 'you\'re going!',
+          template: 'You have accepted this event successfully'
+        });
+      })
+      .error(function(err) {
+        var popup = $ionicPopup.alert({
+          title: 'Something went wrong',
+          template: err
+        });
+      })
+    })
   };
 
   $scope.lockEvent = function(eventId) {
@@ -144,9 +162,9 @@ angular.module('app.EventController', [])
 
   var initialize = function () {
     isUserGoing();
-    drawMap();
     userOwner();
     isEventLocked();
+    drawMap($scope.currentEventInView);
     // eventLoading();
   };
 
