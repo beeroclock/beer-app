@@ -5,7 +5,7 @@ function eventFactory($http, $rootScope) {
 
   url = 'http://localhost:8000';
 
-  var acceptEvent = function(eventId, userId, username){
+  var acceptEvent = function(eventId, userId, username, acceptedLat, acceptedLong){
     console.log("+++ 9 eventFactory.js eventId, userId, username: ", eventId, userId, username)
     return $http({
       method: 'POST',
@@ -13,8 +13,8 @@ function eventFactory($http, $rootScope) {
       data: {
       userId: userId,
       username: username,
-      acceptedLat: 30.30,
-      acceptedLong: 118.1
+      acceptedLat: acceptedLat,
+      acceptedLong: acceptedLong
       }
     })
   }
