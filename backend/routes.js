@@ -92,25 +92,16 @@ router.put('/lockEvent/:id', utils.checkUser, function (request, response) {
   controllers.lockEvent.put(request, response)
 })
 
-
+// Search Yelp // To test if the API is working. Not being used from the front end
+router.post('/yelp', function (request, response) {
+  controllers.yelp.post(request, response)
+});
 
 
 module.exports = router;
 ///--------
 
 
-
-
-
-
-// Search Yelp
-router.post('/yelp', function (request, response) {
-  var centerLat = request.body.centerLat;
-  var centerLong = request.body.centerLong;
-  console.log("Center lat from form: ", centerLat);
-  console.log("Center long from form: ",centerLong);
-  utils.searchYelpApi(request, response, centerLat, centerLong);
-});
 
 // Search Uber
 router.post('/uber', function (request, response) {

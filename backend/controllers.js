@@ -193,7 +193,10 @@ module.exports = controllers = {
             var eventOwnerLong = event.dataValues.ownerLong;
             locationsAverage.getCentralPoints(attendeesList, eventOwnerLat, eventOwnerLong, function (centerPoints) {
               models.updateEventLocation.put(eventId, centerPoints, function (eventUpdated) {
-                response.status(200).json(eventUpdated)
+                utils.searchYelpApi(eventUpdated.centerLat, eventUpdated.centerLong, function (yelpData) {
+                    eventUpdated.yelpData = yelpData;
+                    response.status(200).json(eventUpdated)
+                })
               })
             })
           })
@@ -224,6 +227,14 @@ module.exports = controllers = {
       models.lockEvent.put(eventId, function(result) {
         response.status(200).json(result)
       })
+    }
+  },
+  yelp: {
+    post: function (request, response){
+      console.log("+++ 231 controllers.js controller")
+      var centerLat = request.body.centerLat;
+      var centerLong = request.body.centerLong;
+      utils.searchYelpApi(request, response, centerLat, centerLong);
     }
   }
 }

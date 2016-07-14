@@ -2,26 +2,13 @@
 var session = require('express-session');
 var jwt  = require('jwt-simple');
 var _ = require('lodash');
-
 var Yelp = require('yelp');
 var Uber = require('node-uber');
 
-// Uber key
-var uber = new Uber({
-  client_id: 's7Z67Tq2-omqdyXmEVMIXdkn_krzD563',
-  client_secret: '4a28nXO-xh268LUzPSmtpuhSBfN0NgYfW_TLmhuY',
-  server_token: '_b13GTgZy1rf08rRQK9bYrfl2E0WNWC9oUMgArQR',
-  redirect_uri: 'REDIRECT URL',
-  name: 'Brewski, Broski?'
-});
+var apiKeys = require('./apiKeys')
 
-// Yelp key
-var yelp = new Yelp({
-  consumer_key: "cUM2s97-paI5-BlgOeUqIQ",
-  consumer_secret: "tE_ShtbZHaYxEgmcbpfGO3DBpng",
-  token: "WQ2Iw9H39t8PV8H-V1UjZreaDniDnztc",
-  token_secret: "szUxF_dCG6v3TZrofbdYaKGzpSc"
-});
+
+var yelp = new Yelp(apiKeys.yelpKeys)
 
 // Auth
 var decodeToken = exports.decodeToken = function(request){
@@ -62,7 +49,7 @@ exports.checkUser = function(request, response, next) {
   }
 }
 
-exports.searchYelpApi = function (request, response, centerLat, centerLong){
+exports.searchYelpApi = function (centerLat, centerLong, callback){
   var cLat = centerLat;
   var cLong = centerLong;
   var cll = cLat.toString() + ',' + cLong.toString();
@@ -75,15 +62,11 @@ exports.searchYelpApi = function (request, response, centerLat, centerLong){
     if(address.length === 3){
       address.splice(1,1);
     }
-    response.status(200).send( {
-        name: data.businesses[0].name,
-        address: address,
-        location: data.businesses[0].location.coordinate
-      });
+    callback(data)
   })
   .catch(function (err) {
     console.error(err);
-    response.sendStatus(500)
+    callback(err)
   });
 }
 
