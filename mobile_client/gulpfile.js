@@ -17,14 +17,13 @@ var paths = {
 
 //sends compiled pug file to correct directory
 function pugDestination(file) {
-  var dest = path.basename(file.path).replace('.html', '/');
+  var dest = path.basename(file.path).replace(/\..*html/, '/');
 
-  if (file.path.match(/templates\//) !== null) {
+  if (file.path.search('templates') !== -1) {
     file.path = file.path.replace('templates/', '');
     return './www/components/' + dest;
-  } else {
-    return './www/'
   }
+  return './www/';
 }
 
 gulp.task('default', ['sass', 'pug']);
