@@ -1,69 +1,59 @@
 angular.module('app.FriendsController', [])
   .controller('FriendsController', FriendsController);
 
-function FriendsController($scope, $ionicModal, FriendsFactory) {
+function FriendsController($scope, $ionicModal, friendsFactory) {
   $scope.friends = {};
   $scope.users = {};
   $scope.modals = {};
-
   $scope.getUsers = getUsers;
   $scope.openModal = openModal;
   $scope.closeModal = closeModal;
+  var modalOpts = { scope: $scope, animation: 'slide-in-up' };
 
-  //on init
-  activate();
+  init();
 
+  function init() {
+    $ionicModal.fromTemplateUrl('friends-search-modal.html', modalOpts)
+      .then(setModal('search'));
 
+    $ionicModal.fromTemplateUrl('friends-request-modal.html', modalOpts)
+      .then(setModal('request'));
 
-
-  //////////
-  function activate() {
-    //modal setup
-    $ionicModal.fromTemplateUrl('friends-search-modal.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      })
-      .then(function(modal) {
-        $scope.modals.search = modal;
-      });
-
-    $ionicModal.fromTemplateUrl('friends-request-modal.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      })
-      .then(function(modal) {
-        $scope.modals.request = modal;
-      });
-
-    //fetch friends
-    FriendsFactory.getFriends()
-      .then(function(data) {
-        $scope.friends.list = data;
-        console.log('$scope.friends.list', $scope.friends.list);
-      })
-      .catch(function(err) {
-        console.log(err);
-      });
+    friendsFactory.getFriends()
+      .then(setList('friends'))
+      .catch(logErr);
   }
 
   function getUsers() {
-    return FriendsFactory.getUsers()
-      .then(function(data) {
-        $scope.users.results = data;
-        console.log('$scope.users.results', $scope.users.results);
-      })
-      .catch(function(err) {
-        console.log(err);
+    friendsFactory.getUsers()
+      .then(setList('users'))
+      .catch(logErr);
+  }
+
+  function openModal(name) {
+    $scope.modals[name].show();
+  }
+
+  function closeModal(name) {
+    $scope.modals[name].hide();
+  }
+
+  function setModal(name) {
+    return function(modal) {
+      $scope.modals[name] = modal;
+      $scope.$on('$destroy', function() {
+        $scope.modals[name].remove();
       });
+    };
   }
 
-  function openModal(modal) {
-    $scope.modals[modal].show();
+  function setList(listType) {
+    return function(data) {
+      $scope[listType].list = data;
+    };
   }
 
-  function closeModal(modal) {
-    $scope.modals[modal].hide();
+  function logErr(err) {
+    console.err(err);
   }
-
-
 }
