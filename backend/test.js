@@ -53,8 +53,8 @@ exports.createTest = function(){
           {
             "userId": 2,
             "ownerName": "test2",
-            "ownerLat": 33.8,
-            "ownerLong": -117.25,
+            "ownerLat": 33.986059,
+            "ownerLong": -118.402044,
             "expirationDate": "2017-06-25 16:59:01"
           }
         ];
