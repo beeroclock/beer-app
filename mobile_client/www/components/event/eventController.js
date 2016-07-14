@@ -42,19 +42,17 @@ angular.module('app.EventController', [])
     }
   }
 
-  $scope.latOnMap;
-  $scope.longOnMap;
 
-  function drawMap(eventData) {
+  function drawMap(eventData, currentLat, currentLong) {
     var map
     map = null;
     if(eventData.centerLat === null || eventData.centerLat === undefined){
-      var myLatlng = new google.maps.LatLng(eventData.centerLat, eventData.centerLong);
+      var myLatlng = new google.maps.LatLng(eventData.ownerLat, eventData.ownerLong);
     }else{
       var myLatlng = new google.maps.LatLng(eventData.centerLat, eventData.centerLong);
+      var eventLatlng = new google.maps.LatLng(eventData.ownerLat, eventData.ownerLong);
     };
-    $scope.latOnMap = eventData.centerLat;
-    $scope.longOnMap = eventData.centerLong;
+
     var mapOptions = {
       center: myLatlng,
       zoom: 16,
@@ -71,14 +69,24 @@ angular.module('app.EventController', [])
       content: compiled[0]
     });
 
-    var marker = new google.maps.Marker({
+    var myMarker = new google.maps.Marker({
       position: myLatlng,
       map: map,
-      title: 'Uluru (Ayers Rock)'
+      title: 'Owner\'s location'
     });
 
-    google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map, marker);
+    var eventMarker = new google.maps.Marker({
+      position: eventLatlng,
+      map: map,
+      title: 'Event\'s location'
+    });
+
+    google.maps.event.addListener(myMarker, 'click', function() {
+      infowindow.open(map, myMarker);
+    });
+
+    google.maps.event.addListener(eventMarker, 'click', function() {
+      infowindow.open(map, eventMarker);
     });
 
     $scope.map = map;
@@ -95,13 +103,15 @@ angular.module('app.EventController', [])
     $scope.loading = $ionicLoading.show({
       content: 'Getting current location...',
       showBackdrop: false
+    }).then(function() {
+      $scope.showBeer = true;
     });
 
     navigator.geolocation.getCurrentPosition(function(pos) {
       $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-        $scope.loading = $ionicLoading.hide();
-        $scope.foundLat = pos.coords.latitude
-        $scope.foundLong = pos.coords.longitude
+        $scope.loading = $ionicLoading.hide().then(function () {
+          $scope.showBeer = false;
+        });
         callback(pos)
     }, function(error) {
       alert('Unable to get location: ' + error.message);
@@ -121,7 +131,7 @@ angular.module('app.EventController', [])
       EventFactory.acceptEvent(eventId, $rootScope.userId, $rootScope.username, currentLat, currentLong)
       .success(function (acceptedEvent) {
         $scope.userAttending = true;
-        drawMap(acceptedEvent)
+        drawMap(acceptedEvent, currentLat, currentLong)
         var popup = $ionicPopup.alert({
           title: 'you\'re going!',
           template: 'You have accepted this event successfully'

@@ -4,7 +4,7 @@
     <button class="button" ui-sref="main"><i class="icon ion-home"></i></button>
   </ion-nav-buttons>
   <ion-content>
-    <div id="map" data-tap-disabled="true"></div><a class="button button-icon icon ion-navigate" ng-click="currentLocation()">Find Current Location.</a><br/><a class="button button-icon">on Map: {{latOnMap}}, {{longOnMap}}</a><br/><a class="button button-icon">Found: {{foundLat}}, {{foundLong}}</a>
+    <div id="map" data-tap-disabled="true"></div><br/>
     <div class="list list-inset">
       <div ng-show="userAttending">You're going to this event</div>
       <div>People going to this event:</div>
@@ -17,6 +17,6 @@
     </div>
     <div ng-show="!isUserOwner">
       <button class="button button-block button-calm" ng-click="lockEvent(currentEventInView.id)" ng-hide="eventLocked">Lock Event</button>
-    </div><img src="../../assets/images/beer.gif" ng-show="eventLoading"/>
+    </div><img src="../../assets/images/beer.gif" ng-show="showBeer"/>
   </ion-content>
 </ion-view>

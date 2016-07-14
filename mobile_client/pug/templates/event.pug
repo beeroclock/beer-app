@@ -4,11 +4,8 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
       i.icon.ion-home
   ion-content
     #map(data-tap-disabled="true")
-    a(ng-click="currentLocation()" class="button button-icon icon ion-navigate") Find Current Location.
+    //- a(ng-click="currentLocation()" class="button button-icon icon ion-navigate") Find Current Location.
     br
-    a(class="button button-icon") on Map: {{latOnMap}}, {{longOnMap}}
-    br
-    a(class="button button-icon") Found: {{foundLat}}, {{foundLong}}
     .list.list-inset
       div(ng-show="userAttending") You're going to this event
       div People going to this event:
@@ -18,6 +15,6 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
       button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)', ng-hide="userAttending") Accept Event
     div(ng-show="!isUserOwner")
       button.button.button-block.button-calm(ng-click='lockEvent(currentEventInView.id)', ng-hide="eventLocked") Lock Event
-    img(src='../../assets/images/beer.gif' ng-show="eventLoading")
+    img(src='../../assets/images/beer.gif' ng-show="showBeer")
 
 
