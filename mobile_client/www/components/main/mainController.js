@@ -5,9 +5,8 @@ angular.module('app.MainController', [])
   $scope.friendsEvents = {};
   //Single event. Clears data when user reaches Main state.
   $rootScope.currentEvent = null;
-
+  $rootScope.myActiveEvent = null;
   $scope.activeEvent = false;
-
   //Get current active event, if any (does not need to use eventId)
   $scope.getMyEvent = function() {
     MainFactory.getMyEvent()
@@ -37,6 +36,10 @@ angular.module('app.MainController', [])
         $scope.loading = $ionicLoading.hide()
         $rootScope.myActiveEvent = result;
         $scope.activeEvent = false;
+        var popup = $ionicPopup.alert({
+          title: 'Event created',
+          template: 'You have created an event!'
+        });
       })
       .error(function (err) {
         $scope.loading = $ionicLoading.hide()

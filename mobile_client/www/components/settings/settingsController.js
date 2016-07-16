@@ -33,9 +33,10 @@ angular.module('app.SettingsController', [])
          SettingsFactory.logout()
          .then(function(result) {
            if(result.status === 200){
+             $rootScope.userId = null;
+             $rootScope.myActiveEvent = null;
              AuthFactory.removeTokenAndHttpHeaders(function (result) {
                  if (result) {
-                   $rootScope.userId = null;
                    $state.go('login')
                  } else{
                    var popup = $ionicPopup.alert({
