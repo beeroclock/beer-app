@@ -454,6 +454,21 @@ module.exports = {
       })
     }
   },
+  getMyEvent: {
+    get: function (userId, currentTime, callback) {
+      db.Event.find({
+        where:{
+          userId: userId,
+          expirationDate: {
+            $gt: currentTime
+          }
+        }
+      })
+      .then(function(event) {
+        callback(event)
+      })
+    }
+  },
   updateEventLocation: {
     put: function (eventId, centralPoints, callback) {
       db.Event.find({
