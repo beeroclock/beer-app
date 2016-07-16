@@ -2,6 +2,7 @@ angular.module('app.LoginController', [])
 .controller('LoginController', function($scope, $state, $rootScope, $ionicPopup, LoginFactory, AuthFactory){
 
   $scope.data = {};
+  $rootScope.isAuthenticated = false;
 
   $scope.login = function(){
     LoginFactory.login($scope.data.username, $scope.data.password)
@@ -10,6 +11,7 @@ angular.module('app.LoginController', [])
       $rootScope.username = result.username;
       AuthFactory.setTokenAndHttpHeaders(result['beeroclock-token'], result.userId, function (result) {
           if (result) {
+            $rootScope.isAuthenticated = true;
             $state.go('main')
           } else{
             var popup = $ionicPopup.alert({

@@ -3,8 +3,6 @@ angular.module('app.EventController', [])
   //All data for current event
   $scope.currentEventInView = $rootScope.currentEvent.event
 
-  console.log("+++ 6 eventController.js $scope.currentEventInView: ", JSON.stringify($scope.currentEventInView, null, "\t"));
-
   //Attendees of current event
   $scope.currentEventAttendees = _.orderBy($rootScope.currentEvent.attendees, ['username'],['asc'])
   // $rootScope.currentEvent.attendees
