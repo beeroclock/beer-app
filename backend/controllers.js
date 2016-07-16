@@ -167,8 +167,8 @@ module.exports = controllers = {
       var userId = request.headers.userid;
       models.friendsList.get(userId, function (friendsList) {
         if(friendsList){
-          models.events.get(friendsList, function (foundEvent) {
-            response.status(200).json(foundEvent)
+          models.events.get(friendsList, function (foundEvents) {
+            response.status(200).json(foundEvents)
           })
         } else{
           response.sendStatus(204);

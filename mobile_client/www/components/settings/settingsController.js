@@ -35,6 +35,7 @@ angular.module('app.SettingsController', [])
            if(result.status === 200){
              $rootScope.userId = null;
              $rootScope.myActiveEvent = null;
+             $rootScope.isAuthenticated = false;
              AuthFactory.removeTokenAndHttpHeaders(function (result) {
                  if (result) {
                    $state.go('login')

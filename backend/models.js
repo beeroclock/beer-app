@@ -181,14 +181,16 @@ module.exports = {
                   friendIds.push(value)
                 })
               })
-              friendIds = _.pull(friendIds, userId)
               db.User.findAll({
                 where: {
-                  id: friendIds
+                  id: friendIds,
+                  $not: {
+                    id: userId
+                  }
+
                 }
               })
               .then(function(friends){
-                console.log("+++ 192 models.js friends: ", friends)
                 var friends = friends.map(function(friend){
                   return {id: friend.id, username: friend.username};
                 });
@@ -366,6 +368,7 @@ module.exports = {
       })
     },
     get: function (friendsList, callback) {
+      console.log("+++ 368 models.js friendsList: ", friendsList)
       var friendIds = [];
       _.forEach(friendsList, function (friend) {
         friendIds.push(friend.id)
@@ -379,8 +382,8 @@ module.exports = {
           }
         }
       })
-      .then(function(foundEvent) {
-        callback(foundEvent)
+      .then(function(foundEvents) {
+        callback(foundEvents)
       })
     }
   },
@@ -498,27 +501,6 @@ module.exports = {
       })
     }
   }
-  // testRoute: {
-  //   get: function (eventId, callback) {
-  //     console.log("+++ 339 models.js Here")
-  //     db.Attendee.findAll({
-  //       include: [{
-  //         model: db.User,
-  //         where: {
-  //           $and: {id: 2}
-  //         },
-  //         attributes: {exclude: ['password', 'email', 'createdAt', 'udpatedAt']}
-  //       }],
-  //       // where: {
-  //       //   eventId: eventId
-  //       // },
-  //       // include: [db.User]
-  //     })
-  //     .then(function(event) {
-  //       callback(event)
-  //     })
-  //   }
-  // }
 }
 
 
