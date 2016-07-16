@@ -3,7 +3,8 @@ ion-view(view-title='Hello, {{username}}')
     button.button(ui-sref='settings')
       i.icon.ion-gear-a
   ion-content
-    button.button.button-block.button-energized(ui-sref='friends') Friends
+    button.button.button-block.button-energized(ng-click="createNewEvent()" ng-show="activeEvent") Create Event
+    button.button.button-block.button-energized(ng-click="myEvent()" ng-show="!activeEvent") My Current Event
     div Your friend's Events
     div(ng-repeat="event in friendsEvents")
       button.button.button-block.button-calm(ng-click="getEvent(event.id)") {{event.ownerName}}

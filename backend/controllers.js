@@ -204,7 +204,6 @@ module.exports = controllers = {
             })
           })
         } else if (!isActive){
-          console.log("+++ 172 controllers.js -- Event is Inactive/Locked")
           response.status(200).json(event)
         }else{
           response.sendStatus(400);
@@ -212,6 +211,7 @@ module.exports = controllers = {
       })
     }
   },
+  //get active event with EventId
   activeEvent: {
     get: function(request, response) {
       var eventId = request.params.id;
@@ -224,6 +224,17 @@ module.exports = controllers = {
       })
     }
   },
+  //get active event with userId
+  getMyEvent: {
+    get: function(request, response) {
+      var userId = request.headers.userid;
+      var currentTime = new Date();
+      models.getMyEvent.get(userId, currentTime, function (result) {
+        response.status(200).json(result)
+      })
+    }
+  },
+  //lock my active event
   lockEvent: {
     put: function (request, response) {
       var eventId = request.params.id;

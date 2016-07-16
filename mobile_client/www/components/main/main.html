@@ -4,7 +4,8 @@
     <button class="button" ui-sref="settings"><i class="icon ion-gear-a"></i></button>
   </ion-nav-buttons>
   <ion-content>
-    <button class="button button-block button-energized" ui-sref="friends">Friends</button>
+    <button class="button button-block button-energized" ng-click="createNewEvent()" ng-show="activeEvent">Create Event</button>
+    <button class="button button-block button-energized" ng-click="myEvent()" ng-show="!activeEvent">My Current Event</button>
     <div>Your friend's Events</div>
     <div ng-repeat="event in friendsEvents">
       <button class="button button-block button-calm" ng-click="getEvent(event.id)">{{event.ownerName}}</button>

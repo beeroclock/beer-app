@@ -70,7 +70,7 @@ router.post('/events', utils.checkUser, function(request, response) {
 })
 
 //get Active Friend's Events
-router.get('/events/', utils.checkUser, function(request, response) {
+router.get('/events', utils.checkUser, function(request, response) {
   controllers.events.get(request, response)
 })
 
@@ -84,8 +84,9 @@ router.get('/events/:id', utils.checkUser, function(request, response) {
   controllers.activeEvent.get(request, response)
 })
 
-router.get('/testRoute/:id', utils.checkUser, function(request, response) {
-  controllers.testRoute.get(request, response)
+//Get logged in user's active event
+router.get('/getMyEvent', utils.checkUser, function(request, response) {
+  controllers.getMyEvent.get(request, response)
 })
 
 router.put('/lockEvent/:id', utils.checkUser, function (request, response) {
