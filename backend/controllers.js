@@ -167,8 +167,8 @@ module.exports = controllers = {
       var userId = request.headers.userid;
       models.friendsList.get(userId, function (friendsList) {
         if(friendsList){
-          models.events.get(friendsList, function (foundEvent) {
-            response.status(200).json(foundEvent)
+          models.events.get(friendsList, function (foundEvents) {
+            response.status(200).json(foundEvents)
           })
         } else{
           response.sendStatus(204);
@@ -192,13 +192,9 @@ module.exports = controllers = {
             var eventOwnerLat = event.dataValues.ownerLat;
             var eventOwnerLong = event.dataValues.ownerLong;
             locationsAverage.getCentralPoints(attendeesList, eventOwnerLat, eventOwnerLong, function (centerPoints) {
-              models.updateEventLocation.put(eventId, centerPoints, function (eventUpdated) {
-                utils.searchYelpApi(eventUpdated.centerLat, eventUpdated.centerLong, function (yelpData) {
-                    eventUpdatedWithYelpData ={
-                      eventUpdated: eventUpdated,
-                      yelpData: yelpData.businesses
-                    }
-                    response.status(200).json(eventUpdatedWithYelpData)
+              utils.searchYelpApi(centerPoints.centerLat, centerPoints.centerLong, function (yelpData) {
+                models.updateEventLocation.put(eventId, yelpData, centerPoints.centerLat, centerPoints.centerLong, function (eventUpdated) {
+                  response.status(200).json(eventUpdated)
                 })
               })
             })

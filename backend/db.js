@@ -85,7 +85,30 @@ var Event = sequelize.define('Event', {
   expirationDate: {
     type: Sequelize.DATE
   },
-  note: Sequelize.STRING
+  locationLat: {
+    type: Sequelize.FLOAT(53),
+    allowNull: true,
+    validate: {
+      min: -90.0,
+      max: 90.0
+    },
+    defaultValue: null
+  },
+  locationLong: {
+    type: Sequelize.FLOAT(53),
+    allowNull: true,
+    validate: {
+      min: -180.0,
+      max: 180.0
+    },
+    defaultValue: null
+  },
+  locationName: Sequelize.STRING,
+  locationAddress1: Sequelize.STRING,
+  locationAddress2: Sequelize.STRING,
+  locationPhone: Sequelize.STRING,
+  locationRating: Sequelize.INTEGER,
+  userNote: Sequelize.STRING
 }, {
   timestamps: true,
   paranoid: true

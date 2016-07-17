@@ -3,14 +3,16 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
     button.button(ui-sref='main')
       i.icon.ion-home
   ion-content
-    #map(data-tap-disabled="true")
-    div {{locationName}}
-    br
-    div {{locationAddress}}
-    br
+    //- #map(data-tap-disabled="true")
+
+    #map(ng-class="class" data-tap-disabled="true")
     .list.list-inset
+      div {{locationName}}
+      div {{locationAddress1}}
+      div {{locationAddress2}}
+      br
       div(ng-show="userAttending") You're going to this event
-      div People going to this event:
+      div {{usersMessage}}
       div(ng-repeat="invitee in currentEventAttendees")
         div {{invitee.username}}
     div(ng-show="isUserOwner")
