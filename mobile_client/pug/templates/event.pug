@@ -3,7 +3,9 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
     button.button(ui-sref='main')
       i.icon.ion-home
   ion-content
-    #map(data-tap-disabled="true")
+    //- #map(data-tap-disabled="true")
+
+    #map(ng-class="class" data-tap-disabled="true")
     div {{locationName}}
     br
     div {{locationAddress}}

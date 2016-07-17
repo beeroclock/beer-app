@@ -54,7 +54,6 @@ exports.searchYelpApi = function (centerLat, centerLong, callback){
   var cLong = centerLong;
   var cll = cLat.toString() + ',' + cLong.toString();
   var closestBar = [];
-  console.log("Center lat long before API call: ", cll);
 
   yelp.search({ term: 'bar', ll: cll, limit: 1, sort: 1 })
   .then(function (data) {

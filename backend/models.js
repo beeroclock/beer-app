@@ -473,15 +473,23 @@ module.exports = {
     }
   },
   updateEventLocation: {
-    put: function (eventId, centralPoints, callback) {
+    put: function (eventId, yelpData, centerLat, centerLong, callback) {
       db.Event.find({
         where:{
           id: eventId
         }
       })
       .then(function (event) {
-        event.centerLat = centralPoints.centerLat,
-        event.centerLong = centralPoints.centerLong
+        console.log("+++ 483 models.js yelpData.businesses: ", yelpData.businesses[0].location.display_address)
+        event.centerLat = centerLat,
+        event.centerLong =  centerLong,
+        event.locationLat = yelpData.businesses[0].location.coordinate.latitude,
+        event.locationLong =  yelpData.businesses[0].location.coordinate.longitude,
+        event.locationName = yelpData.businesses[0].name,
+        event.locationAddress1 = yelpData.businesses[0].location.display_address[0],
+        event.locationAddress2 = yelpData.businesses[0].location.display_address[1],
+        event.locationPhone = yelpData.businesses[0].display_phone,
+        event.locationRating = yelpData.businesses[0].rating
         event.save();
         callback(event)
       })
