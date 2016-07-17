@@ -4,7 +4,6 @@ angular.module('app.EventFactory', [])
 function eventFactory($http, $rootScope, apiUrl) {
 
   var acceptEvent = function(eventId, userId, username, acceptedLat, acceptedLong){
-    console.log("+++ 9 eventFactory.js eventId, userId, username: ", eventId, userId, username)
     return $http({
       method: 'POST',
       url: apiUrl + '/acceptEvent/' + eventId,

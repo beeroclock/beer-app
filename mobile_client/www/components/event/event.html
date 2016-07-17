@@ -4,12 +4,13 @@
     <button class="button" ui-sref="main"><i class="icon ion-home"></i></button>
   </ion-nav-buttons>
   <ion-content>
-    <div id="map" data-tap-disabled="true"></div>
-    <div>{{locationName}}</div><br/>
-    <div>{{locationAddress}}</div><br/>
+    <div id="map" ng-class="class" data-tap-disabled="true"></div>
     <div class="list list-inset">
+      <div>{{locationName}}</div>
+      <div>{{locationAddress1}}</div>
+      <div>{{locationAddress2}}</div><br/>
       <div ng-show="userAttending">You're going to this event</div>
-      <div>People going to this event:</div>
+      <div>{{usersMessage}}</div>
       <div ng-repeat="invitee in currentEventAttendees">
         <div>{{invitee.username}}</div>
       </div>

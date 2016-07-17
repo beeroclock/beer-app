@@ -181,14 +181,16 @@ module.exports = {
                   friendIds.push(value)
                 })
               })
-              friendIds = _.pull(friendIds, userId)
               db.User.findAll({
                 where: {
-                  id: friendIds
+                  id: friendIds,
+                  $not: {
+                    id: userId
+                  }
+
                 }
               })
               .then(function(friends){
-                console.log("+++ 192 models.js friends: ", friends)
                 var friends = friends.map(function(friend){
                   return {id: friend.id, username: friend.username};
                 });
@@ -366,6 +368,7 @@ module.exports = {
       })
     },
     get: function (friendsList, callback) {
+      console.log("+++ 368 models.js friendsList: ", friendsList)
       var friendIds = [];
       _.forEach(friendsList, function (friend) {
         friendIds.push(friend.id)
@@ -379,8 +382,8 @@ module.exports = {
           }
         }
       })
-      .then(function(foundEvent) {
-        callback(foundEvent)
+      .then(function(foundEvents) {
+        callback(foundEvents)
       })
     }
   },
@@ -470,15 +473,23 @@ module.exports = {
     }
   },
   updateEventLocation: {
-    put: function (eventId, centralPoints, callback) {
+    put: function (eventId, yelpData, centerLat, centerLong, callback) {
       db.Event.find({
         where:{
           id: eventId
         }
       })
       .then(function (event) {
-        event.centerLat = centralPoints.centerLat,
-        event.centerLong = centralPoints.centerLong
+        console.log("+++ 483 models.js yelpData.businesses: ", yelpData.businesses[0].location.display_address)
+        event.centerLat = centerLat,
+        event.centerLong =  centerLong,
+        event.locationLat = yelpData.businesses[0].location.coordinate.latitude,
+        event.locationLong =  yelpData.businesses[0].location.coordinate.longitude,
+        event.locationName = yelpData.businesses[0].name,
+        event.locationAddress1 = yelpData.businesses[0].location.display_address[0],
+        event.locationAddress2 = yelpData.businesses[0].location.display_address[1],
+        event.locationPhone = yelpData.businesses[0].display_phone,
+        event.locationRating = yelpData.businesses[0].rating
         event.save();
         callback(event)
       })
@@ -498,27 +509,6 @@ module.exports = {
       })
     }
   }
-  // testRoute: {
-  //   get: function (eventId, callback) {
-  //     console.log("+++ 339 models.js Here")
-  //     db.Attendee.findAll({
-  //       include: [{
-  //         model: db.User,
-  //         where: {
-  //           $and: {id: 2}
-  //         },
-  //         attributes: {exclude: ['password', 'email', 'createdAt', 'udpatedAt']}
-  //       }],
-  //       // where: {
-  //       //   eventId: eventId
-  //       // },
-  //       // include: [db.User]
-  //     })
-  //     .then(function(event) {
-  //       callback(event)
-  //     })
-  //   }
-  // }
 }
 
 
