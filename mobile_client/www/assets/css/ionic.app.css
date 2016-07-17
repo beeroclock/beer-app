@@ -9836,4 +9836,5 @@ a.button {
 #map {
   width: 100%;
   height: 50%;
+  background-size: contain;
   background-image: url("../../assets/images/beerbg.jpg"); }

@@ -5,51 +5,52 @@ angular.module('app.EventController', [])
 
   //Attendees of current event
   $scope.currentEventAttendees = _.orderBy($rootScope.currentEvent.attendees, ['username'],['asc'])
-  console.log("+++ 8 eventController.js $scope.currentEventAttendees: ", $scope.currentEventAttendees)
-
-  //Map will be drawn in this scope
-  $scope.map
-
-  $scope.eventLoading = false;
-
-  //On load, check if the event is locked and if the event belongs to the signed in user
+  //On load, check if the event is locked. Check if the event belongs to the signed in user, if so draw the map
   $scope.eventLocked = false;
   $scope.isUserOwner = true;
+  $scope.userAttending = false;
+  $scope.usersMessage = 'Friends going to this event:'
 
   var eventStatus = function() {
     if($scope.currentEventInView.active === false){
       $scope.eventLocked = true;
+    }
     if($scope.currentEventInView.userId === $rootScope.userId){
       $scope.isUserOwner = false;
+      drawMap($scope.currentEventInView)
     }
+    //If no users are going at this time
+    if($scope.currentEventAttendees.length === 0){
+      $scope.eventLocked = true;
+      $scope.usersMessage = 'No other friends have accepted the event yet.'
     }
-  }
-
-  //User is attending this event
-  $scope.userAttending = false;
-
-  var isUserGoing = function () {
-    _.forEach($scope.currentEventAttendees, function (attendee) {
+    //Check if the logged in user is going to this event
+    _.forEach($scope.currentEventAttendees, function (attendee, index) {
       if(attendee.userId === $rootScope.userId){
         $scope.userAttending = true;
       }
+      if ($scope.userAttending) {
+        drawMap($scope.currentEventInView)
+      }
     })
-    if ($scope.userAttending) {
-      drawMap($scope.currentEventInView)
-    }
   }
 
+  //Draws map. This function used by Accept Event and on controller load. EventData is in $scope.currentEventInView
   function drawMap(eventData) {
+    //if no location has been selected do not draw the map
+    if(eventData.locationLat === null){
+      return;
+    }
 
     google.maps.event.addDomListener(window, 'load', drawMap);
 
     var map
     map = null;
+    var myLatlng = new google.maps.LatLng(eventData.locationLat, eventData.locationLong);
 
-    var myLatlng = new google.maps.LatLng(eventData.ownerLat, eventData.ownerLong);
-
-    // $scope.locationName = eventData.yelpData[0].name
-    // $scope.locationAddress = eventData.yelpData[0].location.display_address
+    $scope.locationName = eventData.locationName;
+    $scope.locationAddress1 = eventData.locationAddress1;
+    $scope.locationAddress2 = eventData.locationAddress2;
 
     var mapOptions = {
       center: myLatlng,
@@ -86,7 +87,7 @@ angular.module('app.EventController', [])
 
   //Accept Event
   $scope.acceptEvent = function() {
-    $scope.currentLocation(function (currentPosition){
+    currentLocation(function (currentPosition){
       var eventId = $scope.currentEventInView.id
       var currentLat = currentPosition.coords.latitude;
       var currentLong = currentPosition.coords.longitude;
@@ -110,7 +111,7 @@ angular.module('app.EventController', [])
     })
   };
 
-  $scope.currentLocation = function(callback) {
+  var currentLocation = function(callback) {
 
     $scope.loading = $ionicLoading.show({
       content: 'Getting current location...',
@@ -142,10 +143,7 @@ angular.module('app.EventController', [])
   }
 
   var initialize = function () {
-    isUserGoing();
     eventStatus();
-    // drawMap($scope.currentEventInView);
-    // eventLoading();
   };
 
   initialize();
