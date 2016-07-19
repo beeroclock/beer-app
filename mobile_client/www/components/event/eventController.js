@@ -1,5 +1,5 @@
 angular.module('app.EventController', [])
-.controller('EventController', function($scope, $state, $rootScope, $ionicPopup, $ionicLoading, $compile, EventFactory){
+.controller('EventController', function($scope, $state, $rootScope, $ionicPopup, $ionicLoading, $compile, EventFactory, GeoFactory){
   //All data for current event
   $scope.currentEventInView = $rootScope.currentEvent.event
 
@@ -11,13 +11,26 @@ angular.module('app.EventController', [])
   $scope.userAttending = false;
   $scope.usersMessage = 'Friends going to this event:'
 
+  //Location data to display
+  $scope.locationName = $scope.currentEventInView.locationName;
+  $scope.locationAddress1 = $scope.currentEventInView.locationAddress1;
+  $scope.locationAddress2 = $scope.currentEventInView.locationAddress2;
+
+  //Location data for user and location
+  var locationData = {
+    userLocationLat: null,
+    userLocationLong: null,
+    locationLat: null,
+    locationLong: null
+  }
+
   var eventStatus = function() {
     if($scope.currentEventInView.active === false){
       $scope.eventLocked = true;
     }
     if($scope.currentEventInView.userId === $rootScope.userId){
       $scope.isUserOwner = false;
-      drawMap($scope.currentEventInView)
+      drawMap($scope.currentEventInView, $scope.currentEventInView.ownerLat, $scope.currentEventInView.ownerLong)
     }
     //If no users are going at this time
     if($scope.currentEventAttendees.length === 0){
@@ -28,15 +41,34 @@ angular.module('app.EventController', [])
     _.forEach($scope.currentEventAttendees, function (attendee, index) {
       if(attendee.userId === $rootScope.userId){
         $scope.userAttending = true;
+        //to draw map ifuser is owner
+        locationData = {
+          userLocationLat: attendee.attendeeLat,
+          userLocationLong: attendee.attendeeLong,
+          locationLat: $rootScope.currentEvent.event.locationLat,
+          locationLong: $rootScope.currentEvent.event.locationLong
+        }
       }
       if ($scope.userAttending) {
-        drawMap($scope.currentEventInView)
+        drawMap($scope.currentEventInView, locationData.userLocationLat, locationData.userLocationLong)
       }
     })
   }
 
+  //get data from uber for ride from user's location to central location
+  var getUberData = function (userLat, userLong, locationLat, locationLong) {
+    if(userLat && userLong && locationLat && locationLong){
+      EventFactory.getUberData(userLat, userLong, locationLat, locationLong)
+      .then(function (uberData) {
+        $scope.uberData = uberData.data.prices[0];
+      })
+    }
+  }
+
   //Draws map. This function used by Accept Event and on controller load. EventData is in $scope.currentEventInView
-  function drawMap(eventData) {
+  function drawMap(eventData, userLat, userLong) {
+    $scope.userAttending = true;
+    getUberData(userLat, userLong, eventData.locationLat, eventData.locationLong);
     //if no location has been selected do not draw the map
     if(eventData.locationLat === null){
       return;
@@ -46,18 +78,58 @@ angular.module('app.EventController', [])
 
     var map
     map = null;
-    var myLatlng = new google.maps.LatLng(eventData.locationLat, eventData.locationLong);
+    //get the central points between the bar and the user
+    var centralPoints = GeoFactory.getCentralPoints(userLat, userLong, eventData.locationLat, eventData.locationLong)
 
-    $scope.locationName = eventData.locationName;
-    $scope.locationAddress1 = eventData.locationAddress1;
-    $scope.locationAddress2 = eventData.locationAddress2;
+    //create gMaps objects for the map
+    var locationLatlng = new google.maps.LatLng(eventData.locationLat, eventData.locationLong);
+    var userLatlng = new google.maps.LatLng(userLat, userLong);
+    var centralLatlng = new google.maps.LatLng(centralPoints.centerLat, centralPoints.centerLong);
 
+    //determine distance between both location and user lat/longs.
+    var mapDist =  GeoFactory.distance(userLat, userLong, eventData.locationLat, eventData.locationLong);
+
+    //set mapZoom to display both location and user on map
+    var mapZoom;
+    if(mapDist > 0 && mapDist < 0.75){
+      mapZoom = 15;
+    } else if(mapDist > 0.75 && mapDist < 1.5){
+      mapZoom = 14;
+    } else if(mapDist > 1.5 && mapDist < 3){
+      mapZoom = 13;
+    } else if (mapDist > 3 && mapDist < 6){
+      mapZoom = 12;
+    } else if (mapDist > 6 && mapDist < 12){
+      mapZoom = 11;
+    } else if (mapDist > 12 && mapDist < 24){
+      mapZoom = 10;
+    } else if (mapDist > 24 && mapDist < 48){
+      mapZoom = 9;
+    } else if (mapDist > 48 && mapDist < 96){
+      mapZoom = 8;
+    } else if (mapDist > 96 && mapDist < 192){
+      mapZoom = 7;
+    } else if (mapDist > 192 && mapDist < 384){
+      mapZoom = 6;
+    } else if (mapDist > 384 && mapDist < 768){
+      mapZoom = 5;
+    } else if (mapDist > 768 && mapDist < 1536){
+      mapZoom = 4;
+    } else if (mapDist > 1536 && mapDist < 3072){
+      mapZoom = 3;
+    } else if (mapDist > 3072 && mapDist < 6144){
+      mapZoom = 2;
+    } else if (mapDist > 6144){
+      mapZoom = 1;
+    }
+    //Map's central and zoom start options
     var mapOptions = {
-      center: myLatlng,
-      zoom: 15,
+      center: centralLatlng,
+      zoom: mapZoom,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
+    //to draw map and pins
     map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
     //Marker + infowindow + angularjs compiled ng-click
@@ -68,14 +140,24 @@ angular.module('app.EventController', [])
       content: compiled[0]
     });
 
-    var myMarker = new google.maps.Marker({
-      position: myLatlng,
+    var locationMarker = new google.maps.Marker({
+      position: locationLatlng,
       map: map,
-      title: 'Owner\'s location'
+      title: 'Location\'s location'
     });
 
-    google.maps.event.addListener(myMarker, 'click', function() {
-      infowindow.open(map, myMarker);
+    var userMarker = new google.maps.Marker({
+      position: userLatlng,
+      map: map,
+      title: 'User\'s location'
+    });
+
+    google.maps.event.addListener(locationMarker, 'click', function() {
+      infowindow.open(map, locationMarker);
+    });
+
+    google.maps.event.addListener(userMarker, 'click', function() {
+      infowindow.open(map, userMarker);
     });
 
     $scope.map = map;
@@ -95,8 +177,7 @@ angular.module('app.EventController', [])
       EventFactory.acceptEvent(eventId, $rootScope.userId, $rootScope.username, currentLat, currentLong)
       .success(function (acceptedEvent) {
         $scope.currentEventInView = acceptedEvent;
-        $scope.userAttending = true;
-        drawMap($scope.currentEventInView);
+        drawMap($scope.currentEventInView, currentLat, currentLong);
         var popup = $ionicPopup.alert({
           title: 'you\'re going!',
           template: 'You have accepted this event successfully'
@@ -134,7 +215,6 @@ angular.module('app.EventController', [])
     EventFactory.lockEvent(eventId)
     .then(function () {
       $scope.eventLocked = true;
-      console.log("+++ 108 eventController.js Event Locked")
       var popup = $ionicPopup.alert({
         title: 'Event Locked',
         template: 'This event\'s location is now locked'

@@ -6,10 +6,13 @@
   <ion-content>
     <div id="map" ng-class="class" data-tap-disabled="true"></div>
     <div class="list list-inset">
-      <div>{{locationName}}</div>
-      <div>{{locationAddress1}}</div>
-      <div>{{locationAddress2}}</div><br/>
-      <div ng-show="userAttending">You're going to this event</div>
+      <div ng-show="userAttending">
+        <div>{{locationName}}</div>
+        <div>{{locationAddress1}}</div>
+        <div>{{locationAddress2}}</div>
+        <div>An UberX there will cost about {{uberData.estimate}}.</div><br/>
+        <div>You're going to this event</div>
+      </div>
       <div>{{usersMessage}}</div>
       <div ng-repeat="invitee in currentEventAttendees">
         <div>{{invitee.username}}</div>
