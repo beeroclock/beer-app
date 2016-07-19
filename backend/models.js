@@ -21,7 +21,6 @@ module.exports = {
       })
       .spread(function (found, create) {
         if (create) {
-          console.log("+++ 43 models.js Here")
           bcrypt.hash(password, null, null, function(err, hash) {
             found.username = username;
             found.email = email;
@@ -368,7 +367,6 @@ module.exports = {
       })
     },
     get: function (friendsList, callback) {
-      console.log("+++ 368 models.js friendsList: ", friendsList)
       var friendIds = [];
       _.forEach(friendsList, function (friend) {
         friendIds.push(friend.id)
@@ -480,7 +478,6 @@ module.exports = {
         }
       })
       .then(function (event) {
-        console.log("+++ 483 models.js yelpData.businesses: ", yelpData.businesses[0].location.display_address)
         event.centerLat = centerLat,
         event.centerLong =  centerLong,
         event.locationLat = yelpData.businesses[0].location.coordinate.latitude,

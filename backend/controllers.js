@@ -241,10 +241,21 @@ module.exports = controllers = {
   },
   yelp: {
     post: function (request, response){
-      console.log("+++ 231 controllers.js controller")
       var centerLat = request.body.centerLat;
       var centerLong = request.body.centerLong;
       utils.searchYelpApi(request, response, centerLat, centerLong);
+    }
+  },
+  uber: {
+    post: function (request, response){
+      var userLat = request.body.userLat;
+      var userLong = request.body.userLong;
+      var locationLat = request.body.locationLat;
+      var locationLong = request.body.locationLong;
+      console.log("+++ 255 controllers.js userLat, userLong, locationLat, locationLong: ", userLat, userLong, locationLat, locationLong)
+      utils.getUberData(userLat, userLong, locationLat, locationLong, function (uberData) {
+        response.status(200).json(uberData)
+      });
     }
   }
 }

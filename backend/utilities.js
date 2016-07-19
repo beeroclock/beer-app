@@ -9,6 +9,7 @@ var apiKeys = require('./apiKeys')
 
 
 var yelp = new Yelp(apiKeys.yelpKeys)
+var uber = new Uber(apiKeys.uberKeys)
 
 // Auth
 var decodeToken = exports.decodeToken = function(request){
@@ -69,39 +70,13 @@ exports.searchYelpApi = function (centerLat, centerLong, callback){
   });
 }
 
-exports.searchUberApi = function (request, response, startLat, startLong, endLat, endLong){
-  uber.estimates.price({
-    start_latitude: startLat, start_longitude: startLong,
-    end_latitude: endLat, end_longitude: endLong
-  }, function (err, res) {
-    if (err) {
-      console.error(err);
-      response.sendStatus(500)
-    } else {
-      response.status(200).send( {
-        uberX: res.prices[0],
-        uberXL: res.prices[1],
-        uberSELECT: res.prices[3],
-        uberBLACK: res.prices[4],
-        uberSUV: res.prices[5],
-        uberLUX: res.prices[6]
-      });
-    }
-  });
-}
-
-//---------
-
-// Central Point Math
-exports.getSingleCentralPoints = function(ownerPoints, acceptedPoints, num) {
-  var d0 = (acceptedPoints[0] - ownerPoints[0]) / (num + 1);
-  var d1 = (acceptedPoints[1] - ownerPoints[1]) / (num + 1);
-  var points = [];
-  for (var i = 1; i <= num; i++) {
-    points.push({
-      x: ownerPoints[0] + d0 * i,
-      y: ownerPoints[1] + d1 * i
+exports.getUberData = function (userLat, userLong, locationLat, locationLong, callback){
+  uber.estimates.getPriceForRoute(userLat, userLong, locationLat, locationLong, null,
+    function (err, res) {
+      if (err) {
+        callback(err)
+      } else {
+        callback(res)
+      }
     });
-  }
-  return points;
 }
