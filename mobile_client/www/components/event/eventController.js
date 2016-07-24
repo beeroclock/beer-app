@@ -53,7 +53,7 @@ angular.module('app.EventController', [])
     if(userLat && userLong && locationLat && locationLong){
       EventFactory.getUberData(userLat, userLong, locationLat, locationLong)
       .success(function (uberData) {
-        $scope.uberData = uberData.data.prices[1];
+        $scope.uberData = uberData.prices[1];
         $scope.locationPhone = $scope.currentEventInView.locationPhone;
         $scope.uber = true;
       })
