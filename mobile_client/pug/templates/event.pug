@@ -6,21 +6,27 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
     #map(ng-class="class" data-tap-disabled="true")
     div(ng-show="!isUserOwner")
       button.button.button-block.button-calm(ng-click='lockEvent(currentEventInView.id)', ng-hide="eventLocked") Lock Event
+    div(ng-show="isUserOwner")
+      button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)', ng-hide="userAttending" ng-disabled="buttonDisabled") Accept Event
     .list.list-inset
       div.center-text(ng-show="userAttending")
+        div.bold {{currentEventInView.locationName}}
+        div {{currentEventInView.locationAddress1}}
+        div {{currentEventInView.locationAddress2}}
+        div {{currentEventInView.locationPhone}}
         div.bold(ng-show="eventLocked") This event's location has been locked by the creator
-        div.bold {{locationName}}
-        div {{locationAddress1}}
-        div {{locationAddress2}}
-        div {{locationPhone}}
-        div(ng-show="uber") An UberX there will cost about {{uberData.estimate}}.
-        br
+    .list.list-inset
+      div.center-text(ng-show="uber")
+        div.bold UberX
+        div ~{{uberData.estimate}}.
+        div Current Multiplier: {{uberData.surge_multiplier}}X.
+        div Distance: {{uberData.distance}} miles.
+    .list.list-inset
+      div.center-text(ng-show="userAttending")
         div.bold You're going to this event
         div {{usersMessage}}
         div(ng-repeat="invitee in currentEventAttendees")
           div {{invitee.username}}
-    div(ng-show="isUserOwner")
-      button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)', ng-hide="userAttending") Accept Event
     img(src='../../assets/images/beer.gif' ng-show="showBeer")
 
 

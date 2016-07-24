@@ -2,7 +2,6 @@ angular.module('app.EventController', [])
 .controller('EventController', function($scope, $state, $rootScope, $ionicPopup, $ionicLoading, $compile, EventFactory, GeoFactory){
   //All data for current event
   $scope.currentEventInView = $rootScope.currentEvent.event
-
   //Attendees of current event
   $scope.currentEventAttendees = _.orderBy($rootScope.currentEvent.attendees, ['username'],['asc'])
   //On load, check if the event is locked. Check if the event belongs to the signed in user, if so draw the map
@@ -11,15 +10,6 @@ angular.module('app.EventController', [])
   $scope.userAttending = false;
   $scope.uber = false;
   $scope.usersMessage = 'Friends going to this event:'
-
-  //Location data to display. This function watched any changes that may occur to the currentEventInView scope
-  $scope.$watchCollection('currentEventInView', function () {
-    $scope.locationName = $scope.currentEventInView.locationName;
-    $scope.locationAddress1 = $scope.currentEventInView.locationAddress1;
-    $scope.locationAddress2 = $scope.currentEventInView.locationAddress2;
-    $scope.locationPhone = $scope.currentEventInView.locationPhone;
-  })
-
   //Location data for user and location
   var locationData = {
     userLocationLat: null,
@@ -34,7 +24,6 @@ angular.module('app.EventController', [])
     }
     //If no users are going at this time
     if($scope.currentEventAttendees.length === 0){
-      $scope.eventLocked = true;
       $scope.usersMessage = 'No other friends have accepted the event yet.'
     }
     //Check if the logged in user is going to this event
@@ -59,29 +48,29 @@ angular.module('app.EventController', [])
       drawMap($scope.currentEventInView, locationData.userLocationLat, locationData.userLocationLong)
     }
   }
-
   //get data from uber for ride from user's location to central location
   var getUberData = function (userLat, userLong, locationLat, locationLong) {
     if(userLat && userLong && locationLat && locationLong){
       EventFactory.getUberData(userLat, userLong, locationLat, locationLong)
       .then(function (uberData) {
-        $scope.uberData = uberData.data.prices[0];
+        $scope.uberData = uberData.data.prices[1];
+        $scope.locationPhone = $scope.currentEventInView.locationPhone;
         $scope.uber = true;
       })
     }
   }
-
   //Draws map. This function used by Accept Event and on controller load. EventData is in $scope.currentEventInView
   function drawMap(eventData, userLat, userLong) {
-    getUberData(userLat, userLong, eventData.locationLat, eventData.locationLong);
     //if no location has been selected do not draw the map
     if(eventData.locationLat === null){
       return;
     }
+    getUberData(userLat, userLong, eventData.locationLat, eventData.locationLong);
 
     google.maps.event.addDomListener(window, 'load', drawMap);
 
     var map
+
     map = null;
     //get the central points between the bar and the user
     var centralPoints = GeoFactory.getCentralPoints(userLat, userLong, eventData.locationLat, eventData.locationLong)
@@ -127,6 +116,7 @@ angular.module('app.EventController', [])
     } else if (mapDist > 6144){
       mapZoom = 1;
     }
+
     //Map's central and zoom start options
     var mapOptions = {
       center: centralLatlng,
@@ -197,6 +187,7 @@ angular.module('app.EventController', [])
 
   //Accept Event
   $scope.acceptEvent = function() {
+    $scope.buttonDisabled = true;
     currentLocation(function (currentPosition){
       var eventId = $scope.currentEventInView.id
       var currentLat = currentPosition.coords.latitude;
@@ -210,12 +201,14 @@ angular.module('app.EventController', [])
           template: 'You have accepted this event successfully'
         });
         $scope.userAttending = true;
+        $scope.buttonDisabled = false;
       })
       .error(function(err) {
         var popup = $ionicPopup.alert({
           title: 'Something went wrong',
           template: err
         });
+        $scope.buttonDisabled = false;
       })
     })
   };
