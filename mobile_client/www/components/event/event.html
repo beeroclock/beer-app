@@ -5,24 +5,26 @@
   </ion-nav-buttons>
   <ion-content>
     <div id="map" ng-class="class" data-tap-disabled="true"></div>
+    <div ng-show="!isUserOwner">
+      <button class="button button-block button-calm" ng-click="lockEvent(currentEventInView.id)" ng-hide="eventLocked">Lock Event</button>
+    </div>
     <div class="list list-inset">
-      <div ng-show="userAttending">
-        <div>{{locationName}}</div>
+      <div class="center-text" ng-show="userAttending">
+        <div class="bold" ng-show="eventLocked">This event's location has been locked by the creator</div>
+        <div class="bold">{{locationName}}</div>
         <div>{{locationAddress1}}</div>
         <div>{{locationAddress2}}</div>
-        <div>An UberX there will cost about {{uberData.estimate}}.</div><br/>
-        <div>You're going to this event</div>
-      </div>
-      <div>{{usersMessage}}</div>
-      <div ng-repeat="invitee in currentEventAttendees">
-        <div>{{invitee.username}}</div>
+        <div>{{locationPhone}}</div>
+        <div ng-show="uber">An UberX there will cost about {{uberData.estimate}}.</div><br/>
+        <div class="bold">You're going to this event</div>
+        <div>{{usersMessage}}</div>
+        <div ng-repeat="invitee in currentEventAttendees">
+          <div>{{invitee.username}}</div>
+        </div>
       </div>
     </div>
     <div ng-show="isUserOwner">
       <button class="button button-block button-calm" ng-click="acceptEvent(currentEventInView.id)" ng-hide="userAttending">Accept Event</button>
-    </div>
-    <div ng-show="!isUserOwner">
-      <button class="button button-block button-calm" ng-click="lockEvent(currentEventInView.id)" ng-hide="eventLocked">Lock Event</button>
     </div><img src="../../assets/images/beer.gif" ng-show="showBeer"/>
   </ion-content>
 </ion-view>

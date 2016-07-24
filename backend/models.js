@@ -354,6 +354,12 @@ module.exports = {
               expirationDate: currentTime
             })
             .then(function(eventCreated) {
+                eventCreated.locationName = null;
+                eventCreated.locationAddress1 = null;
+                eventCreated.locationAddress2 = null;
+                eventCreated.locationPhone = null;
+                eventCreated.locationRating = null;
+                eventCreated.userNote = null;
               if (eventCreated) {
                 callback(eventCreated)
               } else{

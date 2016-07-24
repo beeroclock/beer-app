@@ -38,7 +38,7 @@ angular.module('app.MainController', [])
         $scope.activeEvent = false;
         var popup = $ionicPopup.alert({
           title: 'Event created',
-          template: 'You have created an event!'
+          template: 'You have created an event! See your event by going to My Current Event'
         });
       })
       .error(function (err) {
