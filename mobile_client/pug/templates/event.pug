@@ -17,7 +17,7 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
         div.bold(ng-show="eventLocked") This event's location has been locked by the creator
     .list.list-inset
       div.center-text(ng-show="uber")
-        div.bold UberX
+        div.bold {{uberData.display_name}}
         div ~{{uberData.estimate}}.
         div Current Multiplier: {{uberData.surge_multiplier}}X.
         div Distance: {{uberData.distance}} miles.

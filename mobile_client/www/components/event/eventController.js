@@ -52,10 +52,13 @@ angular.module('app.EventController', [])
   var getUberData = function (userLat, userLong, locationLat, locationLong) {
     if(userLat && userLong && locationLat && locationLong){
       EventFactory.getUberData(userLat, userLong, locationLat, locationLong)
-      .then(function (uberData) {
+      .success(function (uberData) {
         $scope.uberData = uberData.data.prices[1];
         $scope.locationPhone = $scope.currentEventInView.locationPhone;
         $scope.uber = true;
+      })
+      .error(function (err) {
+        console.log("+++ 61 eventController.js UberAPI error: ", err)
       })
     }
   }
