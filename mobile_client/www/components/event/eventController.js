@@ -138,10 +138,10 @@ angular.module('app.EventController', [])
     map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
     var locationPinColor = "00b200";
-    var locationPin = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + locationPinColor);
+    var locationPin = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=L|" + locationPinColor + "|000000");
 
     var userPinColor = "FE7569";
-    var userPin = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + userPinColor);
+    var userPin = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=U|" + userPinColor + "|000000");
 
     //Marker + infowindow + angularjs compiled ng-click
     var locationMarker = new google.maps.Marker({
@@ -176,12 +176,27 @@ angular.module('app.EventController', [])
       infowindow.open(map, userMarker);
     });
 
+    //Set line between locations
+    var path = new google.maps.Polyline({
+      path: [
+        locationLatlng,
+        userLatLng
+      ],
+      geodesic: true,
+      strokeColor: '#4d4dff',
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+
+    path.setMap(map);
+
+    //Adds map to template
     $scope.map = map;
+
   }
 
   //Accept Event
   $scope.acceptEvent = function() {
-    console.log("+++ 184 eventController.js Here")
     currentLocation(function (currentPosition){
       var eventId = $scope.currentEventInView.id
       var currentLat = currentPosition.coords.latitude;
