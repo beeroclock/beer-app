@@ -1,2 +1,3 @@
 angular.module('app.constants', [])
-  .constant('apiUrl', 'http://54.187.1.218');
+  // .constant('apiUrl', 'http://localhost:8000');
+  .constant('apiUrl', 'http://54.245.18.23');
