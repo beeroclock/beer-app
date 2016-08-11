@@ -2,24 +2,13 @@
 var Sequelize = require('sequelize');
 var url = require('url');
 var createTest = require("./test.js").createTest;
+var apiKeys = require('./apiKeys')
 
 var dbName = "beer";
 var dbUser = "root";
-var dbPass = "";
+var dbPass = apiKeys.mysqlPass;
 
 var sequelize = null;
-
-// Heroku-ClearDB Code
-// if (process.env.CLEARDB_DATABASE_URL) {
-//   // the application is executed on Heroku ... use the postgres database
-//   var dbUrl = url.parse(process.env.CLEARDB_DATABASE_URL);
-//   sequelize = new Sequelize(dbUrl.pathname.slice(1), dbUrl.auth.split(":")[0],  dbUrl.auth.split(":")[1], {
-//     dialect:  'mysql',
-//     protocol: 'mysql',
-//     host:     dbUrl.hostname,
-//     logging:  true
-//   })
-
 
 if(process.env.CLEARDB_DATABASE_URL){
   sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
