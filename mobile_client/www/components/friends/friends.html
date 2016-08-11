@@ -6,7 +6,8 @@
     <button class="button" ui-sref="settings"><i class="icon ion-gear-a"></i></button>
   </ion-nav-buttons>
   <ion-content>
-    <div>searchbox here</div>
-    <div>friends list here</div>
+    <ion-list>
+      <ion-item ng-repeat="friend in friends.list">{{friend.inviteName === username ? friend.inviteeName : friend.inviteName}}</ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

@@ -7,5 +7,5 @@ ion-view(view-title='Friends')
     button.button(ui-sref='settings')
       i.icon.ion-gear-a
   ion-content
-    div searchbox here
-    div friends list here
+    ion-list
+      ion-item(ng-repeat='friend in friends.list') {{friend.inviteName === username ? friend.inviteeName : friend.inviteName}}
