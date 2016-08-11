@@ -1,7 +1,7 @@
 angular.module('app.FriendsController', [])
   .controller('FriendsController', FriendsController);
 
-function FriendsController($scope, $ionicModal, friendsFactory) {
+function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
   $scope.friends = {};
   $scope.users = {};
   $scope.modals = {};
@@ -50,6 +50,7 @@ function FriendsController($scope, $ionicModal, friendsFactory) {
   function setList(listType) {
     return function(data) {
       $scope[listType].list = data;
+      console.log('list', $scope[listType].list);
     };
   }
 
