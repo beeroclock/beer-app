@@ -1,7 +1,7 @@
 angular.module('app.FriendsController', [])
   .controller('FriendsController', FriendsController);
 
-function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
+function FriendsController($scope, $ionicModal, friendsFactory) {
   $scope.friends = {};
   $scope.users = {};
   $scope.modals = {};
