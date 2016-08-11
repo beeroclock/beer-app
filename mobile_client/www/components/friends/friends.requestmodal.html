@@ -5,7 +5,12 @@
   </ion-header-bar>
   <ion-content>
     <ion-list>
-      <ion-item>TEST</ion-item>
+      <ion-item ng-repeat="friend in friends.pending">{{friend.name}}
+        <div class="float-right">
+          <button class="accept-friend-request button button-balanced" ng-click="acceptFriend(friend.id)">Accept</button>
+          <button class="reject-friend-request button button-assertive" ng-click="rejectFriend(friend.id)">Reject</button>
+        </div>
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-modal-view>
