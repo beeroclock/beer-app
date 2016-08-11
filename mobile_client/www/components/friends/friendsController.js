@@ -3,6 +3,8 @@ angular.module('app.FriendsController', [])
 
 function FriendsController($scope, $ionicModal, friendsFactory) {
   $scope.friends = {};
+  $scope.friends.list = [];
+  $scope.friends.pending = [];
   $scope.users = {};
   $scope.modals = {};
   $scope.getUsers = getUsers;
@@ -20,13 +22,13 @@ function FriendsController($scope, $ionicModal, friendsFactory) {
       .then(setModal('request'));
 
     friendsFactory.getFriends()
-      .then(setList('friends'))
+      .then(setFriendsAndPending)
       .catch(logErr);
   }
 
   function getUsers() {
     friendsFactory.getUsers()
-      .then(setList('users'))
+      .then(setUsers)
       .catch(logErr);
   }
 
@@ -47,11 +49,21 @@ function FriendsController($scope, $ionicModal, friendsFactory) {
     };
   }
 
-  function setList(listType) {
-    return function(data) {
-      $scope[listType].list = data;
-      console.log('list', $scope[listType].list);
-    };
+  function setFriendsAndPending(userFriendships) {
+    _.forEach(userFriendships, function(friendship) {
+      console.log('friendship:', friendship);
+      if (friendship.accepted === true) {
+        $scope.friends.list.push(friendship);
+      } else if (friendship.accepted === null) {
+        $scope.friends.pending.push(friendship);
+      }
+      console.log($scope.friends.list);
+      console.log($scope.friends.pending);
+    });
+  }
+
+  function setUsers(data) {
+    $scope.users.list = data;
   }
 
   function logErr(err) {

@@ -85,43 +85,6 @@ exports.createTest = function(){
              "inviteId": 1,
              "inviteeId": 5,
              "accepted": true
-            },
-            {
-             "inviteId": 6,
-             "inviteeId": 1
-            },
-            {
-             "inviteId": 1,
-             "inviteeId": 7,
-             "accepted": false
-            },
-            {
-             "inviteId": 1,
-             "inviteeId": 8,
-             "accepted": false
-            },
-            {
-             "inviteId": 9,
-             "inviteeId": 1
-            },
-            {
-             "inviteId": 1,
-             "inviteeId": 10,
-             "accepted": true
-            },
-            {
-             "inviteId": 2,
-             "inviteeId": 3,
-             "accepted": false
-            },
-            {
-             "inviteId": 2,
-             "inviteeId": 4
-            },
-            {
-             "inviteId": 5,
-             "inviteeId": 2,
-             "accepted": true
             }
           ];
           var queried = [];
