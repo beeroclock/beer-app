@@ -4,4 +4,7 @@ ion-modal-view
       i.icon.ion-android-arrow-back
   ion-content
     ion-list
-      ion-item TEST
+      ion-item(ng-repeat='friend in friends.pending') {{friend.name}}
+        .float-right
+          button.accept-friend-request.button.button-balanced(ng-click='acceptFriend(friend.id)') Accept
+          button.reject-friend-request.button.button-assertive(ng-click='rejectFriend(friend.id)') Reject
