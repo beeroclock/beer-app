@@ -73,12 +73,13 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
       .then(function(result) {
         var temp = _.pullAt($scope.friends.pending, index)[0]
 
-        temp.accepted = true;
-        temp.inviteId = temp.id;
-        temp.inviteName = temp.name;
+        if (userResponse) {
+          temp.accepted = true;
+          temp.inviteId = temp.id;
+          temp.inviteName = temp.name;
 
-        $scope.friends.list.push(temp)
-
+          $scope.friends.list.push(temp)
+        }
       })
       .catch(logErr);
   }

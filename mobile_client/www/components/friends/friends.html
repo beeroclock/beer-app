@@ -6,8 +6,10 @@
     <button class="button" ui-sref="settings"><i class="icon ion-gear-a"></i></button>
   </ion-nav-buttons>
   <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="friend in friends.list">{{friend.inviteName === username ? friend.inviteeName : friend.inviteName}}</ion-item>
+    <ion-list can-swipe="true">
+      <ion-item ng-repeat="friend in friends.list">{{friend.inviteName === username ? friend.inviteeName : friend.inviteName}}
+        <ion-option-button class="button-assertive" ng-click="ng-click">Remove</ion-option-button>
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>
