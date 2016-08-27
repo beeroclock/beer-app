@@ -64,6 +64,10 @@ router.put('/friendship', utils.checkUser, function(request, response) {
   controllers.friendship.put(request, response)
 })
 
+router.put('/blockUser', utils.checkUser, function(request, response) {
+  controllers.blockUser.put(request, response)
+})
+
 // Create new event
 router.post('/events', utils.checkUser, function(request, response) {
   controllers.events.post(request, response)
