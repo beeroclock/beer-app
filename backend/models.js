@@ -308,7 +308,7 @@ module.exports = {
     put: function (inviteId, inviteeId, userResponse, callback) {
       db.Friend.find({
         where: {
-          $and:[{inviteId: inviteId}, {inviteeId: inviteeId}]
+          $or:[{inviteId: inviteId, inviteeId: inviteeId},{inviteId: inviteeId, inviteeId: inviteId}]
         }
       })
       .then(function(result) {
