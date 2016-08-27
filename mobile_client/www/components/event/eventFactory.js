@@ -2,8 +2,9 @@ angular.module('app.EventFactory', [])
 .factory('EventFactory', eventFactory);
 
 function eventFactory($http, $rootScope, apiUrl) {
+  var services = {};
 
-  var acceptEvent = function(eventId, userId, username, acceptedLat, acceptedLong){
+  services.acceptEvent = function(eventId, userId, username, acceptedLat, acceptedLong){
     return $http({
       method: 'POST',
       url: apiUrl + '/acceptEvent/' + eventId,
@@ -16,11 +17,11 @@ function eventFactory($http, $rootScope, apiUrl) {
     })
   }
 
-  var lockEvent = function (eventId){
+  services.lockEvent = function (eventId){
     return $http.put(apiUrl + '/lockEvent/' + eventId)
   }
 
-  var getUberData = function (userLat, userLong, locationLat, locationLong) {
+  services.getUberData = function (userLat, userLong, locationLat, locationLong) {
     return $http({
       method: 'POST',
       url: apiUrl + '/uber',
@@ -33,9 +34,5 @@ function eventFactory($http, $rootScope, apiUrl) {
     })
   }
 
-  return {
-    acceptEvent: acceptEvent,
-    lockEvent: lockEvent,
-    getUberData: getUberData
-  };
+  return services;
 }

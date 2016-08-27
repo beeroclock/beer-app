@@ -21,6 +21,7 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
         div ~{{uberData.estimate}}.
         div Current Multiplier: {{uberData.surge_multiplier}}X.
         div Distance: {{uberData.distance}} miles.
+      div.center-text(ng-show="uberMessageDisplay") {{uberMessage}}
     .list.list-inset
       div.center-text(ng-show="userAttending")
         div.bold You're going to this event

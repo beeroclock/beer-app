@@ -9,6 +9,7 @@ angular.module('app.EventController', [])
   $scope.isUserOwner = true;
   $scope.userAttending = false;
   $scope.uber = false;
+  $scope.uberMessageDisplay = false;
   $scope.usersMessage = 'Friends going to this event:'
   //Location data for user and location
   var locationData = {
@@ -53,9 +54,15 @@ angular.module('app.EventController', [])
     if(userLat && userLong && locationLat && locationLong){
       EventFactory.getUberData(userLat, userLong, locationLat, locationLong)
       .success(function (uberData) {
-        $scope.uberData = uberData.prices[1];
-        $scope.locationPhone = $scope.currentEventInView.locationPhone;
-        $scope.uber = true;
+        if(uberData.statusCode === 422){
+          $scope.uberMessage = uberData.body.message
+          $scope.uberMessageDisplay = true;
+        } else {
+          $scope.uberData = uberData.prices[1];
+          $scope.locationPhone = $scope.currentEventInView.locationPhone;
+          $scope.uber = true;
+
+        }
       })
       .error(function (err) {
         console.log("+++ 61 eventController.js UberAPI error: ", err)

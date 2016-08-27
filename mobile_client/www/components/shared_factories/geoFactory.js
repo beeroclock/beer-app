@@ -3,8 +3,10 @@ angular.module('app.GeoFactory', [])
 
 function geoFactory() {
 
+  var services = {};
+
   //Currently not implemented anywhere
-  var currentLocation = function(callback) {
+  services.currentLocation = function(callback) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         return pos
     }, function(error) {
@@ -12,7 +14,7 @@ function geoFactory() {
     });
   };
 
-  var getCentralPoints = function (userLat, userLong, locationLat, locationLong) {
+  services.getCentralPoints = function (userLat, userLong, locationLat, locationLong) {
 
     centerPoints = {};
 
@@ -22,7 +24,7 @@ function geoFactory() {
     return centerPoints;
   }
 
-  var distance = function (lat1, lon1, lat2, lon2) {
+  services.distance = function (lat1, lon1, lat2, lon2) {
     var radlat1 = Math.PI * lat1/180;
     var radlat2 = Math.PI * lat2/180;
     var radlon1 = Math.PI * lon1/180;
@@ -38,10 +40,6 @@ function geoFactory() {
     return dist;
   }
 
-  return {
-    currentLocation: currentLocation,
-    getCentralPoints: getCentralPoints,
-    distance: distance
-  }
+  return services;
 
 }
