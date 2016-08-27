@@ -11,6 +11,7 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
   $scope.openModal = openModal;
   $scope.closeModal = closeModal;
   $scope.friendshipUpdate = friendshipUpdate;
+  $scope.removeFriend = removeFriend;
   var modalOpts = { scope: $scope, animation: 'slide-in-up' };
 
   init();
@@ -80,6 +81,14 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
 
           $scope.friends.list.push(temp)
         }
+      })
+      .catch(logErr);
+  }
+
+  function removeFriend(id, userResponse, index) {
+    friendsFactory.friendshipUpdate(id, userResponse)
+      .then(function(result) {
+        _.pullAt($scope.friends.list, index);
       })
       .catch(logErr);
   }
