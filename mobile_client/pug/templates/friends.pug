@@ -9,4 +9,4 @@ ion-view(view-title='Friends')
   ion-content
     ion-list(can-swipe='true')
       ion-item(ng-repeat='friend in friends.list') {{friend.inviteName === username ? friend.inviteeName : friend.inviteName}}
-        ion-option-button.button-assertive(ng-click=) Remove
+        ion-option-button.button-assertive(ng-click='removeFriend(friend.id, false, $index)') Remove
