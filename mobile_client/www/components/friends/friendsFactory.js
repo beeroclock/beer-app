@@ -14,7 +14,6 @@ function friendsFactory($http, apiUrl) {
       .then(sendData);
   }
 
-
   services.friendshipUpdate = function(id, userResponse) {
     console.log('friendId', id)
     console.log('userResponse', userResponse)

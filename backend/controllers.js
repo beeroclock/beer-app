@@ -135,8 +135,6 @@ module.exports = controllers = {
       })
     },
     put: function(request, response) {
-      console.log('OMGGGGG ASSSSSSSSSSSSSSSSSSSSSS')
-
       var inviteId = request.headers.userid;
       var inviteeId = request.body.friendId;
       var userResponse = request.body.userResponse;
