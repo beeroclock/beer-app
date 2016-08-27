@@ -3,7 +3,9 @@ angular.module('app.AuthFactory', [])
 
 function authFactory($http) {
 
-  var setTokenAndHttpHeaders = function (token, userId, callback) {
+  var services = {};
+
+  services.setTokenAndHttpHeaders = function (token, userId, callback) {
     $http.defaults.headers.common['beeroclock-token'] = token;
     $http.defaults.headers.common.userId = userId;
     if($http.defaults.headers.common['beeroclock-token'] && $http.defaults.headers.common.userId){
@@ -13,7 +15,7 @@ function authFactory($http) {
     };
   }
 
-  var removeTokenAndHttpHeaders = function (callback) {
+  services.removeTokenAndHttpHeaders = function (callback) {
     $http.defaults.headers.common['beeroclock-token'] = null;
     $http.defaults.headers.common.userId = null;
     if($http.defaults.headers.common['beeroclock-token'] === null && $http.defaults.headers.common.userId === null){
@@ -23,8 +25,5 @@ function authFactory($http) {
     };
   }
 
-  return {
-    setTokenAndHttpHeaders: setTokenAndHttpHeaders,
-    removeTokenAndHttpHeaders: removeTokenAndHttpHeaders
-  }
+  return services;
 }

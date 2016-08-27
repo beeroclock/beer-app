@@ -3,7 +3,9 @@ angular.module('app.SignupFactory', [])
 
 function signupFactory($http, apiUrl) {
 
-  var signup = function(username, password, email){
+  var services = {};
+
+  services.signup = function(username, password, email){
     return $http({
       method: 'POST',
       url: apiUrl + '/signup',
@@ -15,7 +17,5 @@ function signupFactory($http, apiUrl) {
     })
   };
 
-  return {
-    signup: signup
-  }
+  return services;
 }
