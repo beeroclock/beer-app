@@ -138,6 +138,10 @@ var Friend = sequelize.define('Friend', {
   accepted: {
     type: Sequelize.BOOLEAN,
     defaultValue: null
+  },
+  blocked: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: 0
   }
 });
 

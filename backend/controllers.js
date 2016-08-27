@@ -153,6 +153,20 @@ module.exports = controllers = {
       })
     }
   },
+  // (PUT) block user
+  blockUser: {
+    put: function(request, response) {
+      var inviteId = request.headers.userid;
+      var inviteeId = request.body.friendId;
+      models.blockUser.put(inviteId, inviteeId, function (friendshipBlocked) {
+        if (friendshipBlocked) {
+          response.sendStatus(200)
+        } else{
+          response.sendStatus(400);
+        };
+      })
+    }
+  },
   // (POST) Create a new event, (GET) get Friend's events
   events: {
     post: function (request, response) {

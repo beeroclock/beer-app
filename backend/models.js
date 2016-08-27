@@ -325,6 +325,27 @@ module.exports = {
       })
     }
   },
+  blockUser: {
+    put: function (inviteId, inviteeId, callback) {
+      db.Friend.find({
+        where: {
+          $or:[{inviteId: inviteId, inviteeId: inviteeId},{inviteId: inviteeId, inviteeId: inviteId}]
+        }
+      })
+      .then(function(result) {
+        if(result){
+          result.update({
+            blocked: true
+          })
+          .then(function (friendshipBlocked) {
+            callback(true)
+          })
+        }else{
+          callback(false)
+        };
+      })
+    }
+  },
   events: {
     // (POST) Create a new event, (GET) get Friend's events
     post: function (newEventObj, callback) {

@@ -33,6 +33,11 @@ put '/friendship'
 body: {
   "friendId": 666
 }
+// block user
+blockUser '/blockUser'
+body: {
+  "friendId": 666
+}
 // Create new event
 post '/events'
 body: {
