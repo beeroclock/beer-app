@@ -30,6 +30,9 @@ body: {
 }
 // Update friendship status
 put '/friendship'
+body: {
+  "friendId": 666
+}
 // Create new event
 post '/events'
 body: {

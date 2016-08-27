@@ -16,10 +16,16 @@ function friendsFactory($http, apiUrl) {
 
 
   services.friendshipUpdate = function(id, userResponse) {
+    console.log('friendId', id)
+    console.log('userResponse', userResponse)
+
     return $http({
       method: 'PUT',
       url: apiUrl + '/friendship',
-      data: { friendId: id, userResponse: userResponse}
+      data: {
+        friendId: id,
+        userResponse: userResponse
+      }
     });
   }
 

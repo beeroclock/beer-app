@@ -135,9 +135,16 @@ module.exports = controllers = {
       })
     },
     put: function(request, response) {
+      console.log('OMGGGGG ASSSSSSSSSSSSSSSSSSSSSS')
+
       var inviteId = request.headers.userid;
       var inviteeId = request.body.friendId;
       var userResponse = request.body.userResponse;
+
+      console.log('HAYYYY inviteId', inviteId)
+      console.log('HAYYYY inviteeId', inviteeId)
+      console.log('HAYYYY userResponse', userResponse)
+
       models.friendship.put(inviteId, inviteeId, userResponse, function (friendshipUpdated) {
         if (friendshipUpdated) {
           var result = friendshipUpdated.dataValues

@@ -66,8 +66,6 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
     console.log('$scope.friends.pending', $scope.friends.pending);
   }
 
-
-
   function setUsers(data) {
     $scope.users.list = data;
   }
