@@ -7,8 +7,8 @@
     <ion-list>
       <ion-item ng-repeat="friend in friends.pending">{{friend.name}}
         <div class="float-right">
-          <button class="accept-friend-request button button-balanced" ng-click="acceptFriend(friend.id)">Accept</button>
-          <button class="reject-friend-request button button-assertive" ng-click="rejectFriend(friend.id)">Reject</button>
+          <button class="accept-friend-request button button-balanced" ng-click="friendshipUpdate(friend.id, true, $index)">Accept</button>
+          <button class="reject-friend-request button button-assertive" ng-click="friendshipUpdate(friend.id, false, $index)">Reject</button>
         </div>
       </ion-item>
     </ion-list>

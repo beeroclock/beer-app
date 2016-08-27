@@ -10,8 +10,7 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
   $scope.getUsers = getUsers;
   $scope.openModal = openModal;
   $scope.closeModal = closeModal;
-  $scope.acceptFriend = acceptFriend;
-  $scope.rejectFriend = rejectFriend;
+  $scope.friendshipUpdate = friendshipUpdate;
   var modalOpts = { scope: $scope, animation: 'slide-in-up' };
 
   init();
@@ -55,7 +54,6 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
     var pending = [];
 
     _.forEach(userFriendships, function(friendship) {
-      // console.log('friendship:', friendship);
       if (friendship.accepted === true) {
         $scope.friends.list.push(friendship);
       } else if (friendship.accepted === null) {
@@ -70,19 +68,17 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
     $scope.users.list = data;
   }
 
-  // IMPLEMENT THESE LATER
-  function acceptFriend(id) {
-    friendsFactory.friendshipUpdate(id, true)
+  function friendshipUpdate(id, userResponse, index) {
+    friendsFactory.friendshipUpdate(id, userResponse)
       .then(function(result) {
-        console.log(result);
-      })
-      .catch(logErr);
-  }
+        var temp = _.pullAt($scope.friends.pending, index)[0]
 
-  function rejectFriend(id) {
-    friendsFactory.friendshipUpdate(id, false)
-      .then(function(result) {
-        console.log(result);
+        temp.accepted = true;
+        temp.inviteId = temp.id;
+        temp.inviteName = temp.name;
+
+        $scope.friends.list.push(temp)
+
       })
       .catch(logErr);
   }
