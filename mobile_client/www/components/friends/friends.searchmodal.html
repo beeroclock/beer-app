@@ -2,11 +2,24 @@
 <ion-modal-view>
   <ion-header-bar class="bar bar-header bar-light">
     <button ng-click="closeModal(&quot;search&quot;)"><i class="icon ion-android-arrow-back"></i></button>
-    <input type="search" placeholder="Search new friends..." ng-model="users.search"/>
+    <form ng-submit="searchUser()">
+      <input type="search" placeholder="Search new friends..." ng-model="users.search"/>
+    </form>
   </ion-header-bar>
-  <ion-content>
+  <ion-content ng-show="userFound">
     <ion-list>
-      <ion-item collection-repeat="uesr in users.list">TEST</ion-item>
+      <ion-item>{{users.list.username}}
+        <div class="float-right" ng-hide="friendshipAccepted">
+          <button class="accept-friend-request button button-balanced" ng-click="requestFriend(users.list.id)" ng-hide="hideRequestButton">Request Friend</button>
+          <div class="accept-friend-request calm" ng-hide="!hideRequestButton">Pending</div>
+        </div>
+        <div class="float-right" ng-hide="!friendshipAccepted">
+          <div class="accept-friend-request">Connected</div>
+        </div>
+      </ion-item>
     </ion-list>
+  </ion-content>
+  <ion-content ng-show="noFriendFound">
+    <div>No friend found</div>
   </ion-content>
 </ion-modal-view>
