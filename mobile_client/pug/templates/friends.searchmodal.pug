@@ -4,9 +4,9 @@ ion-modal-view
       i.icon.ion-android-arrow-back
     form(ng-submit="searchUser()")
       input(type='search', placeholder='Search new friends...', ng-model='users.search')
-  ion-content(ng-show='userFound')
+  ion-content(ng-show='userFound', ng-repeat='user in users.list')
     ion-list
-      ion-item {{users.list.username}}
+      ion-item {{user.username}}
         .float-right(ng-hide='friendshipAccepted')
           button.accept-friend-request.button.button-balanced(ng-click='requestFriend(users.list.id)' ng-hide='hideRequestButton') Request Friend
           .accept-friend-request.calm(ng-hide='!hideRequestButton') Pending

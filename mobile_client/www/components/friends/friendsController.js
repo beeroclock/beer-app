@@ -141,31 +141,31 @@ function FriendsController($scope, $state, $ionicModal, $rootScope, $ionicPopup,
     $scope.userFound = false;
     $scope.noFriendFound = false;
     $scope.hideRequestButton = false;
-    friendsFactory.searchUser($scope.users.search)
-    .then(function (result) {
-      console.log("+++ 135 friendsController.js result: ", JSON.stringify(result, null, "\t"));
-      if (result.data === "") {
-        $scope.noFriendFound = true;
-      } else {
-        if (result.data.foundFriendship) {
-          if(result.data.foundFriendship.accepted){
-            $scope.friendshipAccepted = true;
-          }
+    if ($scope.users.search === $rootScope.username) {
+      var popup = $ionicPopup.alert({
+        title: 'It\'s-a me, ' + $rootScope.username + '!',
+        template: 'Search for someone other than you'
+      })
+    } else {
+      friendsFactory.searchUser($scope.users.search)
+      .then(function (result) {
+        if (result.data === "") {
+          $scope.noFriendFound = true;
+        } else {
+          $scope.users.list = result.data;
+          $scope.userFound = true;
         }
-        $scope.users.list = result.data;
-        $scope.userFound = true;
-        if(result.data.foundFriendship.accepted === null){
-          $scope.hideRequestButton = true;
-        }
-      }
-
-    })
+      })
+    }
   }
 
   function requestFriend (friendId) {
     friendsFactory.requestFriend(friendId)
     .then(function(result){
-      $state.reload();
+      var popup = $ionicPopup.alert({
+        title: 'Friendship Requested'
+      })
+      searchUser();
     })
   }
 

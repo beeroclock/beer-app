@@ -103,38 +103,42 @@ module.exports = {
   // find user by username
   friends: {
     get: function (username, myUserId, callback) {
-      var userObj = {}
-      db.User.find({
+      var foundUserList = [];
+      db.User.findAll({
         where: {
-          username: username
+          username: {
+            $like: '%' + username + '%',
+          },
+          id: {
+            $not: myUserId
+          }
         }
       })
       .then(function (foundUser) {
-        if (foundUser) {
-          userObj.id = foundUser.id
-          userObj.username = foundUser.username
-          db.Friend.find({
-            where: {
-              $and:[{inviteId: foundUser.dataValues.id}, {inviteeId: myUserId}]
-            }
-          })
-          .then(function (foundFriendship) {
-            if (foundFriendship !== null) {
-            userObj.foundFriendship = foundFriendship;
-            callback(userObj);
-            } else {
+        var totalLength = foundUser.length - 1;
+        if (foundUser.length) {
+          _.forEach(foundUser, function(user, index){
+              var userObj = {}
+              userObj.id = user.id
+              userObj.username = user.username
               db.Friend.find({
                 where: {
-                  $and:[{inviteId: myUserId}, {inviteeId: foundUser.dataValues.id}]
+                  $or:[{inviteId: user.id, inviteeId: myUserId},{inviteId: myUserId, inviteeId: user.id}]
                 }
               })
-              .then(function(orFoundFriendship) {
-                userObj.foundFriendship = orFoundFriendship;
-                callback(userObj);
+              .then(function (foundFriendship) {
+                if (foundFriendship) {
+                  userObj.foundFriendship = foundFriendship.dataValues;
+                } else {
+                  userObj.foundFriendship = null;
+                }
+                foundUserList.push(userObj)
+                if(totalLength === index){
+                  callback(foundUserList)
+                }
               })
-            };
           })
-        }else{
+        } else{
           callback(false)
         };
       })
