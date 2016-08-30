@@ -7,11 +7,11 @@
     </form>
   </ion-header-bar>
   <ion-content ng-show="userFound">
-    <ion-list ng-repeat="user in users.list track by $index">
+    <ion-list ng-repeat="user in users.list">
       <ion-item>{{user.username}}
         <div class="float-right" ng-show="!user.foundFriendship.accepted">
           <button class="accept-friend-request button button-balanced" ng-click="requestFriend(user.id)" ng-hide="user.foundFriendship.accepted === null">Request Friend</button>
-          <div class="accept-friend-request calm" ng-show="user.foundFriendship.accepted === null">Pending</div>
+          <div class="accept-friend-request calm accept-friend-request calm" ng-show="user.foundFriendship.accepted === null">Pending</div>
         </div>
         <div class="float-right" ng-show="user.foundFriendship.accepted">
           <div class="accept-friend-request">Connected</div>
@@ -20,6 +20,6 @@
     </ion-list>
   </ion-content>
   <ion-content ng-show="noFriendFound">
-    <div>No friend found</div>
+    <div>No friends found</div>
   </ion-content>
 </ion-modal-view>
