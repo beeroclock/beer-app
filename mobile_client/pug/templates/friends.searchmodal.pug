@@ -2,7 +2,15 @@ ion-modal-view
   ion-header-bar.bar.bar-header.bar-light
     button(ng-click='closeModal("search")')
       i.icon.ion-android-arrow-back
-    input(type='search', placeholder='Search new friends...', ng-model='users.search')
-  ion-content
+    form(ng-submit="searchUser()")
+      input(type='search', placeholder='Search new friends...', ng-model='users.search')
+  ion-content(ng-show='userFound', ng-repeat='user in users.list')
     ion-list
-      ion-item(collection-repeat='uesr in users.list') TEST
+      ion-item {{user.username}}
+        .float-right(ng-hide='friendshipAccepted')
+          button.accept-friend-request.button.button-balanced(ng-click='requestFriend(users.list.id)' ng-hide='hideRequestButton') Request Friend
+          .accept-friend-request.calm(ng-hide='!hideRequestButton') Pending
+        .float-right(ng-hide='!friendshipAccepted')
+          .accept-friend-request Connected
+  ion-content(ng-show='noFriendFound')
+    div No friend found

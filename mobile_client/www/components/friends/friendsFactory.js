@@ -15,15 +15,26 @@ function friendsFactory($http, apiUrl) {
   }
 
   services.friendshipUpdate = function(id, userResponse) {
-    console.log('friendId', id)
-    console.log('userResponse', userResponse)
-
     return $http({
       method: 'PUT',
       url: apiUrl + '/friendship',
       data: {
         friendId: id,
         userResponse: userResponse
+      }
+    });
+  }
+
+  services.searchUser = function (userName) {
+    return $http.get(apiUrl + '/friends/' + userName)
+  }
+
+  services.requestFriend = function (friendId){
+    return $http({
+      method: 'POST',
+      url: apiUrl + '/friendship',
+      data: {
+        friendId: friendId
       }
     });
   }

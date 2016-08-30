@@ -1,7 +1,7 @@
 angular.module('app.FriendsController', [])
   .controller('FriendsController', FriendsController);
 
-function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
+function FriendsController($scope, $state, $ionicModal, $rootScope, $ionicPopup, friendsFactory) {
   $scope.friends = {};
   $scope.friends.list = [];
   $scope.friends.pending = [];
@@ -12,6 +12,11 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
   $scope.closeModal = closeModal;
   $scope.friendshipUpdate = friendshipUpdate;
   $scope.removeFriend = removeFriend;
+  $scope.searchUser = searchUser;
+  $scope.requestFriend = requestFriend;
+  $scope.userFound = false;
+  $scope.friendshipAccepted = false;
+  $scope.noFriendFound = false;
   var modalOpts = { scope: $scope, animation: 'slide-in-up' };
 
   init();
@@ -62,14 +67,13 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
       }
     });
     normalizePendingData(pending);
-    console.log('$scope.friends.pending', $scope.friends.pending);
   }
 
   function setUsers(data) {
     $scope.users.list = data;
   }
 
-  function friendshipUpdate(id, userResponse, index) {
+  function friendshipUpdate(id, userResponse, index, friendName) {
     friendsFactory.friendshipUpdate(id, userResponse)
       .then(function(result) {
         var temp = _.pullAt($scope.friends.pending, index)[0]
@@ -78,9 +82,19 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
           temp.accepted = true;
           temp.inviteId = temp.id;
           temp.inviteName = temp.name;
-
           $scope.friends.list.push(temp)
+          var popup = $ionicPopup.alert({
+            title: 'Friendship Accepted',
+            template: 'You are now friends with ' + friendName
+          })
         }
+        if (!userResponse) {
+          var popup = $ionicPopup.alert({
+            title: 'Friendship Rejected',
+            template: 'You are not friends with ' + friendName
+          })
+        }
+
       })
       .catch(logErr);
   }
@@ -102,6 +116,7 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
     var friendId;
 
     $scope.friends.pending = _.map(data, function(friendship) {
+      var requestedByMe = false;
       if ($rootScope.username === friendship.inviteName) {
         friend = friendship.inviteeName;
         friendId = friendship.inviteeId;
@@ -109,12 +124,49 @@ function FriendsController($scope, $ionicModal, $rootScope, friendsFactory) {
         friend = friendship.inviteName;
         friendId = friendship.inviteId;
       }
+      if(friendship.inviteId === $rootScope.userId){
+        requestedByMe = true;
+      }
 
       return {
         name: friend,
         id: friendId,
-        accepted: friendship.accepted
+        accepted: friendship.accepted,
+        requestedByMe: requestedByMe
       };
     });
   }
+
+  function searchUser (){
+    $scope.userFound = false;
+    $scope.noFriendFound = false;
+    $scope.hideRequestButton = false;
+    if ($scope.users.search === $rootScope.username) {
+      var popup = $ionicPopup.alert({
+        title: 'It\'s-a me, ' + $rootScope.username + '!',
+        template: 'Search for someone other than you'
+      })
+    } else {
+      friendsFactory.searchUser($scope.users.search)
+      .then(function (result) {
+        if (result.data === "") {
+          $scope.noFriendFound = true;
+        } else {
+          $scope.users.list = result.data;
+          $scope.userFound = true;
+        }
+      })
+    }
+  }
+
+  function requestFriend (friendId) {
+    friendsFactory.requestFriend(friendId)
+    .then(function(result){
+      var popup = $ionicPopup.alert({
+        title: 'Friendship Requested'
+      })
+      searchUser();
+    })
+  }
+
 }
