@@ -15,7 +15,6 @@ function FriendsController($scope, $state, $ionicModal, $rootScope, $ionicPopup,
   $scope.searchUser = searchUser;
   $scope.requestFriend = requestFriend;
   $scope.userFound = false;
-  $scope.friendshipAccepted = false;
   $scope.noFriendFound = false;
   var modalOpts = { scope: $scope, animation: 'slide-in-up' };
 
@@ -137,7 +136,7 @@ function FriendsController($scope, $state, $ionicModal, $rootScope, $ionicPopup,
     });
   }
 
-  function searchUser (){
+  function searchUser(){
     $scope.userFound = false;
     $scope.noFriendFound = false;
     $scope.hideRequestButton = false;
@@ -146,6 +145,8 @@ function FriendsController($scope, $state, $ionicModal, $rootScope, $ionicPopup,
         title: 'It\'s-a me, ' + $rootScope.username + '!',
         template: 'Search for someone other than you'
       })
+    } else if (!$scope.users.search) { // empty search
+      return;
     } else {
       friendsFactory.searchUser($scope.users.search)
       .then(function (result) {
@@ -159,7 +160,7 @@ function FriendsController($scope, $state, $ionicModal, $rootScope, $ionicPopup,
     }
   }
 
-  function requestFriend (friendId) {
+  function requestFriend(friendId) {
     friendsFactory.requestFriend(friendId)
     .then(function(result){
       var popup = $ionicPopup.alert({
