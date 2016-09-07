@@ -1,6 +1,5 @@
 var mysql = require('mysql');
 var express = require('express');
-var session = require('express-session');
 
 //Middleware
 var parser = require('body-parser');
@@ -9,14 +8,6 @@ var router = require(__dirname + '/backend/routes.js');
 // Router
 var app = express();
 module.exports.app = app;
-
-// Establish session
-app.use(session({
- secret: 'rr1261956',
- resave: true,
- saveUninitialized: false,
- cookie: {maxAge: 1000*60*60}
-}));
 
 // Set what we are listening on.
 app.set("port", process.env.PORT || 8080);
