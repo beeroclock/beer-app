@@ -1,5 +1,4 @@
 // Requirements
-var session = require('express-session');
 var jwt  = require('jwt-simple');
 var _ = require('lodash');
 var Yelp = require('yelp');

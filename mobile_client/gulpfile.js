@@ -11,8 +11,8 @@ var path = require('path');
 var cache = require('gulp-cached');
 
 var paths = {
-  sass: ['./scss/**/*.scss'],
-  pug: ['./pug/**/*.pug']
+  sass: ['scss/**/*.scss'],
+  pug: ['pug/**/*.pug']
 };
 
 //sends compiled pug file to correct directory
