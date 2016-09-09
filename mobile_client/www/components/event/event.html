@@ -5,38 +5,32 @@
   </ion-nav-buttons>
   <ion-content>
     <div id="map" ng-class="class" data-tap-disabled="true"></div>
-    <div ng-show="!isUserOwner">
-      <button class="button button-block button-calm" ng-click="lockEvent(currentEventInView.id)" ng-hide="eventLocked">Lock Event</button>
-    </div>
-    <div ng-show="isUserOwner">
-      <button class="button button-block button-calm" ng-click="acceptEvent(currentEventInView.id)" ng-hide="userAttending" ng-disabled="buttonDisabled">Accept Event</button>
-    </div>
-    <div class="list list-inset">
-      <div class="center-text" ng-show="userAttending">
-        <div class="bold">{{currentEventInView.locationName}}</div>
-        <div>{{currentEventInView.locationAddress1}}</div>
-        <div>{{currentEventInView.locationAddress2}}</div>
-        <div>{{currentEventInView.locationPhone}}</div>
-        <div class="bold" ng-show="eventLocked">This event's location has been locked by the creator</div>
-      </div>
-    </div>
-    <div class="list list-inset">
-      <div class="center-text" ng-show="uber">
-        <div class="bold">{{uberData.display_name}}</div>
-        <div>~{{uberData.estimate}}.</div>
-        <div>Current Multiplier: {{uberData.surge_multiplier}}X.</div>
-        <div>Distance: {{uberData.distance}} miles.</div>
-      </div>
-      <div class="center-text" ng-show="uberMessageDisplay">{{uberMessage}}</div>
-    </div>
-    <div class="list list-inset">
-      <div class="center-text" ng-show="userAttending">
-        <div class="bold">You're going to this event</div>
-        <div>{{usersMessage}}</div>
-        <div ng-repeat="invitee in currentEventAttendees">
-          <div>{{invitee.username}}</div>
+  </ion-content>
+  <div ng-show="!isUserOwner">
+    <button class="button button-block button-calm" ng-click="lockEvent(currentEventInView.id)" ng-hide="eventLocked">Lock Event</button>
+  </div>
+  <div ng-show="isUserOwner">
+    <button class="button button-block button-calm" ng-click="acceptEvent(currentEventInView.id)" ng-hide="userAttending" ng-disabled="buttonDisabled">Accept Event</button>
+  </div>
+  <div class="infoSection">
+    <div class="row">
+      <div class="col col-50">
+        <div class="infoBox center-text text-white margin-right-small" ng-show="userAttending">
+          <div class="bold">{{currentEventInView.locationName}}</div>
+          <div>{{currentEventInView.locationAddress1}}</div>
+          <div>{{currentEventInView.locationAddress2}}</div>
+          <div>{{currentEventInView.locationPhone}}</div>
+          <div class="bold" ng-show="eventLocked">This event's location has been locked by the creator</div>
         </div>
       </div>
-    </div><img src="../../assets/images/beer.gif" ng-show="showBeer"/>
-  </ion-content>
+      <div class="col col-50">
+        <div class="infoBox center-text text-white" ng-show="uber">
+          <div class="bold">{{uberData.display_name}}</div>
+          <div>~{{uberData.estimate}}</div>
+          <div>Multiplier: {{uberData.surge_multiplier}}X</div>
+          <div>Miles: {{uberData.distance}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-view>

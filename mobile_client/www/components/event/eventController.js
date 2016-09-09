@@ -10,7 +10,7 @@ angular.module('app.EventController', [])
   $scope.userAttending = false;
   $scope.uber = false;
   $scope.uberMessageDisplay = false;
-  $scope.usersMessage = 'Friends going to this event:'
+  $scope.usersMessage = 'Friends going:'
   //Location data for user and location
   var locationData = {
     userLocationLat: null,
@@ -25,7 +25,7 @@ angular.module('app.EventController', [])
     }
     //If no users are going at this time
     if($scope.currentEventAttendees.length === 0){
-      $scope.usersMessage = 'No other friends have accepted the event yet.'
+      $scope.usersMessage = 'No other friends.'
     }
     //Check if the logged in user is going to this event
     _.forEach($scope.currentEventAttendees, function (attendee, index) {
@@ -129,6 +129,7 @@ angular.module('app.EventController', [])
 
     //Map's central and zoom start options
     var mapOptions = {
+      disableDefaultUI: true,
       center: centralLatlng,
       zoom: mapZoom,
       mapTypeId: google.maps.MapTypeId.ROADMAP
