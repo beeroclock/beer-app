@@ -15,14 +15,13 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
-.light-blue {
-  background-color: #000; }
-
+/*Ionic Defaults*/
 #map {
-  width: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
   height: 100%;
-  background-size: contain;
-  background-image: url("../../assets/images/beerbg.jpg"); }
+  background-image: url("../../assets/images/backgroundBeer.png"); }
 
 #map-canvas {
   width: 100%;
@@ -31,18 +30,121 @@ $dark:                            #444 !default;
   padding: 0;
   position: relative; }
 
+.buttonSection {
+  position: fixed;
+  top: 43px;
+  left: 10px; }
+
 .infoSection {
   position: fixed;
-  bottom: 26px;
+  bottom: 15px;
   width: 100%; }
 
 .infoBox {
-  border-radius: 25px;
-  border: 2px solid #73AD21;
-  padding: 20px; }
+  background: rgba(0, 0, 0, 0.65);
+  /* Fall-back for browsers that don't support rgba */
+  height: 100%;
+  border-radius: 15px;
+  border: 2px solid #00cfff;
+  padding: 10px; }
+
+/*Margin*/
+.margin-top-small {
+  margin-top: 5px; }
+
+.margin-top-medium {
+  margin-top: 10px; }
+
+.margin-top-large {
+  margin-top: 15px; }
+
+.margin-top-largest {
+  margin-top: 20px; }
 
 .margin-right-small {
   margin-right: 5px; }
+
+.margin-right-medium {
+  margin-right: 10px; }
+
+.margin-right-large {
+  margin-right: 15px; }
+
+.margin-right-largest {
+  margin-right: 20px; }
+
+.margin-bottom-small {
+  margin-bottom: 5px; }
+
+.margin-bottom-medium {
+  margin-bottom: 10px; }
+
+.margin-bottom-large {
+  margin-bottom: 15px; }
+
+.margin-bottom-largest {
+  margin-bottom: 20px; }
+
+.margin-left-small {
+  margin-left: 5px; }
+
+.margin-left-medium {
+  margin-left: 10px; }
+
+.margin-left-large {
+  margin-left: 15px; }
+
+.margin-left-largest {
+  margin-left: 20px; }
+
+/*Padding*/
+.padding-top-small {
+  padding-top: 5px; }
+
+.padding-top-medium {
+  padding-top: 10px; }
+
+.padding-top-large {
+  padding-top: 15px; }
+
+.padding-top-largest {
+  padding-top: 20px; }
+
+.padding-right-small {
+  padding-right: 5px; }
+
+.padding-right-medium {
+  padding-right: 10px; }
+
+.padding-right-large {
+  padding-right: 15px; }
+
+.padding-right-largest {
+  padding-right: 20px; }
+
+.padding-bottom-small {
+  padding-bottom: 5px; }
+
+.padding-bottom-medium {
+  padding-bottom: 10px; }
+
+.padding-bottom-large {
+  padding-bottom: 15px; }
+
+.padding-bottom-largest {
+  padding-bottom: 20px; }
+
+.padding-left-small {
+  padding-left: 5px; }
+
+.padding-left-medium {
+  padding-left: 10px; }
+
+.padding-left-large {
+  padding-left: 15px; }
+
+.padding-left-largest {
+  padding-left: 20px; }
 
 /*!
   Ionicons, v2.0.1
@@ -9855,3 +9957,18 @@ a.button {
 
 .float-right {
   float: right; }
+
+.body-background {
+  background-color: #00cfff; }
+
+.light-blue {
+  background-color: #00cfff; }
+
+.light-orange {
+  background-color: #ffc729; }
+
+.dark-orange {
+  background-color: #e59507; }
+
+.text-white {
+  color: white; }

@@ -1,9 +1,10 @@
 
 #map{
-  width: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
   height: 100%;
-  background-size: contain;
-  background-image: url('../../assets/images/beerbg.jpg')
+  background-image: url('../../assets/images/backgroundBeer.png')
 }
 
 #map-canvas{
@@ -14,14 +15,20 @@
   position: relative;
 }
 
+.buttonSection{
+  position: fixed;
+  top: 43px;
+  left:10px;
+}
+
 .infoSection {
   position: fixed;
-  bottom: 26px;
+  bottom: 15px;
   width: 100%;
 }
 
 .infoBox{
-  background: rgb(0, 0, 0, 0.80); /* Fall-back for browsers that don't support rgba */
+  background: rgba(0, 0, 0, 0.65); /* Fall-back for browsers that don't support rgba */
   height: 100%;
   border-radius: 15px;
   border: 2px solid $lightBlue;

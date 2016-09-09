@@ -10,29 +10,7 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 
-$light-blue: #000;
+$lightBlue:                       #00cfff !default;
+$lightOrange:                     #ffc729 !default;
+$darkOrange:                      #e59507 !default;
 
-.light-blue {
-  background-color: $light-blue;
-}
-
-
-$lightBlue: #00cfff;
-$lightOrange: #ffc729
-$darkOrange: #e59507;
-
-.light-blue{
-  background-color: $lightBlue;
-}
-
-.light-orange{
-  background-color: $lightOrange;
-}
-
-.dark-orange{
-  background-color: $darkOrange;
-}
-
-.text-white{
-  color: white;
-}

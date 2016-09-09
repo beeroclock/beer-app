@@ -6,11 +6,13 @@
   <ion-content>
     <div id="map" ng-class="class" data-tap-disabled="true"></div>
   </ion-content>
-  <div ng-show="!isUserOwner">
-    <button class="button button-block button-calm" ng-click="lockEvent(currentEventInView.id)" ng-hide="eventLocked">Lock Event</button>
-  </div>
-  <div ng-show="isUserOwner">
-    <button class="button button-block button-calm" ng-click="acceptEvent(currentEventInView.id)" ng-hide="userAttending" ng-disabled="buttonDisabled">Accept Event</button>
+  <div class="buttonSection">
+    <div ng-show="!isUserOwner">
+      <button class="button button-block dark-orange text-white" ng-click="lockEvent(currentEventInView.id)" ng-hide="eventLocked">Lock Event</button>
+    </div>
+    <div ng-show="isUserOwner">
+      <button class="button button-block button-balanced" ng-click="acceptEvent(currentEventInView.id)" ng-hide="userAttending" ng-disabled="buttonDisabled">Accept Event</button>
+    </div>
   </div>
   <div class="infoSection">
     <div class="row">
