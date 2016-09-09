@@ -4,30 +4,33 @@ ion-view(view-title='This is {{currentEventInView.ownerName}}\'s event')
       i.icon.ion-home
   ion-content
     #map(ng-class="class" data-tap-disabled="true")
-    div(ng-show="!isUserOwner")
-      button.button.button-block.button-calm(ng-click='lockEvent(currentEventInView.id)', ng-hide="eventLocked") Lock Event
-    div(ng-show="isUserOwner")
-      button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)', ng-hide="userAttending" ng-disabled="buttonDisabled") Accept Event
-    .list.list-inset
-      div.center-text(ng-show="userAttending")
-        div.bold {{currentEventInView.locationName}}
-        div {{currentEventInView.locationAddress1}}
-        div {{currentEventInView.locationAddress2}}
-        div {{currentEventInView.locationPhone}}
-        div.bold(ng-show="eventLocked") This event's location has been locked by the creator
-    .list.list-inset
-      div.center-text(ng-show="uber")
-        div.bold {{uberData.display_name}}
-        div ~{{uberData.estimate}}.
-        div Current Multiplier: {{uberData.surge_multiplier}}X.
-        div Distance: {{uberData.distance}} miles.
-      div.center-text(ng-show="uberMessageDisplay") {{uberMessage}}
-    .list.list-inset
-      div.center-text(ng-show="userAttending")
-        div.bold You're going to this event
-        div {{usersMessage}}
-        div(ng-repeat="invitee in currentEventAttendees")
-          div {{invitee.username}}
-    img(src='../../assets/images/beer.gif' ng-show="showBeer")
+  div(ng-show="!isUserOwner")
+    button.button.button-block.button-calm(ng-click='lockEvent(currentEventInView.id)', ng-hide="eventLocked") Lock Event
+  div(ng-show="isUserOwner")
+    button.button.button-block.button-calm(ng-click='acceptEvent(currentEventInView.id)', ng-hide="userAttending" ng-disabled="buttonDisabled") Accept Event
+  .infoSection
+    .row
+      .col.col-50
+        .infoBox.center-text.text-white.margin-right-small(ng-show="userAttending")
+          div.bold {{currentEventInView.locationName}}
+          div {{currentEventInView.locationAddress1}}
+          div {{currentEventInView.locationAddress2}}
+          div {{currentEventInView.locationPhone}}
+          div.bold(ng-show="eventLocked") This event's location has been locked by the creator
+      .col.col-50
+        .infoBox.center-text.text-white(ng-show="uber")
+          div.bold {{uberData.display_name}}
+          div ~{{uberData.estimate}}
+          div Multiplier: {{uberData.surge_multiplier}}X
+          div Miles: {{uberData.distance}}
+    //- .row(style="width:100%;")
+    //-   .col.center-text
+    //-     div.center-text(ng-show="uberMessageDisplay") {{uberMessage}}
+    //-     div.center-text(ng-show="userAttending")
+    //-       div.bold You're going
+    //-       div {{usersMessage}}
+    //-       div(ng-repeat="invitee in currentEventAttendees")
+    //-         div {{invitee.username}}
+    //- img(src='../../assets/images/beer.gif' ng-show="showBeer")
 
 
