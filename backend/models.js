@@ -138,7 +138,7 @@ module.exports = {
                 }
               })
           })
-        } else{
+        } else {
           callback(false)
         };
       })

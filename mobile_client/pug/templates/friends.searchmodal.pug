@@ -5,11 +5,11 @@ ion-modal-view
     form(ng-submit='searchUser()')
       input(type='search', placeholder='Search new friends...', ng-model='users.search')
   ion-content(ng-show='userFound')
-    ion-list(ng-repeat='user in users.list')
+    ion-list(ng-repeat='user in users.list track by $index')
       ion-item {{user.username}}
         .float-right(ng-show='!user.foundFriendship.accepted')
           button.accept-friend-request.button.button-balanced(ng-click='requestFriend(user.id)' ng-hide='user.foundFriendship.accepted === null') Request Friend
-          .accept-friend-request.calm(class='accept-friend-request calm' ng-show='user.foundFriendship.accepted === null') Pending
+          .accept-friend-request.calm(ng-show='user.foundFriendship.accepted === null') Pending
         .float-right(ng-show='user.foundFriendship.accepted')
           .accept-friend-request Connected
   ion-content(ng-show='noFriendFound')
